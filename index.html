@@ -166,6 +166,7 @@
   <thead>
     <tr>
       <th data-k="name">Nakshatra</th>
+      <th data-k="lord" title="Vimshottari lord">Lord</th>
       <th data-k="moonTara">Moon Tara</th>
       <th data-k="lagnaTara">Lagna Tara</th>
       <th data-k="special">27-Special</th>
@@ -190,6 +191,17 @@
 const NAK = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha",
 "Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha",
 "Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"];
+
+// Vimshottari nakshatra lords — repeating 9-cycle Ke-Ve-Su-Mo-Ma-Ra-Ju-Sa-Me.
+const LORD_CYCLE=[
+  {s:"Ke",f:"Ketu"},{s:"Ve",f:"Venus"},{s:"Su",f:"Sun"},
+  {s:"Mo",f:"Moon"},{s:"Ma",f:"Mars"},{s:"Ra",f:"Rahu"},
+  {s:"Ju",f:"Jupiter"},{s:"Sa",f:"Saturn"},{s:"Me",f:"Mercury"}
+];
+const lordOf=i=>LORD_CYCLE[i%9];
+// Pada = quarter (1..4) within the 13°20' nakshatra, 3°20' wide each.
+function padaOf(sidLon){const NAK_W=40/3, PADA_W=NAK_W/4;
+  return Math.floor((((sidLon%NAK_W)+NAK_W)%NAK_W)/PADA_W)+1;}
 
 // 9-fold Navatara cycle (position 1..9)
 const TARA = [
@@ -314,7 +326,7 @@ document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
 });
 
 /* ===== today-state: live transit Moon (+ Lagna if location known) ===== */
-const todayState={moonIdx:null,lagnaIdx:null,when:null,locLabel:null};
+const todayState={moonIdx:null,moonPada:null,lagnaIdx:null,lagnaPada:null,when:null,locLabel:null};
 function jdFromDate(d){
   const Y=d.getUTCFullYear(),Mo=d.getUTCMonth()+1,Da=d.getUTCDate();
   const h=d.getUTCHours()+d.getUTCMinutes()/60+d.getUTCSeconds()/3600;
@@ -322,12 +334,14 @@ function jdFromDate(d){
 }
 function computeTransit(date,lat,lon){
   const JD=jdFromDate(date), ayan=lahiri(JD);
-  const moonIdx=nakIndex(norm360(moonTrop(JD)-ayan));
-  let lagnaIdx=null;
+  const moonSid=norm360(moonTrop(JD)-ayan);
+  const moonIdx=nakIndex(moonSid), moonPada=padaOf(moonSid);
+  let lagnaIdx=null, lagnaPada=null;
   if(lat!=null && lon!=null && !isNaN(lat) && !isNaN(lon)){
-    lagnaIdx=nakIndex(norm360(ascTrop(JD,lat,lon)-ayan));
+    const ascSid=norm360(ascTrop(JD,lat,lon)-ayan);
+    lagnaIdx=nakIndex(ascSid); lagnaPada=padaOf(ascSid);
   }
-  return {moonIdx,lagnaIdx};
+  return {moonIdx,moonPada,lagnaIdx,lagnaPada};
 }
 function renderToday(){
   const d=todayState.when||new Date();
@@ -342,8 +356,11 @@ function renderToday(){
         vEl=document.getElementById("todayVerdict");
   if(mIdx==null){mEl.textContent="—";lEl.textContent="—";sEl.textContent="—";
     vEl.textContent="Computing…";return;}
-  mEl.textContent=NAK[mIdx];
-  lEl.innerHTML=lIdx!=null?NAK[lIdx]:'<span style="color:var(--mut);font-weight:400">enable location</span>';
+  const mPad=todayState.moonPada, lPad=todayState.lagnaPada;
+  mEl.innerHTML=`${NAK[mIdx]} <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${mPad} · ${lordOf(mIdx).f}</span>`;
+  lEl.innerHTML=lIdx!=null
+    ?`${NAK[lIdx]} <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${lPad} · ${lordOf(lIdx).f}</span>`
+    :'<span style="color:var(--mut);font-weight:400">enable location</span>';
   const nm=+moonSel.value, nl=+lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
   const lt=lIdx!=null?taraFrom(nl,lIdx):{name:"—",score:0,count:0};
@@ -372,6 +389,7 @@ function refreshTransit(opts){
   else if(lat!=null && todayState.locLabel==null)todayState.locLabel="saved location";
   const r=computeTransit(date,lat,lon);
   todayState.moonIdx=r.moonIdx; todayState.lagnaIdx=r.lagnaIdx;
+  todayState.moonPada=r.moonPada; todayState.lagnaPada=r.lagnaPada;
   renderToday(); render();
 }
 
@@ -391,7 +409,8 @@ function render(){
     if(vi.isVedha) score=Math.min(score,0);   // hard cap: not auspicious for beginnings
     let use=bestUse(mt.name,lt.name,specialName,bonus,rawScore);
     if(vi.isVedha) use="⚠ Vedha ("+vi.reasons.join(" + ")+") — avoid major starts; OK for repair / cutting / closure";
-    return {name,moonTara:mt.name,moonScore:mt.score,lagnaTara:lt.name,lagnaScore:lt.score,
+    const ld=lordOf(i);
+    return {name,lord:ld.s,lordFull:ld.f,moonTara:mt.name,moonScore:mt.score,lagnaTara:lt.name,lagnaScore:lt.score,
             special:specialName,specialScore:bonus,score,rawScore,isVedha:vi.isVedha,use};
   });
   rows.sort((a,b)=>{
@@ -407,6 +426,7 @@ function render(){
     if(todayState.moonIdx===idx) tr.classList.add("row-today");
     tr.innerHTML=`
       <td class="nm">${r.name}</td>
+      <td title="${r.lordFull}">${r.lord}</td>
       <td class="${taraClass(r.moonScore)}">${r.moonTara}</td>
       <td class="${taraClass(r.lagnaScore)}">${r.lagnaTara}</td>
       <td>${r.special}${r.specialScore?` (${r.specialScore>0?"+":""}${r.specialScore})`:""}</td>
@@ -525,9 +545,10 @@ function calcBirth(){
   const moonSid=norm360(moonTrop(JD)-ayan);
   const ascSid=norm360(ascTrop(JD,lat,lon)-ayan);
   const mi=nakIndex(moonSid), li=nakIndex(ascSid);
+  const mp=padaOf(moonSid), lp=padaOf(ascSid);
   moonSel.value=mi; lagnaSel.value=li;
   out.style.color="#9fe0b8";
-  out.innerHTML=`Moon → <b>${NAK[mi]}</b> &nbsp;·&nbsp; Lagna → <b>${NAK[li]}</b>`
+  out.innerHTML=`Moon → <b>${NAK[mi]}</b> pada ${mp} (${lordOf(mi).f}) &nbsp;·&nbsp; Lagna → <b>${NAK[li]}</b> pada ${lp} (${lordOf(li).f})`
     +(tv?"":" <span style='color:#d8d090'>(no birth time given — Lagna unreliable)</span>");
   render();
 }
