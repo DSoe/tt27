@@ -48,8 +48,25 @@
   .tara-pos{color:#9fe0b8} .tara-neg{color:#f0a0a0} .tara-mid{color:#d8d090}
   .legend{font-size:.72rem;color:var(--mut);margin-top:12px;line-height:1.6}
   .row-hl{outline:2px solid var(--accent)}
+  .row-today{background:rgba(255,209,102,0.08)}
+  .row-today td:first-child::before{content:"📅 ";opacity:.85}
   td.use{color:var(--mut);font-size:.76rem}
   td.use.vedha{color:#f0a0a0;font-weight:600}
+  .today{background:linear-gradient(180deg,#1a1f3d,#181b30);border:1px solid var(--accent);
+    border-radius:12px;padding:14px;margin-top:14px}
+  .today h2{margin:0 0 4px;font-size:1rem;color:var(--accent)}
+  .today .when{font-size:.78rem;color:var(--mut);margin-bottom:10px}
+  .today .grid{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  .today .stat{flex:1;min-width:110px}
+  .today .stat .lbl{font-size:.7rem;color:var(--mut)}
+  .today .stat .val{font-size:.95rem;font-weight:600}
+  .today .verdict{font-size:.85rem;margin-top:10px;line-height:1.5}
+  .today .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btn-sm{padding:6px 10px;font-size:.78rem;border-radius:8px;border:1px solid var(--line);
+    background:#11142a;color:var(--accent);cursor:pointer;font-weight:600}
+  .btn-sm:hover{border-color:var(--accent)}
+  #todayCustomBox{margin-top:10px}
+  @media print{ .today .actions,#todayCustomBox{display:none} }
   .btn{padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:#11142a;color:var(--accent);
     font-size:.9rem;cursor:pointer;font-weight:600}
   .btn:hover{border-color:var(--accent)}
@@ -119,6 +136,31 @@
 </div>
 
 <div id="printHead"></div>
+
+<section class="today" id="today">
+  <h2>📅 Today's verdict</h2>
+  <div class="when" id="todayWhen">—</div>
+  <div class="grid">
+    <div class="stat"><div class="lbl">Transit Moon</div><div class="val" id="todayMoon">—</div></div>
+    <div class="stat"><div class="lbl">Transit Lagna</div><div class="val" id="todayLagna">—</div></div>
+    <div class="stat"><div class="lbl">Score</div><div class="val" id="todayScore">—</div></div>
+  </div>
+  <div class="verdict" id="todayVerdict">Computing…</div>
+  <div class="actions">
+    <button class="btn-sm" id="todayRefresh">↻ Refresh now</button>
+    <button class="btn-sm" id="todayLoc">📍 Use my location</button>
+    <button class="btn-sm" id="todayCustom">🕒 Custom moment</button>
+    <button class="btn-sm" id="todayClear" title="Clear saved natal data">✕ Forget me</button>
+  </div>
+  <div class="grid" id="todayCustomBox" style="display:none">
+    <div class="ctl"><label>Date</label><input type="date" id="todayDate"></div>
+    <div class="ctl"><label>Time</label><input type="time" id="todayTime"></div>
+    <div class="ctl" style="flex:0;display:flex;gap:8px">
+      <button class="btn-sm" id="todayApply">Apply</button>
+      <button class="btn-sm" id="todayNow">Reset to now</button>
+    </div>
+  </div>
+</section>
 
 <table id="tbl">
   <thead>
@@ -244,12 +286,94 @@ NAK.forEach((n,i)=>{
 });
 moonSel.value=22; lagnaSel.value=0; // sensible default
 
+/* ===== persistence: natal data + last known location ===== */
+const LS_NATAL="tt27.natal", LS_LOC="tt27.loc";
+function saveNatal(){
+  try{localStorage.setItem(LS_NATAL, JSON.stringify({
+    pname:document.getElementById("pname").value,
+    moon:+moonSel.value, lagna:+lagnaSel.value
+  }));}catch(e){}
+}
+function loadNatal(){
+  try{const o=JSON.parse(localStorage.getItem(LS_NATAL)||"null");
+    if(!o)return;
+    if(o.pname!=null)document.getElementById("pname").value=o.pname;
+    if(o.moon!=null)moonSel.value=o.moon;
+    if(o.lagna!=null)lagnaSel.value=o.lagna;
+  }catch(e){}
+}
+function saveLoc(lat,lon){try{localStorage.setItem(LS_LOC,JSON.stringify({lat,lon,t:Date.now()}));}catch(e){}}
+function loadLoc(){try{return JSON.parse(localStorage.getItem(LS_LOC)||"null");}catch(e){return null;}}
+loadNatal();
+
 let sortKey="score", sortDir=-1;
 document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
   const k=th.dataset.k;
   if(k===sortKey) sortDir*=-1; else {sortKey=k; sortDir=(k==="name")?1:-1;}
   render();
 });
+
+/* ===== today-state: live transit Moon (+ Lagna if location known) ===== */
+const todayState={moonIdx:null,lagnaIdx:null,when:null,locLabel:null};
+function jdFromDate(d){
+  const Y=d.getUTCFullYear(),Mo=d.getUTCMonth()+1,Da=d.getUTCDate();
+  const h=d.getUTCHours()+d.getUTCMinutes()/60+d.getUTCSeconds()/3600;
+  return jdUT(Y,Mo,Da,h);
+}
+function computeTransit(date,lat,lon){
+  const JD=jdFromDate(date), ayan=lahiri(JD);
+  const moonIdx=nakIndex(norm360(moonTrop(JD)-ayan));
+  let lagnaIdx=null;
+  if(lat!=null && lon!=null && !isNaN(lat) && !isNaN(lon)){
+    lagnaIdx=nakIndex(norm360(ascTrop(JD,lat,lon)-ayan));
+  }
+  return {moonIdx,lagnaIdx};
+}
+function renderToday(){
+  const d=todayState.when||new Date();
+  const fmtDate=d.toLocaleDateString(undefined,{weekday:"short",year:"numeric",month:"short",day:"numeric"});
+  const fmtTime=d.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
+  document.getElementById("todayWhen").textContent=fmtDate+" · "+fmtTime+
+    (todayState.locLabel?" · "+todayState.locLabel:"");
+  const mIdx=todayState.moonIdx, lIdx=todayState.lagnaIdx;
+  const mEl=document.getElementById("todayMoon"),
+        lEl=document.getElementById("todayLagna"),
+        sEl=document.getElementById("todayScore"),
+        vEl=document.getElementById("todayVerdict");
+  if(mIdx==null){mEl.textContent="—";lEl.textContent="—";sEl.textContent="—";
+    vEl.textContent="Computing…";return;}
+  mEl.textContent=NAK[mIdx];
+  lEl.innerHTML=lIdx!=null?NAK[lIdx]:'<span style="color:var(--mut);font-weight:400">enable location</span>';
+  const nm=+moonSel.value, nl=+lagnaSel.value;
+  const mt=taraFrom(nm,mIdx);
+  const lt=lIdx!=null?taraFrom(nl,lIdx):{name:"—",score:0,count:0};
+  const sp=SPECIAL[mt.count]; const bonus=sp?sp.b:0;
+  const specialName=sp?sp.n:"—";
+  const vi=vedhaInfo(NAK[mIdx],NAK[nm],NAK[nl]);
+  const raw=mt.score+lt.score+bonus;
+  let score=raw+vi.pen;
+  if(vi.isVedha)score=Math.min(score,0);
+  sEl.innerHTML=`<span class="pill ${cls(score)}">${score>0?"+":""}${score}</span>`;
+  let use=bestUse(mt.name,lt.name,specialName,bonus,raw);
+  if(vi.isVedha)use="⚠ Vedha ("+vi.reasons.join(" + ")+") — avoid major starts; OK for repair / cutting / closure";
+  const parts=[`Moon Tara <b>${mt.name}</b> (${mt.score>0?"+":""}${mt.score})`];
+  if(lIdx!=null)parts.push(`Lagna Tara <b>${lt.name}</b> (${lt.score>0?"+":""}${lt.score})`);
+  if(sp)parts.push(`<b>${specialName}</b> (${bonus>0?"+":""}${bonus})`);
+  vEl.innerHTML=`<div>${use}</div><div style="color:var(--mut);font-size:.78rem;margin-top:4px">${parts.join(" · ")}${lIdx==null?' · <i>tap "Use my location" for Lagna layer</i>':""}</div>`;
+}
+function refreshTransit(opts){
+  opts=opts||{};
+  const date=opts.date||new Date();
+  const cached=loadLoc();
+  const lat=(opts.lat!=null)?opts.lat:(cached?cached.lat:null);
+  const lon=(opts.lon!=null)?opts.lon:(cached?cached.lon:null);
+  todayState.when=date;
+  if(opts.locLabel!==undefined)todayState.locLabel=opts.locLabel;
+  else if(lat!=null && todayState.locLabel==null)todayState.locLabel="saved location";
+  const r=computeTransit(date,lat,lon);
+  todayState.moonIdx=r.moonIdx; todayState.lagnaIdx=r.lagnaIdx;
+  renderToday(); render();
+}
 
 function render(){
   const m=+moonSel.value, l=+lagnaSel.value;
@@ -278,7 +402,9 @@ function render(){
   const tb=document.querySelector("#tbl tbody"); tb.innerHTML="";
   rows.forEach(r=>{
     const tr=document.createElement("tr");
-    if(+moonSel.value===NAK.indexOf(r.name)) tr.className="row-hl";
+    const idx=NAK.indexOf(r.name);
+    if(+moonSel.value===idx) tr.classList.add("row-hl");
+    if(todayState.moonIdx===idx) tr.classList.add("row-today");
     tr.innerHTML=`
       <td class="nm">${r.name}</td>
       <td class="${taraClass(r.moonScore)}">${r.moonTara}</td>
@@ -294,8 +420,47 @@ function render(){
     if(th.dataset.k===sortKey) th.textContent+=" "+(sortDir<0?"▾":"▴");
   });
 }
-moonSel.onchange=render; lagnaSel.onchange=render;
-document.getElementById("pname").oninput=render;
+function onNatalChange(){saveNatal();renderToday();render();}
+moonSel.onchange=onNatalChange; lagnaSel.onchange=onNatalChange;
+document.getElementById("pname").oninput=()=>{saveNatal();render();};
+
+/* ===== today panel wiring ===== */
+document.getElementById("todayRefresh").onclick=()=>{todayState.when=null;refreshTransit();};
+document.getElementById("todayLoc").onclick=()=>{
+  if(!navigator.geolocation){alert("Geolocation is not available in this browser.");return;}
+  navigator.geolocation.getCurrentPosition(
+    (p)=>{saveLoc(p.coords.latitude,p.coords.longitude);
+      refreshTransit({lat:p.coords.latitude,lon:p.coords.longitude,locLabel:"📍 your location"});},
+    ()=>alert("Location permission denied or unavailable."),
+    {timeout:10000,maximumAge:600000});
+};
+document.getElementById("todayCustom").onclick=()=>{
+  const box=document.getElementById("todayCustomBox");
+  const showing=box.style.display!=="none";
+  box.style.display=showing?"none":"flex";
+  if(!showing){
+    const d=todayState.when||new Date();
+    const pad=n=>String(n).padStart(2,"0");
+    document.getElementById("todayDate").value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    document.getElementById("todayTime").value=`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+};
+document.getElementById("todayApply").onclick=()=>{
+  const dv=document.getElementById("todayDate").value, tv=document.getElementById("todayTime").value;
+  if(!dv){alert("Pick a date.");return;}
+  const [Y,Mo,Da]=dv.split("-").map(Number);
+  let hh=12,mm=0; if(tv){[hh,mm]=tv.split(":").map(Number);}
+  refreshTransit({date:new Date(Y,Mo-1,Da,hh,mm,0)});
+};
+document.getElementById("todayNow").onclick=()=>{todayState.when=null;refreshTransit();};
+document.getElementById("todayClear").onclick=()=>{
+  if(!confirm("Forget your saved natal data and location on this device?"))return;
+  try{localStorage.removeItem(LS_NATAL);localStorage.removeItem(LS_LOC);}catch(e){}
+  document.getElementById("pname").value="";
+  moonSel.value=22; lagnaSel.value=0;
+  todayState.locLabel=null;
+  refreshTransit();
+};
 
 /* ===== Offline astronomy: Meeus Moon + Ascendant + Lahiri ayanamsa =====
    Verified against pyswisseph (Lahiri) to within ~0.01°. */
@@ -366,7 +531,18 @@ function calcBirth(){
     +(tv?"":" <span style='color:#d8d090'>(no birth time given — Lagna unreliable)</span>");
   render();
 }
-render();
+/* ===== initial transit + opportunistic geolocation ===== */
+refreshTransit();
+if(navigator.permissions && navigator.permissions.query){
+  navigator.permissions.query({name:"geolocation"}).then(p=>{
+    if(p.state==="granted"){
+      navigator.geolocation.getCurrentPosition(
+        pos=>{saveLoc(pos.coords.latitude,pos.coords.longitude);
+          refreshTransit({lat:pos.coords.latitude,lon:pos.coords.longitude,locLabel:"📍 your location"});},
+        ()=>{},{timeout:8000,maximumAge:600000});
+    }
+  }).catch(()=>{});
+}
 
 /* ===== PWA: register service worker for offline use ===== */
 if ("serviceWorker" in navigator && location.protocol !== "file:") {

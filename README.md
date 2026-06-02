@@ -21,6 +21,11 @@ A single-file, offline web app for nakshatra selection using a three-layer syste
   sidereal Moon and Lagna nakshatra (Lahiri ayanamsa). Lunar longitude via a truncated
   Meeus series, Ascendant via sidereal-time geometry. Verified against pyswisseph to ~0.01°.
 - Save / Print to PDF with a clean print layout.
+- **Today's verdict** panel: live transit Moon (and Lagna, if you allow
+  location) scored against your saved natal Moon/Lagna. One-tap "is today
+  good for me?" — also supports a custom moment picker for muhurta planning.
+- Natal data and last-used location are remembered in `localStorage` on
+  your device (never leaves the browser). Use *Forget me* to clear.
 
 ## Usage
 
