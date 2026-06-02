@@ -1,0 +1,62 @@
+name: Deploy TT27 to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp tt27.html manifest.json icon.svg sw.js LICENSE README.md _site/
+
+          # Bump service-worker cache version to the commit SHA so installed
+          # PWAs pick up the new release without manual edits.
+          SHA="${GITHUB_SHA::7}"
+          sed -i "s/^const CACHE_VERSION = .*/const CACHE_VERSION = \"tt27-${SHA}\";/" _site/sw.js
+
+          # Root redirect so the bare URL lands on the app.
+          cat > _site/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>TT27</title>
+          <meta http-equiv="refresh" content="0; url=./tt27.html">
+          <link rel="canonical" href="./tt27.html">
+          <p><a href="./tt27.html">Open TT27</a></p>
+          HTML
+
+          # Disable Jekyll processing.
+          touch _site/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

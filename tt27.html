@@ -1,9 +1,26 @@
 <!DOCTYPE html>
+<!--
+  TT27 — Triple Tara + 27 Marker Filter
+  Copyright (c) 2026 DSoe
+  Licensed under CC BY-NC 4.0 — https://creativecommons.org/licenses/by-nc/4.0/
+  The TT27 method (special-bonus table, Vedha weights, tactical Best-Use
+  wording) is original curation by DSoe. Non-commercial use with attribution.
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TT27 — Triple Tara 27 Nakshatra Filter</title>
+<meta name="description" content="Three-layer nakshatra selection: Moon Navatara + Lagna Navatara + 27 Special Marker. Offline.">
+<meta name="author" content="DSoe">
+<meta name="theme-color" content="#0e1020">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TT27">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
   :root{
     --bg:#0e1020; --card:#181b30; --line:#2a2e4a; --txt:#e8e9f3; --mut:#9aa0c0;
@@ -32,6 +49,7 @@
   .legend{font-size:.72rem;color:var(--mut);margin-top:12px;line-height:1.6}
   .row-hl{outline:2px solid var(--accent)}
   td.use{color:var(--mut);font-size:.76rem}
+  td.use.vedha{color:#f0a0a0;font-weight:600}
   .btn{padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:#11142a;color:var(--accent);
     font-size:.9rem;cursor:pointer;font-weight:600}
   .btn:hover{border-color:var(--accent)}
@@ -176,6 +194,42 @@ function bestUse(moonTara,lagnaTara,special,specialScore,score){
   return base;
 }
 
+/* ===== Nakshatra Vedha (mutual obstruction) — strict TT27-V rule =====
+   Penalties: primary Moon Vedha -6, primary Lagna Vedha -4 (both = -10),
+   additional Vedha -3. Any Vedha caps the effective score at 0:
+   it disqualifies the nakshatra for auspicious *beginnings* but the
+   nakshatra can still be used for repair / cutting / closure. */
+const VEDHA_PAIRS=[
+  // [a, b, category]  — primary
+  ["ashwini","jyeshtha","primary"],["bharani","anuradha","primary"],["krittika","vishakha","primary"],
+  ["rohini","swati","primary"],["ardra","shravana","primary"],["punarvasu","uttara_ashadha","primary"],
+  ["pushya","purva_ashadha","primary"],["ashlesha","mula","primary"],["magha","revati","primary"],
+  ["purva_phalguni","uttara_bhadrapada","primary"],["uttara_phalguni","purva_bhadrapada","primary"],
+  ["hasta","shatabhisha","primary"],
+  // primary variants for Mrigashira
+  ["mrigashira","chitra","primary"],["mrigashira","dhanishta","primary"],
+  // additional (medium-high) — abhijit isn't in the 27-set, kept for completeness
+  ["abhijit","rohini","additional"],["mrigashira","uttara_ashadha","additional"],
+  ["ardra","purva_ashadha","additional"],["ashlesha","dhanishta","additional"],["magha","shravana","additional"]
+];
+const VEDHA_LOOKUP=(()=>{const L={};
+  for(const[a,b,cat]of VEDHA_PAIRS){(L[a]=L[a]||[]).push({n:b,cat});(L[b]=L[b]||[]).push({n:a,cat});}
+  return L;})();
+const keyOf=s=>s.toLowerCase().replace(/ /g,"_");
+function vedhaCat(refName,dayKey){
+  const hit=(VEDHA_LOOKUP[keyOf(refName)]||[]).find(x=>x.n===dayKey);
+  return hit?hit.cat:null;
+}
+const VEDHA_PEN={moonPrimary:-6,lagnaPrimary:-4,additional:-3};
+function vedhaInfo(dayName,moonName,lagnaName){
+  const day=keyOf(dayName);
+  const moonCat=vedhaCat(moonName,day), lagnaCat=vedhaCat(lagnaName,day);
+  let pen=0; const reasons=[];
+  if(moonCat){pen+=moonCat==="additional"?VEDHA_PEN.additional:VEDHA_PEN.moonPrimary;reasons.push("Moon");}
+  if(lagnaCat){pen+=lagnaCat==="additional"?VEDHA_PEN.additional:VEDHA_PEN.lagnaPrimary;reasons.push("Lagna");}
+  return {pen,reasons,isVedha:!!(moonCat||lagnaCat)};
+}
+
 function taraFrom(startIdx, targetIdx){
   const count = ((targetIdx - startIdx + 27) % 27) + 1;     // 1..27 inclusive
   const t = TARA[(count - 1) % 9];
@@ -206,11 +260,15 @@ function render(){
     const mt=taraFrom(m,i), lt=taraFrom(l,i);
     const sp=SPECIAL[mt.count]; // special count is measured from Moon
     const bonus=sp?sp.b:0;
-    const score=mt.score+lt.score+bonus;
+    const rawScore=mt.score+lt.score+bonus;
     const specialName=sp?sp.n:"—";
-    const use=bestUse(mt.name,lt.name,specialName,bonus,score);
+    const vi=vedhaInfo(name,NAK[m],NAK[l]);
+    let score=rawScore+vi.pen;
+    if(vi.isVedha) score=Math.min(score,0);   // hard cap: not auspicious for beginnings
+    let use=bestUse(mt.name,lt.name,specialName,bonus,rawScore);
+    if(vi.isVedha) use="⚠ Vedha ("+vi.reasons.join(" + ")+") — avoid major starts; OK for repair / cutting / closure";
     return {name,moonTara:mt.name,moonScore:mt.score,lagnaTara:lt.name,lagnaScore:lt.score,
-            special:specialName,specialScore:bonus,score,use};
+            special:specialName,specialScore:bonus,score,rawScore,isVedha:vi.isVedha,use};
   });
   rows.sort((a,b)=>{
     let av=a[sortKey],bv=b[sortKey];
@@ -227,7 +285,7 @@ function render(){
       <td class="${taraClass(r.lagnaScore)}">${r.lagnaTara}</td>
       <td>${r.special}${r.specialScore?` (${r.specialScore>0?"+":""}${r.specialScore})`:""}</td>
       <td class="score"><span class="pill ${cls(r.score)}">${r.score>0?"+":""}${r.score}</span></td>
-      <td class="use">${r.use}</td>`;
+      <td class="use${r.isVedha?' vedha':''}">${r.use}</td>`;
     tb.appendChild(tr);
   });
   // reflect sort arrow
@@ -309,6 +367,13 @@ function calcBirth(){
   render();
 }
 render();
+
+/* ===== PWA: register service worker for offline use ===== */
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
 </script>
 </body>
 </html>

@@ -27,7 +27,67 @@ A single-file, offline web app for nakshatra selection using a three-layer syste
 Open `tt27.html` in any browser. No server, no build, works offline. Birth-time is
 required for a reliable Lagna.
 
+## Install as an app (PWA)
+
+TT27 is a Progressive Web App. To install it on your device:
+
+1. Serve the folder over `http(s)://` (a service worker can't run from `file://`).
+   For local testing: `python3 -m http.server 8000` and visit
+   `http://localhost:8000/tt27.html`.
+2. **Mobile (Chrome / Edge / Safari):** open the page → menu → *Add to Home Screen*.
+3. **Desktop (Chrome / Edge):** click the install icon in the address bar.
+
+Once installed it launches in its own window, offline, with a TT27 icon.
+
+### Files
+
+| File | Purpose |
+| --- | --- |
+| `tt27.html` | The app (UI + nakshatra logic + Meeus moon math). |
+| `manifest.json` | PWA metadata (name, icon, theme color). |
+| `sw.js` | Service worker — caches assets for offline use. |
+| `icon.svg` | App icon. Replace with your own PNGs if you prefer. |
+| `LICENSE` | CC BY-NC 4.0. |
+
+When you change `tt27.html`, bump `CACHE_VERSION` in `sw.js` so installed
+clients pick up the new version. (The GitHub Pages workflow does this
+automatically using the commit SHA — see below.)
+
+## Public deployment (GitHub Pages)
+
+This repo ships with `.github/workflows/deploy.yml`, which publishes TT27
+to GitHub Pages on every push to `main`.
+
+One-time setup:
+
+1. Push the repo to GitHub.
+2. In the repo: **Settings → Pages → Build and deployment → Source =
+   "GitHub Actions"**.
+3. Push to `main` (or run the workflow manually from the *Actions* tab).
+
+The workflow:
+
+- Copies `tt27.html`, `manifest.json`, `icon.svg`, `sw.js`, `LICENSE`,
+  `README.md` into the published site.
+- Rewrites `CACHE_VERSION` in `sw.js` to `tt27-<short-sha>` so installed
+  PWAs auto-update on each release.
+- Generates a root `index.html` that redirects to `tt27.html`, so the
+  bare Pages URL works.
+- Adds `.nojekyll` to disable Jekyll processing.
+
+Custom domain: add a `CNAME` file at the repo root containing your
+domain, then configure DNS per GitHub's Pages docs.
+
 ## Note
 
 The TT27 formula uses only Moon and Lagna positions. Planet-specific nuances
 (e.g. an Atmakaraka in a given nakshatra) are outside its scope.
+
+## License
+
+Copyright (c) 2026 **DSoe**.
+
+Licensed under [Creative Commons Attribution-NonCommercial 4.0 International
+(CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
+You may share and adapt this work for non-commercial purposes with attribution.
+See [`LICENSE`](./LICENSE) for full terms.
