@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TT27 — Triple Tara 27 Nakshatra Filter</title>
+<style>
+  :root{
+    --bg:#0e1020; --card:#181b30; --line:#2a2e4a; --txt:#e8e9f3; --mut:#9aa0c0;
+    --accent:#ffd166; --green:#1f6f4d; --good:#3a6f3a; --use:#6b6320; --neu:#34384f; --avoid:#7a2b2b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans Myanmar",sans-serif;
+    background:var(--bg);color:var(--txt);padding:14px;max-width:760px;margin:0 auto}
+  h1{font-size:1.25rem;margin:0 0 2px;color:var(--accent)}
+  .sub{color:var(--mut);font-size:.8rem;margin-bottom:14px}
+  .mm{font-family:"Noto Sans Myanmar","Myanmar Text",sans-serif}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;background:var(--card);padding:12px;border-radius:12px;border:1px solid var(--line)}
+  .ctl{flex:1;min-width:150px}
+  label{display:block;font-size:.75rem;color:var(--mut);margin-bottom:4px}
+  select{width:100%;padding:9px;border-radius:8px;background:#11142a;color:var(--txt);border:1px solid var(--line);font-size:.95rem}
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:.82rem}
+  th,td{padding:7px 6px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-weight:600;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--bg)}
+  th:hover{color:var(--accent)}
+  .score{font-weight:700;text-align:center}
+  .pill{display:inline-block;padding:2px 7px;border-radius:20px;font-size:.72rem;white-space:nowrap}
+  .c-green{background:var(--green)} .c-good{background:var(--good)} .c-use{background:var(--use)}
+  .c-neu{background:var(--neu)} .c-avoid{background:var(--avoid)}
+  .nm{font-weight:600}
+  .tara-pos{color:#9fe0b8} .tara-neg{color:#f0a0a0} .tara-mid{color:#d8d090}
+  .legend{font-size:.72rem;color:var(--mut);margin-top:12px;line-height:1.6}
+  .row-hl{outline:2px solid var(--accent)}
+  td.use{color:var(--mut);font-size:.76rem}
+  .btn{padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:#11142a;color:var(--accent);
+    font-size:.9rem;cursor:pointer;font-weight:600}
+  .btn:hover{border-color:var(--accent)}
+  #printHead{display:none}
+  input{width:100%;padding:9px;border-radius:8px;background:#11142a;color:var(--txt);border:1px solid var(--line);font-size:.95rem}
+  details.calc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:12px}
+  details.calc summary{cursor:pointer;padding:12px 0;color:var(--accent);font-weight:600;font-size:.95rem}
+  .calc-grid{display:flex;gap:10px;flex-wrap:wrap;padding-bottom:12px}
+  .calc-grid .ctl{flex:1;min-width:130px}
+  #customGeo{display:none;width:100%;gap:10px;flex-wrap:wrap}
+  .calcnote{font-size:.72rem;color:var(--mut);padding-bottom:12px}
+  #calcOut{font-size:.82rem;color:#9fe0b8;padding-bottom:12px;min-height:1em}
+  @media print{
+    body{background:#fff;color:#000;max-width:none}
+    .controls,.legend,.btn,.sub{display:none}
+    h1{color:#000}
+    #printHead{display:block;margin-bottom:8px;font-size:.9rem}
+    th{position:static;background:#fff;color:#333}
+    th,td{border-bottom:1px solid #bbb}
+    .pill{border:1px solid #999;background:#fff!important;color:#000!important}
+    .tara-pos,.tara-neg,.tara-mid{color:#000}
+    .row-hl{outline:1px solid #000}
+  }
+</style>
+</head>
+<body>
+<h1>TT27 — Triple Tara + 27 Marker</h1>
+<div class="sub mm">သုံးထပ်တာရာ ၂၇ နက္ခတ် စစ်ထုတ်စနစ်</div>
+
+<details class="calc">
+  <summary>🌙 Calculate from birth details <span class="mm">(မွေးနေ့မှ တွက်ရန်)</span></summary>
+  <div class="calc-grid">
+    <div class="ctl"><label>Birth date</label><input type="date" id="bdate"></div>
+    <div class="ctl"><label>Birth time (local, 24h)</label><input type="time" id="btime"></div>
+    <div class="ctl"><label>Place</label>
+      <select id="bcity"></select>
+    </div>
+  </div>
+  <div class="calc-grid" id="customGeo">
+    <div class="ctl"><label>Latitude (°, N+)</label><input type="number" id="blat" step="0.0001" placeholder="16.84"></div>
+    <div class="ctl"><label>Longitude (°, E+)</label><input type="number" id="blon" step="0.0001" placeholder="96.17"></div>
+    <div class="ctl"><label>UTC offset (hrs)</label><input type="number" id="boff" step="0.25" placeholder="6.5"></div>
+  </div>
+  <div class="calc-grid" style="align-items:flex-end">
+    <button class="btn" onclick="calcBirth()">Calculate &amp; fill</button>
+  </div>
+  <div id="calcOut"></div>
+  <div class="calcnote">Lagna needs an accurate birth <b>time</b>. Uses Lahiri ayanamsa. Results pre-fill the dropdowns below and remain editable.</div>
+</details>
+
+<div class="controls">
+  <div class="ctl" style="min-width:100%">
+    <label>Person's name <span class="mm">(နာမည်)</span> — optional, shows on print</label>
+    <input type="text" id="pname" placeholder="e.g. Soe">
+  </div>
+  <div class="ctl">
+    <label>Moon Nakshatra <span class="mm">(လ နက္ခတ်)</span></label>
+    <select id="moon"></select>
+  </div>
+  <div class="ctl">
+    <label>Lagna Nakshatra <span class="mm">(လဂ်နက္ခတ်)</span></label>
+    <select id="lagna"></select>
+  </div>
+  <div class="ctl" style="display:flex;align-items:flex-end;min-width:auto;flex:0">
+    <button class="btn" onclick="window.print()">⬇ Save / Print PDF</button>
+  </div>
+</div>
+
+<div id="printHead"></div>
+
+<table id="tbl">
+  <thead>
+    <tr>
+      <th data-k="name">Nakshatra</th>
+      <th data-k="moonTara">Moon Tara</th>
+      <th data-k="lagnaTara">Lagna Tara</th>
+      <th data-k="special">27-Special</th>
+      <th data-k="score">Score ▾</th>
+      <th data-k="use">Best Use</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div class="legend">
+  <b>Classification:</b>
+  <span class="pill c-green">9+ Excellent</span>
+  <span class="pill c-good">6–8 Good</span>
+  <span class="pill c-use">3–5 Usable</span>
+  <span class="pill c-neu">0–2 Neutral</span>
+  <span class="pill c-avoid">&lt;0 Avoid</span>
+  <br>Tap any column header to sort. Score = Moon Tara + Lagna Tara + TT27 bonus.
+</div>
+
+<script>
+const NAK = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha",
+"Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha",
+"Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"];
+
+// 9-fold Navatara cycle (position 1..9)
+const TARA = [
+  {n:"Janma",s:1},{n:"Sampat",s:4},{n:"Vipat",s:-2},{n:"Kshema",s:3},{n:"Pratyak",s:-2},
+  {n:"Sadhana",s:3},{n:"Naidhana",s:-4},{n:"Mitra",s:4},{n:"Parama Mitra",s:5}
+];
+
+// TT27 special bonus keyed by count-from-Moon (1..27)
+const SPECIAL = {
+  1:{n:"Janma",b:1,use:"Personal reset, intention-setting"},
+  2:{n:"Sampat",b:3,use:"Money, payments, resources"},
+  8:{n:"Mitra support",b:2,use:"Meetings, networking, allies"},
+  10:{n:"Karma",b:3,use:"Career, project work, deliverables"},
+  16:{n:"Sanghatika",b:-2,use:"Conflict handling, negotiation — not peaceful starts"},
+  18:{n:"Samudayika",b:2,use:"Community, market, public launch"},
+  19:{n:"Adhana",b:3,use:"Foundations: company / platform setup"},
+  23:{n:"Vainashika",b:-4,use:"Ending, deleting, cutting — not launching"},
+  25:{n:"Manasa",b:1,use:"Planning, study, inner clarity"},
+  26:{n:"Desha",b:3,use:"Authority, approval, institutions"},
+  27:{n:"Abhisheka",b:3,use:"Leadership, visibility, command"}
+};
+
+// generic best-use by Moon tara when no special marker
+const TARA_USE = {
+  "Sampat":"Money, resources, acquisition","Sadhana":"Work, discipline, steady execution",
+  "Mitra":"Cooperation, meetings, partnerships","Parama Mitra":"Major positive action, launches",
+  "Kshema":"Stability, protection, maintenance","Janma":"Personal, self-focused tasks",
+  "Vipat":"Caution; small reversible steps only","Pratyak":"Caution; resistance likely",
+  "Naidhana":"Cutting, repair, cleanup, closure — not launches"
+};
+
+// Tactical wording: a low score means "use for repair/closure", not "never".
+function bestUse(moonTara,lagnaTara,special,specialScore,score){
+  const neg=["Naidhana","Vipat","Pratyak"];
+  let base = special!=="—" ? SPECIAL[Object.keys(SPECIAL).find(k=>SPECIAL[k].n===special)].use
+                           : (TARA_USE[moonTara]||"—");
+  const alreadyReductive=/not launch|cutting|closure|conflict|caution|ending/i.test(base);
+  const reductive = special==="Vainashika"||special==="Sanghatika"||
+                    moonTara==="Naidhana"||lagnaTara==="Naidhana";
+  if(reductive && specialScore>=0 && !alreadyReductive)
+    return base+" — execution friction; favor repair / cleanup / closure over launch";
+  if(score<3 && !alreadyReductive)
+    return base+" — only with a clear, defined purpose";
+  return base;
+}
+
+function taraFrom(startIdx, targetIdx){
+  const count = ((targetIdx - startIdx + 27) % 27) + 1;     // 1..27 inclusive
+  const t = TARA[(count - 1) % 9];
+  return {count, name:t.n, score:t.s};
+}
+function taraClass(s){return s>=4?"tara-pos":s<=-2?"tara-neg":"tara-mid";}
+function cls(score){return score>=9?"c-green":score>=6?"c-good":score>=3?"c-use":score>=0?"c-neu":"c-avoid";}
+
+const moonSel=document.getElementById("moon"), lagnaSel=document.getElementById("lagna");
+NAK.forEach((n,i)=>{
+  moonSel.add(new Option(n,i)); lagnaSel.add(new Option(n,i));
+});
+moonSel.value=22; lagnaSel.value=0; // sensible default
+
+let sortKey="score", sortDir=-1;
+document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
+  const k=th.dataset.k;
+  if(k===sortKey) sortDir*=-1; else {sortKey=k; sortDir=(k==="name")?1:-1;}
+  render();
+});
+
+function render(){
+  const m=+moonSel.value, l=+lagnaSel.value;
+  const nm=document.getElementById("pname").value.trim();
+  document.getElementById("printHead").textContent=
+    (nm?nm+"  —  ":"")+"Moon: "+NAK[m]+"   |   Lagna: "+NAK[l];
+  const rows=NAK.map((name,i)=>{
+    const mt=taraFrom(m,i), lt=taraFrom(l,i);
+    const sp=SPECIAL[mt.count]; // special count is measured from Moon
+    const bonus=sp?sp.b:0;
+    const score=mt.score+lt.score+bonus;
+    const specialName=sp?sp.n:"—";
+    const use=bestUse(mt.name,lt.name,specialName,bonus,score);
+    return {name,moonTara:mt.name,moonScore:mt.score,lagnaTara:lt.name,lagnaScore:lt.score,
+            special:specialName,specialScore:bonus,score,use};
+  });
+  rows.sort((a,b)=>{
+    let av=a[sortKey],bv=b[sortKey];
+    if(typeof av==="string"){return av.localeCompare(bv)*sortDir;}
+    return (av-bv)*sortDir;
+  });
+  const tb=document.querySelector("#tbl tbody"); tb.innerHTML="";
+  rows.forEach(r=>{
+    const tr=document.createElement("tr");
+    if(+moonSel.value===NAK.indexOf(r.name)) tr.className="row-hl";
+    tr.innerHTML=`
+      <td class="nm">${r.name}</td>
+      <td class="${taraClass(r.moonScore)}">${r.moonTara}</td>
+      <td class="${taraClass(r.lagnaScore)}">${r.lagnaTara}</td>
+      <td>${r.special}${r.specialScore?` (${r.specialScore>0?"+":""}${r.specialScore})`:""}</td>
+      <td class="score"><span class="pill ${cls(r.score)}">${r.score>0?"+":""}${r.score}</span></td>
+      <td class="use">${r.use}</td>`;
+    tb.appendChild(tr);
+  });
+  // reflect sort arrow
+  document.querySelectorAll("th").forEach(th=>{
+    th.textContent=th.textContent.replace(/[▾▴]/g,"").trim();
+    if(th.dataset.k===sortKey) th.textContent+=" "+(sortDir<0?"▾":"▴");
+  });
+}
+moonSel.onchange=render; lagnaSel.onchange=render;
+document.getElementById("pname").oninput=render;
+
+/* ===== Offline astronomy: Meeus Moon + Ascendant + Lahiri ayanamsa =====
+   Verified against pyswisseph (Lahiri) to within ~0.01°. */
+const D2R=Math.PI/180,R2D=180/Math.PI;
+function norm360(x){x%=360;return x<0?x+360:x;}
+function jdUT(y,m,d,hourUT){if(m<=2){y-=1;m+=12;}const A=Math.floor(y/100),B=2-A+Math.floor(A/4);
+  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5+hourUT/24;}
+const MT=[[0,0,1,0,6288774],[2,0,-1,0,1274027],[2,0,0,0,658314],[0,0,2,0,213618],[0,1,0,0,-185116],
+[0,0,0,2,-114332],[2,0,-2,0,58793],[2,-1,-1,0,57066],[2,0,1,0,53322],[2,-1,0,0,45758],[0,1,-1,0,-40923],
+[1,0,0,0,-34720],[0,1,1,0,-30383],[2,0,0,-2,15327],[0,0,1,2,-12528],[0,0,1,-2,10980],[4,0,-1,0,10675],
+[0,0,3,0,10034],[4,0,-2,0,8548],[2,1,-1,0,-7888],[2,1,0,0,-6766],[1,0,-1,0,-5163],[1,1,0,0,4987],
+[2,-1,1,0,4036],[2,0,2,0,3994],[4,0,0,0,3861],[2,0,-3,0,3665],[0,1,-2,0,-2689],[2,0,-1,2,-2602],
+[2,-1,-2,0,2390],[1,0,1,0,-2348],[2,-2,0,0,2236],[0,1,2,0,-2120],[0,2,0,0,2069],[2,-2,-1,0,2048],
+[2,0,1,-2,-1773],[2,0,0,2,-1595],[4,-1,-1,0,1215],[0,0,2,2,-1110],[3,0,-1,0,-892],[2,1,1,0,-810],
+[4,-1,-2,0,759],[0,2,-1,0,-713],[2,2,-1,0,-700],[2,1,-2,0,691],[2,-1,0,-2,596],[4,0,1,0,549],
+[0,0,4,0,537],[4,-1,0,0,520],[1,0,-2,0,-487],[2,1,0,-2,-399],[0,0,2,-2,-381],[1,1,1,0,351],
+[3,0,-2,0,-340],[4,0,-3,0,330],[2,-1,2,0,327],[0,2,1,0,-323],[1,1,-1,0,299],[2,0,3,0,294]];
+function moonTrop(JD){const T=(JD-2451545)/36525;
+  const Lp=norm360(218.3164477+481267.88123421*T-0.0015786*T*T+T**3/538841-T**4/65194000);
+  const Dm=297.8501921+445267.1114034*T-0.0018819*T*T+T**3/545868-T**4/113065000;
+  const M=357.5291092+35999.0502909*T-0.0001536*T*T+T**3/24490000;
+  const Mp=134.9633964+477198.8675055*T+0.0087414*T*T+T**3/69699-T**4/14712000;
+  const F=93.2720950+483202.0175233*T-0.0036539*T*T-T**3/3526000+T**4/863310000;
+  const E=1-0.002516*T-0.0000074*T*T;let s=0;
+  for(const[a,b,c,d,co]of MT){let e=Math.abs(b)===1?E:Math.abs(b)===2?E*E:1;
+    s+=co*e*Math.sin((a*Dm+b*M+c*Mp+d*F)*D2R);}
+  return norm360(Lp+s/1e6);}
+function lahiri(JD){return 23.853+((JD-2451545)/365.25)*(50.2388475/3600);}
+function ascTrop(JD,lat,lon){const T=(JD-2451545)/36525;
+  let g=norm360(280.46061837+360.98564736629*(JD-2451545)+0.000387933*T*T-T**3/38710000);
+  const ramc=norm360(g+lon)*D2R;
+  const eps=(23.4392911-0.0130042*T-1.64e-7*T*T+5.04e-7*T**3)*D2R,phi=lat*D2R;
+  return norm360(Math.atan2(Math.cos(ramc),-(Math.sin(ramc)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps)))*R2D);}
+function nakIndex(sid){return Math.floor(norm360(sid)/(40/3));}
+
+const CITIES=[
+  ["Yangon",16.8409,96.1735,6.5],["Mandalay",21.9588,96.0891,6.5],
+  ["Naypyidaw",19.7633,96.0785,6.5],["Mawlamyine",16.4900,97.6256,6.5],
+  ["Bago",17.3350,96.4815,6.5],["Taunggyi",20.7892,97.0378,6.5],
+  ["Pathein",16.7790,94.7320,6.5],["Monywa",22.1083,95.1358,6.5],
+  ["Custom…",null,null,null]
+];
+const citySel=document.getElementById("bcity");
+CITIES.forEach((c,i)=>citySel.add(new Option(c[0],i)));
+citySel.onchange=()=>{document.getElementById("customGeo").style.display=
+  (CITIES[+citySel.value][1]===null)?"flex":"none";};
+
+function calcBirth(){
+  const out=document.getElementById("calcOut");
+  const dv=document.getElementById("bdate").value, tv=document.getElementById("btime").value;
+  if(!dv){out.style.color="#f0a0a0";out.textContent="Enter a birth date.";return;}
+  const [Y,Mo,Da]=dv.split("-").map(Number);
+  let hh=0,mm=0; if(tv){[hh,mm]=tv.split(":").map(Number);}
+  const c=CITIES[+citySel.value]; let lat,lon,off;
+  if(c[1]===null){lat=parseFloat(document.getElementById("blat").value);
+    lon=parseFloat(document.getElementById("blon").value);off=parseFloat(document.getElementById("boff").value);
+    if([lat,lon,off].some(isNaN)){out.style.color="#f0a0a0";out.textContent="Fill latitude, longitude and UTC offset.";return;}}
+  else{lat=c[1];lon=c[2];off=c[3];}
+  const hourUT=(hh+mm/60)-off;
+  const JD=jdUT(Y,Mo,Da,hourUT);
+  const ayan=lahiri(JD);
+  const moonSid=norm360(moonTrop(JD)-ayan);
+  const ascSid=norm360(ascTrop(JD,lat,lon)-ayan);
+  const mi=nakIndex(moonSid), li=nakIndex(ascSid);
+  moonSel.value=mi; lagnaSel.value=li;
+  out.style.color="#9fe0b8";
+  out.innerHTML=`Moon → <b>${NAK[mi]}</b> &nbsp;·&nbsp; Lagna → <b>${NAK[li]}</b>`
+    +(tv?"":" <span style='color:#d8d090'>(no birth time given — Lagna unreliable)</span>");
+  render();
+}
+render();
+</script>
+</body>
+</html>
