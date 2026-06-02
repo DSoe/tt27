@@ -25,22 +25,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site
-          cp tt27.html manifest.json icon.svg sw.js LICENSE README.md _site/
+          cp index.html manifest.json icon.svg sw.js LICENSE README.md _site/
 
           # Bump service-worker cache version to the commit SHA so installed
           # PWAs pick up the new release without manual edits.
           SHA="${GITHUB_SHA::7}"
           sed -i "s/^const CACHE_VERSION = .*/const CACHE_VERSION = \"tt27-${SHA}\";/" _site/sw.js
-
-          # Root redirect so the bare URL lands on the app.
-          cat > _site/index.html <<'HTML'
-          <!doctype html>
-          <meta charset="utf-8">
-          <title>TT27</title>
-          <meta http-equiv="refresh" content="0; url=./tt27.html">
-          <link rel="canonical" href="./tt27.html">
-          <p><a href="./tt27.html">Open TT27</a></p>
-          HTML
 
           # Disable Jekyll processing.
           touch _site/.nojekyll

@@ -2,7 +2,7 @@
   "name": "TT27 — Triple Tara 27 Nakshatra Filter",
   "short_name": "TT27",
   "description": "Three-layer nakshatra selection: Moon Navatara + Lagna Navatara + 27 Special Marker. Offline.",
-  "start_url": "./tt27.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

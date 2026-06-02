@@ -3,7 +3,7 @@
 const CACHE_VERSION = "tt27-v1";
 const ASSETS = [
   "./",
-  "./tt27.html",
+  "./index.html",
   "./manifest.json",
   "./icon.svg"
 ];
@@ -36,7 +36,7 @@ self.addEventListener("fetch", (e) => {
           caches.open(CACHE_VERSION).then((c) => c.put(req, copy));
         }
         return res;
-      }).catch(() => caches.match("./tt27.html"));
+      }).catch(() => caches.match("./index.html"));
     })
   );
 });

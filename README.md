@@ -24,7 +24,7 @@ A single-file, offline web app for nakshatra selection using a three-layer syste
 
 ## Usage
 
-Open `tt27.html` in any browser. No server, no build, works offline. Birth-time is
+Open `index.html` in any browser. No server, no build, works offline. Birth-time is
 required for a reliable Lagna.
 
 ## Install as an app (PWA)
@@ -33,7 +33,7 @@ TT27 is a Progressive Web App. To install it on your device:
 
 1. Serve the folder over `http(s)://` (a service worker can't run from `file://`).
    For local testing: `python3 -m http.server 8000` and visit
-   `http://localhost:8000/tt27.html`.
+   `http://localhost:8000/`.
 2. **Mobile (Chrome / Edge / Safari):** open the page → menu → *Add to Home Screen*.
 3. **Desktop (Chrome / Edge):** click the install icon in the address bar.
 
@@ -43,13 +43,13 @@ Once installed it launches in its own window, offline, with a TT27 icon.
 
 | File | Purpose |
 | --- | --- |
-| `tt27.html` | The app (UI + nakshatra logic + Meeus moon math). |
+| `index.html` | The app (UI + nakshatra logic + Meeus moon math). |
 | `manifest.json` | PWA metadata (name, icon, theme color). |
 | `sw.js` | Service worker — caches assets for offline use. |
 | `icon.svg` | App icon. Replace with your own PNGs if you prefer. |
 | `LICENSE` | CC BY-NC 4.0. |
 
-When you change `tt27.html`, bump `CACHE_VERSION` in `sw.js` so installed
+When you change `index.html`, bump `CACHE_VERSION` in `sw.js` so installed
 clients pick up the new version. (The GitHub Pages workflow does this
 automatically using the commit SHA — see below.)
 
@@ -67,12 +67,10 @@ One-time setup:
 
 The workflow:
 
-- Copies `tt27.html`, `manifest.json`, `icon.svg`, `sw.js`, `LICENSE`,
+- Copies `index.html`, `manifest.json`, `icon.svg`, `sw.js`, `LICENSE`,
   `README.md` into the published site.
 - Rewrites `CACHE_VERSION` in `sw.js` to `tt27-<short-sha>` so installed
   PWAs auto-update on each release.
-- Generates a root `index.html` that redirects to `tt27.html`, so the
-  bare Pages URL works.
 - Adds `.nojekyll` to disable Jekyll processing.
 
 Custom domain: add a `CNAME` file at the repo root containing your
