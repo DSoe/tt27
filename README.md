@@ -81,6 +81,24 @@ The workflow:
 Custom domain: add a `CNAME` file at the repo root containing your
 domain, then configure DNS per GitHub's Pages docs.
 
+## Analytics & support (placeholders)
+
+The footer of `index.html` ships with two placeholders you must replace before
+they do anything:
+
+- **Cloudflare Web Analytics** — cookie-free, ~1 KB, no consent banner needed.
+  1. Sign in at <https://dash.cloudflare.com> → *Analytics & Logs* → *Web Analytics*.
+  2. *Add a site* → enter your URL → Cloudflare gives you a JS snippet.
+  3. Copy the `token` value (looks like a 32-char hex string) and replace
+     `YOUR_CLOUDFLARE_TOKEN_HERE` near the bottom of `index.html`.
+- **Ko-fi tip jar** — a small ☕ link in the footer for voluntary support.
+  1. Create an account at <https://ko-fi.com> with your handle (e.g. `dsoe`).
+  2. Replace `YOUR_KOFI_HANDLE` in `index.html` with your handle.
+
+Neither placeholder sends data anywhere until you swap in real values. The
+service worker only caches same-origin requests, so the Cloudflare beacon
+always goes live to the network — no extra exclusion rules needed.
+
 ## Note
 
 The TT27 formula uses only Moon and Lagna positions. Planet-specific nuances

@@ -94,6 +94,16 @@
     line-height:1;padding:0;flex:0 0 auto}
   .help-btn:hover{background:var(--accent);color:#11142a}
   .section-cap{font-size:.75rem;color:var(--mut);margin:10px 2px 4px;line-height:1.5}
+  .site-footer{margin:28px 0 16px;padding:18px 0 0;border-top:1px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
+    color:var(--mut);font-size:.82rem;line-height:1.5}
+  .site-footer .kofi-link{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+    background:linear-gradient(180deg,#ffba38,#ff8c1a);color:#1a1a1a;font-weight:700;
+    text-decoration:none;border-radius:24px;font-size:.88rem;
+    box-shadow:0 4px 12px rgba(255,140,26,.25);transition:transform .15s}
+  .site-footer .kofi-link:hover{transform:translateY(-1px)}
+  .site-footer .footer-meta a{color:var(--accent);text-decoration:none}
+  .site-footer .footer-meta a:hover{text-decoration:underline}
   /* mobile: hide the Burmese subline in table headers and row name to save horizontal space */
   @media (max-width: 480px){
     #tbl th .mm{display:none}
@@ -131,7 +141,7 @@
   #calcOut{font-size:.82rem;color:#9fe0b8;padding-bottom:12px;min-height:1em}
   @media print{
     body{background:#fff;color:#000;max-width:none}
-    .controls,.legend,.btn,.sub,.help-btn,details.guide,.section-cap{display:none}
+    .controls,.legend,.btn,.sub,.help-btn,details.guide,.section-cap,.site-footer{display:none}
     h1{color:#000}
     #printHead{display:block;margin-bottom:8px;font-size:.9rem}
     th{position:static;background:#fff;color:#333}
@@ -322,6 +332,18 @@
   <br>Tap any column header to sort. <span class="mm">(ခေါင်းစဉ်များကို နှိပ်၍ အစဉ်လိုက် စီနိုင်သည်)</span>
   <br>Score = Moon Tara + Lagna Tara + TT27 bonus. <span class="mm">(ရမှတ် = လတာရာ + လဂ်တာရာ + TT27 အထူးရမှတ်)</span>
 </div>
+
+<footer class="site-footer">
+  <div>Made with care for the curious. <span class="mm">(သာသနာ့ဂုဏ်အလို့ငှာ)</span></div>
+  <!-- TODO: replace YOUR_KOFI_HANDLE with your actual Ko-fi username after creating the account at ko-fi.com -->
+  <a class="kofi-link" href="https://ko-fi.com/YOUR_KOFI_HANDLE" target="_blank" rel="noopener noreferrer"
+     title="Support TT27 — buy the maker a coffee">
+    ☕ Support TT27 <span class="mm">(ထောက်ပံ့ရန်)</span>
+  </a>
+  <div class="footer-meta">
+    Open source · <a href="https://github.com/DSoe/tt27" target="_blank" rel="noopener noreferrer">GitHub</a>
+  </div>
+</footer>
 
 <script>
 const NAK = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha",
@@ -852,5 +874,12 @@ if ("serviceWorker" in navigator && location.protocol !== "file:") {
   });
 }
 </script>
+
+<!-- ===== Cloudflare Web Analytics =====
+     Setup: dash.cloudflare.com → Analytics & Logs → Web Analytics → "Add a site".
+     Cloudflare will give you a snippet; copy the `token` value into the placeholder below.
+     No DNS change required — free tier works on any domain. Cookie-free, GDPR-friendly. -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "YOUR_CLOUDFLARE_TOKEN_HERE"}'></script>
 </body>
 </html>
