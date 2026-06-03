@@ -94,6 +94,30 @@
     line-height:1;padding:0;flex:0 0 auto}
   .help-btn:hover{background:var(--accent);color:#11142a}
   .section-cap{font-size:.75rem;color:var(--mut);margin:10px 2px 4px;line-height:1.5}
+  /* tour */
+  .tour-pop{position:fixed;background:var(--card);border:2px solid var(--accent);
+    border-radius:12px;padding:14px;color:var(--txt);box-shadow:0 12px 40px rgba(0,0,0,.6);
+    z-index:1000;max-width:min(360px,calc(100vw - 16px));font-size:.88rem;line-height:1.5}
+  .tour-pop .tour-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
+  .tour-pop .tour-pos{color:var(--mut);font-size:.78rem}
+  .tour-target{outline:3px solid var(--accent);outline-offset:4px;border-radius:12px;
+    box-shadow:0 0 0 9999px rgba(0,0,0,0.6);position:relative;z-index:999;transition:outline .2s}
+  /* lang tabs */
+  .lang-tabs{display:flex;gap:6px;margin:0 0 10px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .lang-tabs button{padding:5px 12px;border-radius:6px;border:1px solid var(--line);
+    background:transparent;color:var(--mut);cursor:pointer;font-size:.8rem;font-weight:600}
+  .lang-tabs button.active{background:var(--accent);color:#11142a;border-color:var(--accent)}
+  .guide-body[data-lang="my"] .lang-en,.guide-body[data-lang="en"] .lang-my{display:none}
+  /* worked example */
+  details.example{background:#11142a;border:1px solid var(--line);border-radius:8px;
+    padding:0 10px;margin:8px 0}
+  details.example summary{cursor:pointer;padding:8px 0;color:var(--accent);font-weight:600;font-size:.85rem}
+  details.example .ex-body{padding:4px 0 10px;font-size:.82rem;line-height:1.55}
+  details.example .ex-body b{color:var(--txt)}
+  details.example .ex-row{display:flex;gap:8px;flex-wrap:wrap;margin:3px 0}
+  details.example .ex-row .k{color:var(--mut);min-width:160px}
+  .tour-link{background:none;border:none;color:var(--accent);text-decoration:underline;
+    cursor:pointer;font-size:.85rem;font-weight:600;padding:0}
   .calc-grid{display:flex;gap:10px;flex-wrap:wrap;padding-bottom:12px}
   .calc-grid .ctl{flex:1;min-width:130px}
   #customGeo{display:none;width:100%;gap:10px;flex-wrap:wrap}
@@ -121,27 +145,79 @@
 
 <details class="guide" id="guide">
   <summary>👋 New here? How to use this app</summary>
-  <div class="guide-body">
-    <p><b>What is TT27?</b> Given <i>your</i> natal Moon and Lagna nakshatra, it scores every day (or any moment) so you know whether to <i>act, earn, plan,</i> or <i>lay low and clean up</i>.</p>
-    <ol>
-      <li><b>Set your nakshatras.</b> Pick your <b>Moon</b> and <b>Lagna</b> in the controls below. Don't know them? Open <b>🌙 Calculate from birth details</b> and enter your birth date, time, and place — TT27 fills them in offline.</li>
-      <li><b>Read “Today’s verdict.”</b> The score and one-line advice tells you what kind of day it is <i>for you</i>. Green = go; amber = act with a clear purpose; red = repair / cleanup, not launches.</li>
-      <li><b>Plan ahead.</b> Browse the table to see which upcoming nakshatras score well, or tap <b>🕒 Custom moment</b> to score a specific date/time (muhurta).</li>
-    </ol>
-    <p><b>Reading the score:</b> <span class="pill c-green">9+ Excellent</span> <span class="pill c-good">6–8 Good</span> <span class="pill c-use">3–5 Usable</span> <span class="pill c-neu">0–2 Neutral</span> <span class="pill c-avoid">&lt;0 Avoid</span></p>
-    <p><b>Two key rules:</b></p>
-    <ul>
-      <li>A <i>low</i> score is not “bad” — it means use the moment for <b>repair, closure, cleanup</b>, not launches.</li>
-      <li><b>⚠ Vedha</b> = mutual obstruction. Caps the score at 0 even if other layers are positive. Don't start anything major; finish/fix things instead.</li>
-    </ul>
-    <p><b>Quick glossary:</b></p>
-    <ul class="glossary">
-      <li><b>Tara (Moon / Lagna):</b> 9-fold fortune cycle counted from your natal nakshatra. Janma/Sampat/Mitra/Parama Mitra are positive; Vipat/Pratyak/Naidhana are reductive.</li>
-      <li><b>27-Special:</b> TT27's bonus/penalty for specific count-positions from your Moon (e.g. #2 Sampat for money, #10 Karma for work, #23 Vainashika to avoid launches).</li>
-      <li><b>Pada:</b> 1–4, the quarter of the nakshatra the Moon/Lagna is currently in (each ~3°20′).</li>
-      <li><b>Lord:</b> the Vimshottari planetary ruler of that nakshatra.</li>
-    </ul>
-    <p class="calcnote">Your natal data and last-used location are saved in your browser only. Tap <b>✕ Forget me</b> in Today's card to clear them.</p>
+  <div class="guide-body" id="guideBody" data-lang="en">
+    <div class="lang-tabs">
+      <button id="langEn" class="active">English</button>
+      <button id="langMy" class="mm">မြန်မာ</button>
+      <button id="tourBtn" class="tour-link" style="margin-left:auto">🎯 Take the tour</button>
+    </div>
+
+    <!-- English -->
+    <div class="lang-en">
+      <p><b>What is TT27?</b> Given <i>your</i> natal Moon and Lagna nakshatra, it scores every day (or any moment) so you know whether to <i>act, earn, plan,</i> or <i>lay low and clean up</i>.</p>
+      <ol>
+        <li><b>Set your nakshatras.</b> Pick your <b>Moon</b> and <b>Lagna</b> in the controls below. Don't know them? Open <b>🌙 Calculate from birth details</b> and enter your birth date, time, and place — TT27 fills them in offline.</li>
+        <li><b>Read “Today's verdict.”</b> The score and one-line advice tells you what kind of day it is <i>for you</i>. Green = go; amber = act with a clear purpose; red = repair / cleanup, not launches.</li>
+        <li><b>Plan ahead.</b> Browse the table to see which upcoming nakshatras score well, or tap <b>🕒 Custom moment</b> to score a specific date/time (muhurta).</li>
+      </ol>
+      <p><b>Reading the score:</b> <span class="pill c-green">9+ Excellent</span> <span class="pill c-good">6–8 Good</span> <span class="pill c-use">3–5 Usable</span> <span class="pill c-neu">0–2 Neutral</span> <span class="pill c-avoid">&lt;0 Avoid</span></p>
+      <p><b>Two key rules:</b></p>
+      <ul>
+        <li>A <i>low</i> score is not “bad” — it means use the moment for <b>repair, closure, cleanup</b>, not launches.</li>
+        <li><b>⚠ Vedha</b> = mutual obstruction. Caps the score at 0 even if other layers are positive. Don't start anything major; finish/fix things instead.</li>
+      </ul>
+
+      <details class="example">
+        <summary>📖 Worked example — see the math in action</summary>
+        <div class="ex-body">
+          <p><b>Scenario A — a strong day.</b> Suppose your natal <b>Moon = Rohini</b>, <b>Lagna = Ashwini</b>. Today's transit Moon is in <b>Hasta</b>.</p>
+          <div class="ex-row"><span class="k">Moon Tara:</span><span>Rohini → Hasta is the 10th nakshatra → <b>Janma</b> (+1).</span></div>
+          <div class="ex-row"><span class="k">Lagna Tara:</span><span>Ashwini → Hasta is the 13th → <b>Kshema</b> (+3).</span></div>
+          <div class="ex-row"><span class="k">27-Special (#10):</span><span><b>Karma</b> bonus (+3).</span></div>
+          <div class="ex-row"><span class="k">Vedha:</span><span>None (Hasta pairs with Shatabhisha, not your natal nakshatras).</span></div>
+          <div class="ex-row"><span class="k">Total:</span><span><b>+7 Good</b> → "Career, project work, deliverables." Ship it.</span></div>
+          <p style="margin-top:10px"><b>Scenario B — a red flag.</b> Same natal. Today's transit Moon is in <b>Swati</b>.</p>
+          <div class="ex-row"><span class="k">Moon Tara:</span><span>Rohini → Swati is the 12th → <b>Vipat</b> (−2).</span></div>
+          <div class="ex-row"><span class="k">Lagna Tara:</span><span>Ashwini → Swati is the 15th → <b>Sadhana</b> (+3).</span></div>
+          <div class="ex-row"><span class="k">27-Special (#12):</span><span>None (0).</span></div>
+          <div class="ex-row"><span class="k">Vedha:</span><span><b>⚠ Swati ↔ Rohini</b> is a primary Moon Vedha pair (−6).</span></div>
+          <div class="ex-row"><span class="k">Total:</span><span><b>−5 Avoid</b> → don't launch. Use the day for cleanup, archiving, closing tickets.</span></div>
+        </div>
+      </details>
+
+      <p><b>Quick glossary:</b></p>
+      <ul class="glossary">
+        <li><b>Tara (Moon / Lagna):</b> 9-fold fortune cycle counted from your natal nakshatra. Janma/Sampat/Mitra/Parama Mitra are positive; Vipat/Pratyak/Naidhana are reductive.</li>
+        <li><b>27-Special:</b> TT27's bonus/penalty for specific count-positions from your Moon (e.g. #2 Sampat for money, #10 Karma for work, #23 Vainashika to avoid launches).</li>
+        <li><b>Pada:</b> 1–4, the quarter of the nakshatra the Moon/Lagna is currently in (each ~3°20′).</li>
+        <li><b>Lord:</b> the Vimshottari planetary ruler of that nakshatra.</li>
+      </ul>
+      <p class="calcnote">Your natal data and last-used location are saved in your browser only. Tap <b>✕ Forget me</b> in Today's card to clear them.</p>
+    </div>
+
+    <!-- Burmese -->
+    <div class="lang-my mm">
+      <p><b>TT27 ဆိုတာ ဘာလဲ?</b> သင့်ရဲ့ မွေးဖွားတဲ့ <b>လနက္ခတ် (Moon)</b> နဲ့ <b>လဂ်နက္ခတ် (Lagna)</b> ပေါ် အခြေခံပြီး၊ ဘယ်အချိန်က <i>လုပ်ဆောင်ဖို့၊ ငွေကြေးလုပ်ဖို့၊ စီစဉ်ဖို့</i>၊ ဒါမှမဟုတ် <i>ပြုပြင်/ပိတ်သိမ်းဖို့</i> သင့်တော်ဆုံးလဲ ဆိုတာကို အမှတ်ပေး ပြောပြတယ်။</p>
+      <ol>
+        <li><b>သင့်နက္ခတ်များကို သတ်မှတ်ပါ။</b> အောက်က <b>Moon</b> နဲ့ <b>Lagna</b> dropdown ကနေ ရွေးပါ။ မသိရင် <b>🌙 မွေးနေ့မှ တွက်ရန်</b> ကိုဖွင့်ပြီး မွေးနေ့၊ မွေးချိန်၊ နေရာ ဖြည့်ပါ — offline တွက်ပေးပါမယ်။</li>
+        <li><b>"Today's verdict" ကို ဖတ်ပါ။</b> အမှတ်နဲ့ အကြံပြုစာက ဒီနေ့ သင့်အတွက် ဘယ်လိုနေ့လဲ ဆိုတာ ပြောပေးမယ်။ စိမ်း = သွားပေါ့။ ဝါ = ရည်ရွယ်ချက်ရှိရှိ။ နီ = ပြုပြင်ရေး၊ စတင်တာ မပြုနဲ့။</li>
+        <li><b>ရှေ့ကို စီစဉ်ပါ။</b> ဇယားကို ကြည့်ပြီး လာမယ့်နက္ခတ်တွေက ဘယ်လို အမှတ်ရလဲ စစ်ပါ၊ ဒါမှမဟုတ် <b>🕒 Custom moment</b> နဲ့ မွတ်တာတိကျရွေးပါ။</li>
+      </ol>
+      <p><b>အမှတ်ဖတ်ပုံ:</b> <span class="pill c-green">၉+ အကောင်းဆုံး</span> <span class="pill c-good">၆–၈ ကောင်း</span> <span class="pill c-use">၃–၅ သုံးနိုင်</span> <span class="pill c-neu">၀–၂ သာမန်</span> <span class="pill c-avoid">&lt;၀ ရှောင်</span></p>
+      <p><b>အရေးကြီး စည်းမျဉ်း ၂ ချက်:</b></p>
+      <ul>
+        <li>အမှတ်နည်းတာက "ဆိုးတယ်" မဟုတ်ပါ — <b>ပြုပြင်၊ ပိတ်သိမ်း၊ သန့်ရှင်းရေး</b> အတွက် သုံးပါ။</li>
+        <li><b>⚠ Vedha (ဝေဒ)</b> = အပြန်အလှန် ပိတ်ဆို့မှု။ အခြားအလွှာတွေ အပြုသဘော ဆောင်နေရင်တောင် အမှတ်ကို ၀ မှာ အကန့်အသတ် ထားလိုက်တယ်။ အသစ်စတင်ခြင်းကို ရှောင်ပြီး ပြုပြင်ခြင်းသာ လုပ်ပါ။</li>
+      </ul>
+      <p><b>စကားရင်း:</b></p>
+      <ul class="glossary">
+        <li><b>Tara (တာရာ):</b> သင့်နက္ခတ်ကနေ ရေတွက်တဲ့ ၉ ဆင့် ကံကြမ္မာ စက်ဝန်း။ Janma/Sampat/Mitra/Parama Mitra က အပြုသဘော။ Vipat/Pratyak/Naidhana က အနှောင့်အယှက်။</li>
+        <li><b>27-Special:</b> သင့်လနက္ခတ်ကနေ တိကျတဲ့ နေရာများအတွက် TT27 ရဲ့ bonus/penalty (#2 Sampat–ငွေ၊ #10 Karma–အလုပ်၊ #23 Vainashika–မ launch နဲ့)။</li>
+        <li><b>Pada:</b> နက္ခတ်တစ်ခုရဲ့ ပါဒ ၁–၄ (တစ်ပါဒ ၃°၂၀′)။</li>
+        <li><b>Lord:</b> နက္ခတ်ကို အုပ်စိုးတဲ့ Vimshottari ဂြိုဟ်။</li>
+      </ul>
+      <p class="calcnote">သင့်ရဲ့ အချက်အလက်က ဒီ browser ထဲမှာသာ သိမ်းတယ်။ ဖျက်ချင်ရင် Today card ထဲက <b>✕ Forget me</b> ကိုနှိပ်ပါ။</p>
+    </div>
   </div>
 </details>
 
@@ -383,12 +459,66 @@ function loadLoc(){try{return JSON.parse(localStorage.getItem(LS_LOC)||"null");}
 const hasNatal=()=>{try{return !!localStorage.getItem(LS_NATAL);}catch(e){return false;}};
 loadNatal();
 
-/* ===== first-visit guide auto-open + help button ===== */
+/* ===== language tabs inside the guide ===== */
+(function(){
+  const body=document.getElementById("guideBody");
+  const en=document.getElementById("langEn"), my=document.getElementById("langMy");
+  const set=(lang)=>{body.dataset.lang=lang;
+    en.classList.toggle("active",lang==="en");
+    my.classList.toggle("active",lang==="my");};
+  en.onclick=()=>set("en"); my.onclick=()=>set("my");
+})();
+
+/* ===== first-time tour ===== */
+function startTour(){
+  // dismiss any existing
+  document.querySelectorAll(".tour-pop,.tour-target").forEach(e=>{
+    if(e.classList.contains("tour-pop")) e.remove();
+    else e.classList.remove("tour-target");
+  });
+  const guide=document.getElementById("guide"); if(guide.open) guide.open=false;
+  const steps=[
+    {sel:".controls",title:"Step 1 — Tell us who you are",
+     text:"Pick your natal <b>Moon</b> and <b>Lagna</b> nakshatra here. Don't know them? Open <b>🌙 Calculate from birth details</b> just above."},
+    {sel:"#today",title:"Step 2 — Today's verdict",
+     text:"This is your live score for the present moment. Green = go, amber = act with purpose, red = repair / cleanup. Tap <b>📍 Use my location</b> for the full Lagna layer, or <b>🕒 Custom moment</b> to score any future date."},
+    {sel:"#tbl",title:"Step 3 — Plan ahead",
+     text:"Each row scores a candidate nakshatra against you. Sort by score to see the best upcoming days, or sort by <b>27-Special</b> to find money / work / launch days."}
+  ];
+  const pop=document.createElement("div"); pop.className="tour-pop";
+  document.body.appendChild(pop);
+  let i=0;
+  function place(){
+    const target=document.querySelector(steps[i].sel);
+    document.querySelectorAll(".tour-target").forEach(e=>e.classList.remove("tour-target"));
+    target.classList.add("tour-target");
+    target.scrollIntoView({block:"center",behavior:"smooth"});
+    setTimeout(()=>{
+      pop.innerHTML=`<div><b>${steps[i].title}</b></div><div style="margin-top:6px">${steps[i].text}</div>`+
+        `<div class="tour-actions"><button class="btn-sm" id="tourSkip">Skip</button>`+
+        `<span class="tour-pos">${i+1} / ${steps.length}</span>`+
+        `<button class="btn-sm" id="tourNext">${i===steps.length-1?"Done ✓":"Next →"}</button></div>`;
+      const r=target.getBoundingClientRect();
+      pop.style.top=Math.min(window.innerHeight-pop.offsetHeight-12, Math.max(12, r.bottom+12))+"px";
+      pop.style.left=Math.max(8, Math.min(window.innerWidth-pop.offsetWidth-8, r.left))+"px";
+      document.getElementById("tourNext").onclick=()=>{i++; if(i>=steps.length) end(); else place();};
+      document.getElementById("tourSkip").onclick=end;
+    },350);
+  }
+  function end(){
+    document.querySelectorAll(".tour-target").forEach(e=>e.classList.remove("tour-target"));
+    pop.remove();
+    try{localStorage.setItem("tt27.seen","1");}catch(e){}
+  }
+  place();
+}
+
+/* ===== first-visit auto-tour + help button + replay ===== */
 (function(){
   const guide=document.getElementById("guide");
   const LS_SEEN="tt27.seen";
   let seen=false; try{seen=!!localStorage.getItem(LS_SEEN);}catch(e){}
-  if(!seen) guide.open=true;
+  if(!seen) setTimeout(startTour, 500);
   guide.addEventListener("toggle",()=>{
     if(!guide.open){try{localStorage.setItem(LS_SEEN,"1");}catch(e){}}
   });
@@ -396,6 +526,7 @@ loadNatal();
     guide.open=!guide.open;
     if(guide.open) guide.scrollIntoView({behavior:"smooth",block:"start"});
   };
+  document.getElementById("tourBtn").onclick=(e)=>{e.preventDefault(); guide.open=false; startTour();};
 })();
 
 let sortKey="score", sortDir=-1;
