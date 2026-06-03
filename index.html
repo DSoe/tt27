@@ -61,6 +61,12 @@
   .today .stat .lbl{font-size:.7rem;color:var(--mut)}
   .today .stat .val{font-size:.95rem;font-weight:600}
   .today .verdict{font-size:.85rem;margin-top:10px;line-height:1.5}
+  .today .rituals{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);
+    font-size:.82rem;line-height:1.7}
+  .today .rituals .row{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+  .today .rituals .lbl{color:var(--mut);min-width:170px;flex:0 0 auto}
+  .today .rituals .dir{color:var(--accent);font-weight:600}
+  .today .rituals .my{color:var(--mut);font-size:.78rem}
   .today .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
   .btn-sm{padding:6px 10px;font-size:.78rem;border-radius:8px;border:1px solid var(--line);
     background:#11142a;color:var(--accent);cursor:pointer;font-weight:600}
@@ -146,6 +152,7 @@
     <div class="stat"><div class="lbl">Score</div><div class="val" id="todayScore">—</div></div>
   </div>
   <div class="verdict" id="todayVerdict">Computing…</div>
+  <div class="rituals" id="todayRituals"></div>
   <div class="actions">
     <button class="btn-sm" id="todayRefresh">↻ Refresh now</button>
     <button class="btn-sm" id="todayLoc">📍 Use my location</button>
@@ -202,6 +209,17 @@ const lordOf=i=>LORD_CYCLE[i%9];
 // Pada = quarter (1..4) within the 13°20' nakshatra, 3°20' wide each.
 function padaOf(sidLon){const NAK_W=40/3, PADA_W=NAK_W/4;
   return Math.floor((((sidLon%NAK_W)+NAK_W)%NAK_W)/PADA_W)+1;}
+
+// Burmese facing-direction rituals keyed by transit Moon nakshatra.
+// 8-direction cycle from Ashwini: self-prayer = E,SW,N,SE,W,NE,S,NW; other = +6 offset.
+const DIR8=[
+  {en:"East",my:"အရှေ့"},{en:"Southwest",my:"အနောက်တောင်ထောင့်"},
+  {en:"North",my:"မြောက်"},{en:"Southeast",my:"အရှေ့တောင်ထောင့်"},
+  {en:"West",my:"အနောက်"},{en:"Northeast",my:"အရှေ့မြောက်ထောင့်"},
+  {en:"South",my:"တောင်"},{en:"Northwest",my:"အနောက်မြောက်ထောင့်"}
+];
+const dirSelf =i=>DIR8[i%8];
+const dirOther=i=>DIR8[(i+6)%8];
 
 // 9-fold Navatara cycle (position 1..9)
 const TARA = [
@@ -377,6 +395,13 @@ function renderToday(){
   if(lIdx!=null)parts.push(`Lagna Tara <b>${lt.name}</b> (${lt.score>0?"+":""}${lt.score})`);
   if(sp)parts.push(`<b>${specialName}</b> (${bonus>0?"+":""}${bonus})`);
   vEl.innerHTML=`<div>${use}</div><div style="color:var(--mut);font-size:.78rem;margin-top:4px">${parts.join(" · ")}${lIdx==null?' · <i>tap "Use my location" for Lagna layer</i>':""}</div>`;
+  // Burmese facing-direction rituals (keyed by transit Moon nakshatra).
+  const ds=dirSelf(mIdx), dox=dirOther(mIdx);
+  document.getElementById("todayRituals").innerHTML=
+    `<div class="row"><span class="lbl">🙏 Wish for self <span class="mm">(ဆုတောင်း)</span></span>`+
+    `<span>face <span class="dir">${ds.en}</span> <span class="my mm">${ds.my}</span></span></div>`+
+    `<div class="row"><span class="lbl">✨ Blessing for another <span class="mm">(သူတပါးအတွက်)</span></span>`+
+    `<span>face <span class="dir">${dox.en}</span> <span class="my mm">${dox.my}</span></span></div>`;
 }
 function refreshTransit(opts){
   opts=opts||{};
