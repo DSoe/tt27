@@ -94,6 +94,12 @@
     line-height:1;padding:0;flex:0 0 auto}
   .help-btn:hover{background:var(--accent);color:#11142a}
   .section-cap{font-size:.75rem;color:var(--mut);margin:10px 2px 4px;line-height:1.5}
+  /* mobile: hide the Burmese subline in table headers and row name to save horizontal space */
+  @media (max-width: 480px){
+    #tbl th .mm{display:none}
+    #tbl td.nm .mm{display:none}
+    #tbl td.use .mm{display:none}
+  }
   /* tour */
   .tour-pop{position:fixed;background:var(--card);border:2px solid var(--accent);
     border-radius:12px;padding:14px;color:var(--txt);box-shadow:0 12px 40px rgba(0,0,0,.6);
@@ -201,7 +207,7 @@
       <ol>
         <li><b>သင့်နက္ခတ်များကို သတ်မှတ်ပါ။</b> အောက်ပါ <b>Moon</b> နှင့် <b>Lagna</b> စာရင်းမှ ရွေးချယ်ပါ။ မသိရင် <b>🌙 မွေးနေ့မှ တွက်ရန်</b> ကိုဖွင့်ပြီး မွေးနေ့၊ မွေးချိန်၊ နေရာ ဖြည့်သွင်းပါ — offline တွက်ပေးပါမယ်။</li>
         <li><b>"Today's verdict" ကို ဖတ်ပါ။</b> အမှတ်နဲ့ အကြံပြုစာက ဒီနေ့ သင့်အတွက် ဘယ်လိုနေ့လဲဆိုတာ ပြောပြပေးမယ်။ (စိမ်း = ဆောင်ရွက်နိုင်သည်၊ ဝါ = သတိပြု၍ ဆောင်ရွက်ရန်၊ နီ = ပြုပြင်ရေးသာလုပ်ရန်၊ အသစ်မစတင်ပါနှင့်)</li>
-        <li><b>ရှေ့ကို စီစဉ်ပါ။</b> ဇယားကိုကြည့်ပြီး လာမယ့်နက္ခတ်တွေက ဘယ်လို အမှတ်ရလဲ စစ်ဆေးပါ၊ ဒါမှမဟုတ် <b>🕒 Custom moment</b> နဲ့ အခါတော် (မုဟုတ္တ) ကို တိကျစွာ ရွေးချယ်ပါ။</li>
+        <li><b>ကြိုစီစဉ်ရန်။</b> ဇယားကိုကြည့်ပြီး လာမယ့်နက္ခတ်တွေက ဘယ်လို အမှတ်ရလဲ စစ်ဆေးပါ၊ ဒါမှမဟုတ် <b>🕒 Custom moment</b> နဲ့ အခါတော် (မုဟုတ္တ) ကို တိကျစွာ ရွေးချယ်ပါ။</li>
       </ol>
       <p><b>အမှတ်ဖတ်ပုံ:</b> <span class="pill c-green">၉+ အထူးကောင်း</span> <span class="pill c-good">၆–၈ ကောင်း</span> <span class="pill c-use">၃–၅ သုံးနိုင်</span> <span class="pill c-neu">၀–၂ သာမန်</span> <span class="pill c-avoid">&lt;၀ ရှောင်ရန်</span></p>
       <p><b>အရေးကြီး စည်းမျဉ်း ၂ ချက်:</b></p>
@@ -290,7 +296,7 @@
   </div>
 </section>
 
-<div class="section-cap"><b>Step 3.</b> Plan ahead — each row is a candidate nakshatra (a possible day). <span class="mm">(အဆင့် ၃ - ရှေ့ကို စီစဉ်ပါ)</span> Tap a column header to sort. Higher score = more auspicious for fresh starts.</div>
+<div class="section-cap"><b>Step 3.</b> Plan ahead — each row is a candidate nakshatra (a possible day). <span class="mm">(အဆင့် ၃ - ကြိုစီစဉ်ရန်)</span> Tap a column header to sort. Higher score = more auspicious for fresh starts.</div>
 <table id="tbl">
   <thead>
     <tr>
@@ -307,19 +313,25 @@
 </table>
 
 <div class="legend">
-  <b>Classification:</b>
-  <span class="pill c-green">9+ Excellent</span>
-  <span class="pill c-good">6–8 Good</span>
-  <span class="pill c-use">3–5 Usable</span>
-  <span class="pill c-neu">0–2 Neutral</span>
-  <span class="pill c-avoid">&lt;0 Avoid</span>
-  <br>Tap any column header to sort. Score = Moon Tara + Lagna Tara + TT27 bonus.
+  <b>Classification <span class="mm">(အမှတ်သတ်မှတ်ချက်များ)</span>:</b>
+  <span class="pill c-green">9+ Excellent <span class="mm">အထူးကောင်း</span></span>
+  <span class="pill c-good">6–8 Good <span class="mm">ကောင်း</span></span>
+  <span class="pill c-use">3–5 Usable <span class="mm">သုံးနိုင်</span></span>
+  <span class="pill c-neu">0–2 Neutral <span class="mm">သာမန်</span></span>
+  <span class="pill c-avoid">&lt;0 Avoid <span class="mm">ရှောင်ရန်</span></span>
+  <br>Tap any column header to sort. <span class="mm">(ခေါင်းစဉ်များကို နှိပ်၍ အစဉ်လိုက် စီနိုင်သည်)</span>
+  <br>Score = Moon Tara + Lagna Tara + TT27 bonus. <span class="mm">(ရမှတ် = လတာရာ + လဂ်တာရာ + TT27 အထူးရမှတ်)</span>
 </div>
 
 <script>
 const NAK = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha",
 "Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha",
 "Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"];
+
+// Burmese nakshatra names (standard Pali-derived spellings used in Myanmar astrology).
+const NAK_MY = ["အဿဝနီ","ဘရဏီ","ကြတ္တိကာ","ရောဟဏီ","မိဂသီ","အဒြ","ပုဏ္ဏဖုသျှ","ဖုသျှ","အသလိဿ",
+"မာဃ","ပြုဗ္ဗဖလဂုဏီ","ဥတ္တရဖလဂုဏီ","ဟဿတ","စိတြာ","သွာတိ","ဝိသာခါ","အနုရာဓ","ဇေဋ္ဌ",
+"မူလ","ပြုဗ္ဗာသာဠ်","ဥတ္တရာသာဠ်","သရဝဏ်","ဓနသိဒ္ဒိ","သတဘိသျှ","ပြုဗ္ဗဘဒြပိုဒ်","ဥတ္တရဘဒြပိုဒ်","ရေဝတီ"];
 
 // Vimshottari nakshatra lords — repeating 9-cycle Ke-Ve-Su-Mo-Ma-Ra-Ju-Sa-Me.
 const LORD_CYCLE=[
@@ -364,6 +376,21 @@ const SPECIAL = {
   27:{n:"Abhisheka",b:3,use:"Leadership, visibility, command"}
 };
 
+// Burmese counterparts for SPECIAL.use, keyed by the special name.
+const SPECIAL_USE_MY = {
+  "Janma":"ကိုယ်ပိုင် ပြန်စတင်ခြင်း၊ ရည်ရွယ်ချက် ချမှတ်ခြင်း",
+  "Sampat":"ငွေကြေး၊ ပေးချေမှု၊ အရင်းအမြစ်",
+  "Mitra support":"တွေ့ဆုံ၊ ဆက်သွယ်၊ မိတ်ဆွေဖွဲ့",
+  "Karma":"အလုပ်အကိုင်၊ စီမံကိန်း၊ ပေးပို့ရန်",
+  "Sanghatika":"ပဋိပက္ခဖြေရှင်း၊ ညှိနှိုင်း — ငြိမ်းချမ်းသော အစ မဟုတ်",
+  "Samudayika":"ပရိသတ်၊ စျေးကွက်၊ အများပြည်သူ ထုတ်ပြန်",
+  "Adhana":"အခြေခံ တည်ဆောက်: ကုမ္ပဏီ/စနစ် ထူထောင်",
+  "Vainashika":"အဆုံးသတ်၊ ဖျက်သိမ်း၊ ဖြတ်တောက် — အသစ်မစတင်",
+  "Manasa":"စီစဉ်၊ လေ့လာ၊ စိတ်ပြတ်သားရှင်းလင်း",
+  "Desha":"အာဏာပိုင်၊ ခွင့်ပြုချက်၊ အဖွဲ့အစည်း",
+  "Abhisheka":"ခေါင်းဆောင်မှု၊ ပေါ်ထွန်းမှု၊ အာဏာ"
+};
+
 // generic best-use by Moon tara when no special marker
 const TARA_USE = {
   "Sampat":"Money, resources, acquisition","Sadhana":"Work, discipline, steady execution",
@@ -372,20 +399,45 @@ const TARA_USE = {
   "Vipat":"Caution; small reversible steps only","Pratyak":"Caution; resistance likely",
   "Naidhana":"Cutting, repair, cleanup, closure — not launches"
 };
+const TARA_USE_MY = {
+  "Sampat":"ငွေကြေး၊ အရင်းအမြစ်၊ ရယူခြင်း","Sadhana":"အလုပ်၊ စည်းကမ်း၊ တည်ငြိမ်စွာ ဆောင်ရွက်",
+  "Mitra":"ပူးပေါင်း၊ တွေ့ဆုံ၊ မိတ်ဖက်","Parama Mitra":"အကြီးအကျယ် အပြုသဘော ဆောင်ရွက်ခြင်း၊ launch",
+  "Kshema":"တည်ငြိမ်မှု၊ ကာကွယ်မှု၊ ထိန်းသိမ်းမှု","Janma":"ကိုယ်ပိုင်၊ မိမိအတွက် အလုပ်",
+  "Vipat":"သတိ၊ ပြန်ပြင်နိုင်တဲ့ အသေးစား ခြေလှမ်းသာ","Pratyak":"သတိ၊ အဟန့်အတား ဖြစ်နိုင်",
+  "Naidhana":"ဖြတ်တောက်၊ ပြုပြင်၊ သန့်ရှင်း၊ အဆုံးသတ် — အသစ်မစတင်"
+};
+const SUFFIX_REDUCT_EN=" — execution friction; favor repair / cleanup / closure over launch";
+const SUFFIX_REDUCT_MY=" — အကောင်အထည်ဖော်ရာ၌ အခက်အခဲ၊ launch ထက် ပြုပြင်/သန့်ရှင်း/အဆုံးသတ် ဦးစားပေး";
+const SUFFIX_PURPOSE_EN=" — only with a clear, defined purpose";
+const SUFFIX_PURPOSE_MY=" — ရည်ရွယ်ချက် ရှင်းရှင်းနဲ့သာ ဆောင်ရွက်";
 
 // Tactical wording: a low score means "use for repair/closure", not "never".
+// Returns HTML containing English with a Burmese subline.
 function bestUse(moonTara,lagnaTara,special,specialScore,score){
-  const neg=["Naidhana","Vipat","Pratyak"];
-  let base = special!=="—" ? SPECIAL[Object.keys(SPECIAL).find(k=>SPECIAL[k].n===special)].use
-                           : (TARA_USE[moonTara]||"—");
-  const alreadyReductive=/not launch|cutting|closure|conflict|caution|ending/i.test(base);
+  let baseEn, baseMy;
+  if(special!=="—"){
+    const sk=Object.keys(SPECIAL).find(k=>SPECIAL[k].n===special);
+    baseEn=SPECIAL[sk].use;
+    baseMy=SPECIAL_USE_MY[special]||"";
+  }else{
+    baseEn=TARA_USE[moonTara]||"—";
+    baseMy=TARA_USE_MY[moonTara]||"";
+  }
+  const alreadyReductive=/not launch|cutting|closure|conflict|caution|ending/i.test(baseEn);
   const reductive = special==="Vainashika"||special==="Sanghatika"||
                     moonTara==="Naidhana"||lagnaTara==="Naidhana";
-  if(reductive && specialScore>=0 && !alreadyReductive)
-    return base+" — execution friction; favor repair / cleanup / closure over launch";
-  if(score<3 && !alreadyReductive)
-    return base+" — only with a clear, defined purpose";
-  return base;
+  let en=baseEn, my=baseMy;
+  if(reductive && specialScore>=0 && !alreadyReductive){
+    en+=SUFFIX_REDUCT_EN; my+=SUFFIX_REDUCT_MY;
+  }else if(score<3 && !alreadyReductive){
+    en+=SUFFIX_PURPOSE_EN; my+=SUFFIX_PURPOSE_MY;
+  }
+  return en+(my?`<br><span class="mm" style="font-weight:400">${my}</span>`:"");
+}
+function vedhaUse(reasons){
+  const r=reasons.join(" + ");
+  return `⚠ Vedha (${r}) — avoid major starts; OK for repair / cutting / closure`+
+    `<br><span class="mm" style="font-weight:400">⚠ ဝေဒ (${r}) — အကြီးအကျယ်စတင်ခြင်း ရှောင်ပါ၊ ပြုပြင်/ဖြတ်တောက်/အဆုံးသတ်အတွက် သုံးနိုင်</span>`;
 }
 
 /* ===== Nakshatra Vedha (mutual obstruction) — strict TT27-V rule =====
@@ -434,7 +486,8 @@ function cls(score){return score>=9?"c-green":score>=6?"c-good":score>=3?"c-use"
 
 const moonSel=document.getElementById("moon"), lagnaSel=document.getElementById("lagna");
 NAK.forEach((n,i)=>{
-  moonSel.add(new Option(n,i)); lagnaSel.add(new Option(n,i));
+  const label=n+" · "+NAK_MY[i];
+  moonSel.add(new Option(label,i)); lagnaSel.add(new Option(label,i));
 });
 moonSel.value=22; lagnaSel.value=0; // sensible default
 
@@ -478,12 +531,12 @@ function startTour(){
   });
   const guide=document.getElementById("guide"); if(guide.open) guide.open=false;
   const steps=[
-    {sel:".controls",title:"Step 1 — Tell us who you are",
-     text:"Pick your natal <b>Moon</b> and <b>Lagna</b> nakshatra here. Don't know them? Open <b>🌙 Calculate from birth details</b> just above."},
-    {sel:"#today",title:"Step 2 — Today's verdict",
-     text:"This is your live score for the present moment. Green = go, amber = act with purpose, red = repair / cleanup. Tap <b>📍 Use my location</b> for the full Lagna layer, or <b>🕒 Custom moment</b> to score any future date."},
-    {sel:"#tbl",title:"Step 3 — Plan ahead",
-     text:"Each row scores a candidate nakshatra against you. Sort by score to see the best upcoming days, or sort by <b>27-Special</b> to find money / work / launch days."}
+    {sel:".controls",title:"Step 1 — Tell us who you are <br><span class=\"mm\">အဆင့် ၁ - သင့်နက္ခတ်များကို ရွေးချယ်ပါ</span>",
+     text:"Pick your natal <b>Moon</b> and <b>Lagna</b> nakshatra here. Don't know them? Open <b>🌙 Calculate from birth details</b> just above. <br><span class=\"mm\">သင့်ရဲ့ မွေးဖွားစဉ် လနက္ခတ်နဲ့ လဂ်နက္ခတ်ကို ဒီမှာ ရွေးချယ်ပါ။ မသိသေးရင် အပေါ်က \"မွေးသက္ကရာဇ်ဖြင့် တွက်ရန်\" ကို အသုံးပြုနိုင်ပါတယ်။</span>"},
+    {sel:"#today",title:"Step 2 — Today's verdict <br><span class=\"mm\">အဆင့် ၂ - ဒီနေ့အတွက် အဖြေ</span>",
+     text:"This is your live score for the present moment. Green = go, amber = act with purpose, red = repair / cleanup. Tap <b>📍 Use my location</b> for the full Lagna layer, or <b>🕒 Custom moment</b> to score any future date. <br><span class=\"mm\">ဒါကတော့ လက်ရှိအချိန်အတွက် သင့်ရဲ့ ရမှတ်ပဲ ဖြစ်ပါတယ်။ စိမ်းရင် ဆောင်ရွက်နိုင်တယ်၊ ဝါရင် သတိပြုပြီးလုပ်ပါ၊ နီရင် ပြုပြင်ရေးလောက်ပဲ လုပ်သင့်ပါတယ်။</span>"},
+    {sel:"#tbl",title:"Step 3 — Plan ahead <br><span class=\"mm\">အဆင့် ၃ - ကြိုစီစဉ်ရန်</span>",
+     text:"Each row scores a candidate nakshatra against you. Sort by score to see the best upcoming days, or sort by <b>27-Special</b> to find money / work / launch days. <br><span class=\"mm\">ဇယားထဲမှာ နက္ခတ်တစ်ခုချင်းစီရဲ့ ရမှတ်တွေကို ကြည့်နိုင်ပါတယ်။ ရမှတ်အလိုက် စီပြီး အကောင်းဆုံးရက်တွေကို ရှာဖွေနိုင်သလို၊ ငွေရေးကြေးရေးနဲ့ အလုပ်ကိစ္စတွေအတွက် အထူးရက်တွေကိုလည်း ကြည့်နိုင်ပါတယ်။</span>"}
   ];
   const pop=document.createElement("div"); pop.className="tour-pop";
   document.body.appendChild(pop);
@@ -495,9 +548,9 @@ function startTour(){
     target.scrollIntoView({block:"center",behavior:"smooth"});
     setTimeout(()=>{
       pop.innerHTML=`<div><b>${steps[i].title}</b></div><div style="margin-top:6px">${steps[i].text}</div>`+
-        `<div class="tour-actions"><button class="btn-sm" id="tourSkip">Skip</button>`+
+        `<div class="tour-actions"><button class="btn-sm" id="tourSkip">Skip <span class="mm">(ကျော်မည်)</span></button>`+
         `<span class="tour-pos">${i+1} / ${steps.length}</span>`+
-        `<button class="btn-sm" id="tourNext">${i===steps.length-1?"Done ✓":"Next →"}</button></div>`;
+        `<button class="btn-sm" id="tourNext">${i===steps.length-1?"Done ✓ (ပြီးပြီ)":"Next → (ရှေ့သို့)"}</button></div>`;
       const r=target.getBoundingClientRect();
       pop.style.top=Math.min(window.innerHeight-pop.offsetHeight-12, Math.max(12, r.bottom+12))+"px";
       pop.style.left=Math.max(8, Math.min(window.innerWidth-pop.offsetWidth-8, r.left))+"px";
@@ -568,9 +621,9 @@ function renderToday(){
   if(mIdx==null){mEl.textContent="—";lEl.textContent="—";sEl.textContent="—";
     vEl.textContent="Computing…";return;}
   const mPad=todayState.moonPada, lPad=todayState.lagnaPada;
-  mEl.innerHTML=`${NAK[mIdx]} <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${mPad} · ${lordOf(mIdx).f}</span>`;
+  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${mPad} · ${lordOf(mIdx).f}</span>`;
   lEl.innerHTML=lIdx!=null
-    ?`${NAK[lIdx]} <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${lPad} · ${lordOf(lIdx).f}</span>`
+    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${lPad} · ${lordOf(lIdx).f}</span>`
     :'<span style="color:var(--mut);font-weight:400">enable location</span>';
   const nm=+moonSel.value, nl=+lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
@@ -583,7 +636,7 @@ function renderToday(){
   if(vi.isVedha)score=Math.min(score,0);
   sEl.innerHTML=`<span class="pill ${cls(score)}">${score>0?"+":""}${score}</span>`;
   let use=bestUse(mt.name,lt.name,specialName,bonus,raw);
-  if(vi.isVedha)use="⚠ Vedha ("+vi.reasons.join(" + ")+") — avoid major starts; OK for repair / cutting / closure";
+  if(vi.isVedha)use=vedhaUse(vi.reasons);
   const parts=[`Moon Tara <b>${mt.name}</b> (${mt.score>0?"+":""}${mt.score})`];
   if(lIdx!=null)parts.push(`Lagna Tara <b>${lt.name}</b> (${lt.score>0?"+":""}${lt.score})`);
   if(sp)parts.push(`<b>${specialName}</b> (${bonus>0?"+":""}${bonus})`);
@@ -627,7 +680,7 @@ function render(){
     let score=rawScore+vi.pen;
     if(vi.isVedha) score=Math.min(score,0);   // hard cap: not auspicious for beginnings
     let use=bestUse(mt.name,lt.name,specialName,bonus,rawScore);
-    if(vi.isVedha) use="⚠ Vedha ("+vi.reasons.join(" + ")+") — avoid major starts; OK for repair / cutting / closure";
+    if(vi.isVedha) use=vedhaUse(vi.reasons);
     const ld=lordOf(i);
     return {name,lord:ld.s,lordFull:ld.f,moonTara:mt.name,moonScore:mt.score,lagnaTara:lt.name,lagnaScore:lt.score,
             special:specialName,specialScore:bonus,score,rawScore,isVedha:vi.isVedha,use};
@@ -644,7 +697,7 @@ function render(){
     if(+moonSel.value===idx) tr.classList.add("row-hl");
     if(todayState.moonIdx===idx) tr.classList.add("row-today");
     tr.innerHTML=`
-      <td class="nm">${r.name}</td>
+      <td class="nm">${r.name}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${NAK_MY[idx]}</span></td>
       <td title="${r.lordFull}">${r.lord}</td>
       <td class="${taraClass(r.moonScore)}">${r.moonTara}</td>
       <td class="${taraClass(r.lagnaScore)}">${r.lagnaTara}</td>
@@ -767,7 +820,7 @@ function calcBirth(){
   const mp=padaOf(moonSid), lp=padaOf(ascSid);
   moonSel.value=mi; lagnaSel.value=li;
   out.style.color="#9fe0b8";
-  out.innerHTML=`Moon → <b>${NAK[mi]}</b> pada ${mp} (${lordOf(mi).f}) &nbsp;·&nbsp; Lagna → <b>${NAK[li]}</b> pada ${lp} (${lordOf(li).f})`
+  out.innerHTML=`Moon → <b>${NAK[mi]}</b> <span class="mm">(${NAK_MY[mi]})</span> pada ${mp} (${lordOf(mi).f}) &nbsp;·&nbsp; Lagna → <b>${NAK[li]}</b> <span class="mm">(${NAK_MY[li]})</span> pada ${lp} (${lordOf(li).f})`
     +(tv?"":` <span style='color:#d8d090'>(no birth time — Lagna unreliable / <span class='mm'>မွေးချိန်မပါလျှင် လဂ်မတိကျနိုင်ပါ</span>)</span>`);
   render();
 }
