@@ -22,122 +22,219 @@
 <meta name="apple-mobile-web-app-title" content="TT27">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
-  :root{
-    --bg:#0e1020; --card:#181b30; --line:#2a2e4a; --txt:#e8e9f3; --mut:#9aa0c0;
-    --accent:#ffd166; --green:#1f6f4d; --good:#3a6f3a; --use:#6b6320; --neu:#34384f; --avoid:#7a2b2b;
+  :root {
+    --bg: #080a12;
+    --surface: #121526;
+    --card: #1c213a;
+    --line: #2d345a;
+    --txt: #f0f2f8;
+    --mut: #a0aec0;
+    --accent: #7c4dff;
+    --accent-glow: rgba(124, 77, 255, 0.3);
+    --gold: #ffd166;
+    --green: #00c896;
+    --good: #4ade80;
+    --use: #facc15;
+    --neu: #475569;
+    --avoid: #f75c5c;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    --font-main: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Noto Sans Myanmar", sans-serif;
   }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans Myanmar",sans-serif;
-    background:var(--bg);color:var(--txt);padding:14px;max-width:760px;margin:0 auto}
-  h1{font-size:1.25rem;margin:0 0 2px;color:var(--accent)}
-  .sub{color:var(--mut);font-size:.8rem;margin-bottom:14px}
-  .mm{font-family:"Noto Sans Myanmar","Myanmar Text",sans-serif}
-  .controls{display:flex;gap:10px;flex-wrap:wrap;background:var(--card);padding:12px;border-radius:12px;border:1px solid var(--line)}
-  .ctl{flex:1;min-width:150px}
-  label{display:block;font-size:.75rem;color:var(--mut);margin-bottom:4px}
-  select{width:100%;padding:9px;border-radius:8px;background:#11142a;color:var(--txt);border:1px solid var(--line);font-size:.95rem}
-  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:.82rem}
-  th,td{padding:7px 6px;text-align:left;border-bottom:1px solid var(--line)}
-  th{color:var(--mut);font-weight:600;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--bg)}
-  th:hover{color:var(--accent)}
-  .score{font-weight:700;text-align:center}
-  .pill{display:inline-block;padding:2px 7px;border-radius:20px;font-size:.72rem;white-space:nowrap}
-  .c-green{background:var(--green)} .c-good{background:var(--good)} .c-use{background:var(--use)}
-  .c-neu{background:var(--neu)} .c-avoid{background:var(--avoid)}
-  .nm{font-weight:600}
-  .tara-pos{color:#9fe0b8} .tara-neg{color:#f0a0a0} .tara-mid{color:#d8d090}
-  .legend{font-size:.72rem;color:var(--mut);margin-top:12px;line-height:1.6}
-  .row-hl{outline:2px solid var(--accent)}
-  .row-today{background:rgba(255,209,102,0.08)}
-  .row-today td:first-child::before{content:"📅 ";opacity:.85}
-  td.use{color:var(--mut);font-size:.76rem}
-  td.use.vedha{color:#f0a0a0;font-weight:600}
-  .today{background:linear-gradient(180deg,#1a1f3d,#181b30);border:1px solid var(--accent);
-    border-radius:12px;padding:14px;margin-top:14px}
-  .today h2{margin:0 0 4px;font-size:1rem;color:var(--accent)}
-  .today .when{font-size:.78rem;color:var(--mut);margin-bottom:10px}
-  .today .grid{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
-  .today .stat{flex:1;min-width:110px}
-  .today .stat .lbl{font-size:.7rem;color:var(--mut)}
-  .today .stat .val{font-size:.95rem;font-weight:600}
-  .today .verdict{font-size:.85rem;margin-top:10px;line-height:1.5}
-  .today .rituals{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);
-    font-size:.82rem;line-height:1.7}
-  .today .rituals .row{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
-  .today .rituals .lbl{color:var(--mut);min-width:170px;flex:0 0 auto}
-  .today .rituals .dir{color:var(--accent);font-weight:600}
-  .today .rituals .my{color:var(--mut);font-size:.78rem}
-  .today .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-  .btn-sm{padding:6px 10px;font-size:.78rem;border-radius:8px;border:1px solid var(--line);
-    background:#11142a;color:var(--accent);cursor:pointer;font-weight:600}
-  .btn-sm:hover{border-color:var(--accent)}
-  #todayCustomBox{margin-top:10px}
-  @media print{ .today .actions,#todayCustomBox{display:none} }
-  .btn{padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:#11142a;color:var(--accent);
-    font-size:.9rem;cursor:pointer;font-weight:600}
-  .btn:hover{border-color:var(--accent)}
-  #printHead{display:none}
-  input{width:100%;padding:9px;border-radius:8px;background:#11142a;color:var(--txt);border:1px solid var(--line);font-size:.95rem}
-  details.calc,details.guide{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:12px}
-  details.calc summary,details.guide summary{cursor:pointer;padding:12px 0;color:var(--accent);font-weight:600;font-size:.95rem}
-  details.guide{border-color:var(--accent)}
-  .guide-body{padding-bottom:14px;font-size:.85rem;line-height:1.55;color:var(--txt)}
-  .guide-body p{margin:8px 0}
-  .guide-body ol,.guide-body ul{margin:6px 0 8px;padding-left:22px}
-  .guide-body li{margin:4px 0}
-  .guide-body .pill{margin-right:4px}
-  .guide-body .glossary li{color:var(--mut)}
-  .guide-body .glossary b{color:var(--txt)}
-  h1{display:flex;align-items:center;gap:8px;justify-content:space-between}
-  .help-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--accent);
-    background:transparent;color:var(--accent);font-weight:700;cursor:pointer;font-size:.9rem;
-    line-height:1;padding:0;flex:0 0 auto}
-  .help-btn:hover{background:var(--accent);color:#11142a}
-  .section-cap{font-size:.75rem;color:var(--mut);margin:10px 2px 4px;line-height:1.5}
-  /* mobile: hide the Burmese subline in table headers and row name to save horizontal space */
-  @media (max-width: 480px){
-    #tbl th .mm{display:none}
-    #tbl td .mm{display:none}
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-main);
+    background: var(--bg);
+    color: var(--txt);
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    line-height: 1.5;
   }
-  /* tour */
-  .tour-pop{position:fixed;background:var(--card);border:2px solid var(--accent);
-    border-radius:12px;padding:14px;color:var(--txt);box-shadow:0 12px 40px rgba(0,0,0,.6);
-    z-index:1000;max-width:min(360px,calc(100vw - 16px));font-size:.88rem;line-height:1.5}
-  .tour-pop .tour-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
-  .tour-pop .tour-pos{color:var(--mut);font-size:.78rem}
-  .tour-target{outline:3px solid var(--accent);outline-offset:4px;border-radius:12px;
-    box-shadow:0 0 0 9999px rgba(0,0,0,0.6);position:relative;z-index:999;transition:outline .2s}
-  /* lang tabs */
-  .lang-tabs{display:flex;gap:6px;margin:0 0 10px;border-bottom:1px solid var(--line);padding-bottom:8px}
-  .lang-tabs button{padding:5px 12px;border-radius:6px;border:1px solid var(--line);
-    background:transparent;color:var(--mut);cursor:pointer;font-size:.8rem;font-weight:600}
-  .lang-tabs button.active{background:var(--accent);color:#11142a;border-color:var(--accent)}
-  .guide-body[data-lang="my"] .lang-en,.guide-body[data-lang="en"] .lang-my{display:none}
-  /* worked example */
-  details.example{background:#11142a;border:1px solid var(--line);border-radius:8px;
-    padding:0 10px;margin:8px 0}
-  details.example summary{cursor:pointer;padding:8px 0;color:var(--accent);font-weight:600;font-size:.85rem}
-  details.example .ex-body{padding:4px 0 10px;font-size:.82rem;line-height:1.55}
-  details.example .ex-body b{color:var(--txt)}
-  details.example .ex-row{display:flex;gap:8px;flex-wrap:wrap;margin:3px 0}
-  details.example .ex-row .k{color:var(--mut);min-width:160px}
-  .tour-link{background:none;border:none;color:var(--accent);text-decoration:underline;
-    cursor:pointer;font-size:.85rem;font-weight:600;padding:0}
-  .calc-grid{display:flex;gap:10px;flex-wrap:wrap;padding-bottom:12px}
-  .calc-grid .ctl{flex:1;min-width:130px}
-  #customGeo{display:none;width:100%;gap:10px;flex-wrap:wrap}
-  .calcnote{font-size:.72rem;color:var(--mut);padding-bottom:12px}
-  #calcOut{font-size:.82rem;color:#9fe0b8;padding-bottom:12px;min-height:1em}
-  @media print{
-    body{background:#fff;color:#000;max-width:none}
-    .controls,.legend,.btn,.sub,.help-btn,details.guide,.section-cap{display:none}
-    h1{color:#000}
-    #printHead{display:block;margin-bottom:8px;font-size:.9rem}
-    th{position:static;background:#fff;color:#333}
-    th,td{border-bottom:1px solid #bbb}
-    .pill{border:1px solid #999;background:#fff!important;color:#000!important}
-    .tara-pos,.tara-neg,.tara-mid{color:#000}
-    .row-hl{outline:1px solid #000}
+
+  /* Typography */
+  h1 { font-size: 1.75rem; margin: 0; font-weight: 800; background: linear-gradient(135deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; }
+  .sub { color: var(--mut); font-size: 0.9rem; margin-top: 4px; margin-bottom: 24px; font-weight: 400; }
+  .mm { font-family: "Noto Sans Myanmar", "Myanmar Text", sans-serif; line-height: 1.8; }
+
+  /* Layout Containers */
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  /* Controls */
+  .controls { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .ctl { display: flex; flex-direction: column; gap: 6px; }
+  label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mut); }
+
+  select, input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    background: var(--card);
+    color: var(--txt);
+    border: 1px solid var(--line);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    outline: none;
+  }
+  select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+  /* Buttons */
+  .btn {
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    border: none;
+    background: var(--accent);
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s, filter 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn:hover { filter: brightness(1.1); box-shadow: 0 0 15px var(--accent-glow); }
+  .btn:active { transform: scale(0.98); }
+  .btn-sm { padding: 8px 16px; font-size: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--card); color: var(--txt); cursor: pointer; font-weight: 600; }
+  .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Today's Verdict Card (Hero Component) */
+  .today {
+    background: linear-gradient(165deg, var(--card) 0%, var(--surface) 100%);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .today::before { content: ""; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--accent-glow); filter: blur(60px); pointer-events: none; }
+  .today h2 { margin: 0 0 16px; font-size: 1.4rem; color: var(--gold); display: flex; align-items: center; gap: 10px; }
+  .today .when { font-size: 0.85rem; color: var(--mut); margin-bottom: 20px; font-weight: 500; }
+
+  .stats-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin-bottom: 24px; }
+  .stat-box { background: rgba(255,255,255,0.03); padding: 16px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05); }
+  .stat-box .lbl { font-size: 0.7rem; color: var(--mut); text-transform: uppercase; margin-bottom: 6px; }
+  .stat-box .val { font-size: 1.1rem; font-weight: 700; color: var(--txt); }
+
+  .verdict-box {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    background: rgba(124, 77, 255, 0.08);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--accent-glow);
+    margin-bottom: 20px;
+  }
+
+  .rituals { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 0.9rem; }
+  .rituals .row { display: flex; gap: 12px; margin-bottom: 8px; align-items: baseline; }
+  .rituals .lbl { color: var(--mut); font-weight: 600; min-width: 160px; }
+  .rituals .dir { color: var(--gold); font-weight: 700; }
+
+  /* Table Design */
+  .table-container { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--line); background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  th { padding: 16px; text-align: left; background: var(--card); color: var(--mut); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; border-bottom: 2px solid var(--line); position: sticky; top: 0; }
+  td { padding: 16px; border-bottom: 1px solid var(--line); font-size: 0.9rem; transition: background 0.1s; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .row-hl { background: rgba(124, 77, 255, 0.1) !important; box-shadow: inset 4px 0 0 var(--accent); }
+  .row-today { background: rgba(255, 209, 102, 0.05) !important; }
+
+  /* Status Pills */
+  .pill { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; display: inline-block; }
+  .c-green { background: rgba(0,200,150,0.2); color: #4ade80; border: 1px solid rgba(0,200,150,0.3); }
+  .c-good { background: rgba(74,222,128,0.2); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+  .c-use { background: rgba(250,204,21,0.2); color: #facc15; border: 1px solid rgba(250,204,21,0.3); }
+  .c-neu { background: rgba(71,85,105,0.2); color: #cbd5e1; border: 1px solid rgba(71,85,105,0.3); }
+  .c-avoid { background: rgba(247,92,92,0.2); color: #f87171; border: 1px solid rgba(247,92,92,0.3); }
+
+  /* Collapsible Sections */
+  details { margin-bottom: 16px; border-radius: var(--radius-md); border: 1px solid var(--line); background: var(--surface); overflow: hidden; }
+  summary { padding: 16px 20px; cursor: pointer; font-weight: 700; color: var(--gold); list-style: none; display: flex; align-items: center; justify-content: space-between; }
+  summary::after { content: "→"; transition: transform 0.3s; color: var(--mut); }
+  details[open] summary::after { transform: rotate(90deg); }
+  details[open] { border-color: var(--accent); }
+  .details-content { padding: 0 20px 20px; font-size: 0.9rem; }
+
+  /* Mobile Adjustments */
+  @media (max-width: 600px) {
+    body { padding: 12px; }
+    h1 { font-size: 1.4rem; }
+    .section-card { padding: 16px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .actions { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; }
+    th:nth-child(2), td:nth-child(2),
+    th:nth-child(5), td:nth-child(5) { display: none; }
+    .rituals .row { flex-direction: column; gap: 4px; }
+  }
+
+  /* Utility */
+  .help-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--accent); cursor: pointer; font-weight: 800; }
+  .help-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  .section-cap { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 32px 0 12px; display: flex; align-items: center; gap: 8px; }
+  .section-cap::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .legend { font-size: 0.75rem; color: var(--mut); margin-top: 16px; line-height: 1.6; }
+  .nm { font-weight: 700; }
+  .tara-pos { color: var(--good); }
+  .tara-neg { color: var(--avoid); }
+  .tara-mid { color: var(--gold); }
+
+  #printHead { display: none; }
+  #customGeo { display: none; width: 100%; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .calc-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .calcnote { font-size: 0.75rem; color: var(--mut); margin-top: 8px; }
+  #calcOut { font-size: 0.85rem; color: var(--good); margin: 12px 0; min-height: 1.2em; }
+
+  /* Help / Guide / Tour UI */
+  .lang-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--line); padding-bottom: 12px; align-items: center; }
+  .lang-tabs button { background: none; border: none; color: var(--mut); cursor: pointer; font-weight: 700; font-size: 0.9rem; padding: 4px 8px; border-radius: 4px; }
+  .lang-tabs button.active { color: var(--accent); background: var(--accent-glow); }
+  .lang-tabs .tour-link { color: var(--gold); font-size: 0.85rem; text-decoration: underline; }
+
+  .guide-body[data-lang="en"] .lang-my { display: none; }
+  .guide-body[data-lang="my"] .lang-en { display: none; }
+
+  .tour-pop {
+    position: fixed;
+    z-index: 10000;
+    background: var(--card);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    width: 320px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    font-size: 0.9rem;
+    animation: tourFade 0.3s ease-out;
+  }
+  @keyframes tourFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .tour-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .tour-target { position: relative; z-index: 9999; box-shadow: 0 0 0 9999px rgba(0,0,0,0.7), 0 0 20px var(--accent); border-radius: var(--radius-md); }
+  .tour-pos { font-size: 0.75rem; color: var(--mut); font-weight: 700; }
+
+  @media print {
+    body { background: white; color: black; padding: 0; max-width: none; }
+    .section-card, .today { border: 1px solid #eee; box-shadow: none; background: white; page-break-inside: avoid; }
+    .btn, .actions, .help-btn, details, .section-cap { display: none !important; }
+    #printHead { display: block; margin-bottom: 20px; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 10px; }
+    table { min-width: 0; }
+    th, td { border-bottom: 1px solid #ddd; color: black !important; }
+    .pill { border: 1px solid #999; background: none !important; color: black !important; }
   }
 </style>
 </head>
@@ -145,12 +242,13 @@
 <h1>TT27 — Triple Tara + 27 Marker
   <button class="help-btn" id="helpBtn" title="How to use this app" aria-label="Help">?</button>
 </h1>
-<div class="sub">A daily nakshatra screener — tells you which moments favor action, money, or rest, based on your natal Moon &amp; Lagna.</div>
-<div class="sub mm">သုံးထပ်တာရာ (Triple Tara) နှင့် ၂၇ နက္ခတ် စစ်ဆေးမှုစနစ်</div>
+<div class="sub">A daily nakshatra screener — Tells you which moments favor action, money, or rest.</div>
+<div class="sub mm" style="margin-top:-16px">သုံးထပ်တာရာ (Triple Tara) နှင့် ၂၇ နက္ခတ် စစ်ဆေးမှုစနစ်</div>
 
 <details class="guide" id="guide">
   <summary>👋 New here? How to use this app <span class="mm">(အသုံးပြုပုံ လမ်းညွှန်)</span></summary>
-  <div class="guide-body" id="guideBody" data-lang="en">
+  <div class="details-content">
+    <div class="guide-body" id="guideBody" data-lang="en">
     <div class="lang-tabs">
       <button id="langEn" class="active">English</button>
       <button id="langMy" class="mm">မြန်မာ</button>
@@ -214,6 +312,25 @@
         <li>ရမှတ်နည်းခြင်းသည် "ကံမကောင်းခြင်း" မဟုတ်ပါ။ ထိုအချိန်အခါကို <b>ပြုပြင်မွမ်းမံခြင်း၊ အဆုံးသတ်ခြင်းနှင့် သန့်ရှင်းရေးလုပ်ခြင်း</b> စသည့် လုပ်ငန်းများအတွက် အကျိုးရှိရှိ အသုံးပြုနိုင်ပါသည်။</li>
         <li><b>⚠ Vedha (ဝေဒ)</b> = အပြန်အလှန် ပိတ်ဆို့မှု။ အခြားအချက်များ မည်မျှပင်ကောင်းစေကာမူ ဝေဒသင့်နေပါက ရမှတ်ကို (၀) အဖြစ်သာ ကန့်သတ်ထားမည် ဖြစ်ပါသည်။ ထို့ကြောင့် အသစ်စတင်ခြင်းထက် အဟောင်းများကို ပြုပြင်ထိန်းသိမ်းခြင်းသာ လုပ်ဆောင်သင့်ပါသည်။</li>
       </ul>
+
+      <details class="example">
+        <summary>📖 တွက်ချက်ပုံ သာဓကများ</summary>
+        <div class="ex-body">
+          <p><b>သာဓက (က) — အားကောင်းသောနေ့။</b> သင်၏ ဇာတာပါ <b>စန်းမှာ ရောဟဏီ (Rohini)</b>၊ <b>လဂ်မှာ အဿဝဏီ (Ashwini)</b> ဖြစ်သည်ဆိုပါစို့။ ယနေ့ ဖြတ်သန်းသွားသော နက္ခတ်မှာ <b>ဟဿတ (Hasta)</b> ဖြစ်သည်။</p>
+          <div class="ex-row"><span class="k">စန်းတာရာ:</span><span>ရောဟဏီမှ ဟဿတသို့ ၁၀ ခုမြောက် → <b>ဇနမ</b> (+၁)။</span></div>
+          <div class="ex-row"><span class="k">လဂ်တာရာ:</span><span>အဿဝဏီမှ ဟဿတသို့ ၁၃ ခုမြောက် → <b>ခေမ</b> (+၃)။</span></div>
+          <div class="ex-row"><span class="k">၂၇-အထူး (#၁၀):</span><span><b>ကမ္မ</b> အပိုဆုမှတ် (+၃)။</span></div>
+          <div class="ex-row"><span class="k">ဝေဒ (Vedha):</span><span>မရှိ (ဟဿတသည် သတ္တဘိသျှနှင့်သာ တွဲဖက်ပြီး သင်၏ ဇာတာပါ နက္ခတ်များနှင့် မငြိစွန်းပါ)။</span></div>
+          <div class="ex-row"><span class="k">စုစုပေါင်း:</span><span><b>+၇ ကောင်းသည်</b> → "အသက်မွေးဝမ်းကျောင်း၊ စီမံကိန်းလုပ်ငန်းများအတွက် အထူးသင့်လျော်သည်။" စတင်နိုင်ပါသည်။</span></div>
+
+          <p style="margin-top:10px"><b>သာဓက (ခ) — သတိပြုရမည့်နေ့။</b> ဇာတာပါ နက္ခတ်များမှာ အထက်ပါအတိုင်းဖြစ်ပြီး ယနေ့ ဖြတ်သန်းသွားသော နက္ခတ်မှာ <b>သွာတိ (Swati)</b> ဖြစ်သည်ဆိုပါစို့။</p>
+          <div class="ex-row"><span class="k">စန်းတာရာ:</span><span>ရောဟဏီမှ သွာတိသို့ ၁၂ ခုမြောက် → <b>ဝိပတ္တိ</b> (−၂)။</span></div>
+          <div class="ex-row"><span class="k">လဂ်တာရာ:</span><span>အဿဝဏီမှ သွာတိသို့ ၁၅ ခုမြောက် → <b>သာဓက</b> (+၃)။</span></div>
+          <div class="ex-row"><span class="k">၂၇-အထူး (#၁၂):</span><span>မရှိ (၀)။</span></div>
+          <div class="ex-row"><span class="k">ဝေဒ (Vedha):</span><span><b>⚠ သွာတိ နှင့် ရောဟဏီ</b> သည် တိုက်ရိုက် ဝေဒသင့်နေပါသည် (−၆)။</span></div>
+          <div class="ex-row"><span class="k">စုစုပေါင်း:</span><span><b>−၅ ရှောင်ရန်</b> → အသစ်မစတင်ပါနှင့်။ ဟောင်းနွမ်းသောအရာများကို ရှင်းလင်းခြင်း၊ အဆုံးသတ်ခြင်းများအတွက်သာ အသုံးပြုပါ။</span></div>
+        </div>
+      </details>
       <p><b>အသုံးအနှုန်းများ:</b></p>
       <ul class="glossary">
         <li><b>Tara (တာရာ):</b> မိမိနက္ခတ်မှ စတင်ရေတွက်သော တာရာကိုးပါးစက်။ ဇနမ၊ သမ္ပတ္တိ၊ ခေမ၊ သာဓက၊ မိတ္တ၊ အတိမိတ္တ တို့သည် အပြုသဘောဆောင်ပြီး ဝိပတ္တိ၊ ပြတ္တရ၊ ဘာဓ တို့သည် အဟန့်အတား ဖြစ်တတ်ပါသည်။</li>
@@ -228,7 +345,8 @@
 
 <details class="calc">
   <summary>🌙 Calculate from birth details <span class="mm">(မွေးသက္ကရာဇ်ဖြင့် ဇာတာတွက်ရန်)</span></summary>
-  <div class="calc-grid">
+  <div class="details-content">
+    <div class="calc-grid">
     <div class="ctl"><label>Birth date <span class="mm">(မွေးနေ့)</span></label><input type="date" id="bdate"></div>
     <div class="ctl"><label>Birth time (local, 24h) <span class="mm">(မွေးချိန်)</span></label><input type="time" id="btime"></div>
     <div class="ctl"><label>Place <span class="mm">(မွေးဖွားရာဒေသ)</span></label>
@@ -245,71 +363,79 @@
   </div>
   <div id="calcOut"></div>
   <div class="calcnote">Lagna needs an accurate birth <b>time</b>. Uses Lahiri ayanamsa. Results pre-fill the dropdowns below and remain editable. <br><span class="mm">လဂ်နက္ခတ် သိရှိရန် မွေးချိန် တိကျစွာ လိုအပ်ပါသည်။ Lahiri Ayanamsa စနစ်ကို အသုံးပြုထားပါသည်။</span></div>
+  </div>
 </details>
 
-<div class="section-cap"><b>Step 1.</b> Tell TT27 who you are — pick your natal Moon &amp; Lagna nakshatra (or compute them above). <span class="mm">(အဆင့် ၁ - မိမိ၏ စန်းနက္ခတ်နှင့် လဂ်နက္ခတ်ကို ရွေးချယ်ပါ)</span></div>
-<div class="controls">
-  <div class="ctl" style="min-width:100%">
-    <label>Person's name <span class="mm">(အမည်)</span> — optional, shows on print <span class="mm">(စိတ်ကြိုက် - ပရင့်ထုတ်ရာတွင် ဖော်ပြရန်)</span></label>
-    <input type="text" id="pname" placeholder="e.g. Soe">
+<div class="section-cap"><span>Step 1.</span> Your Profile <span class="mm">(အဆင့် ၁ - မိမိကိုယ်တိုင်)</span></div>
+<div class="section-card">
+  <div class="controls">
+    <div class="ctl" style="grid-column: 1 / -1">
+      <label>Person's name <span class="mm">(အမည်)</span></label>
+      <input type="text" id="pname" placeholder="e.g. Soe">
+    </div>
+    <div class="ctl">
+      <label>Moon Nakshatra <span class="mm">(စန်းနက္ခတ်)</span></label>
+      <select id="moon"></select>
+    </div>
+    <div class="ctl">
+      <label>Lagna Nakshatra <span class="mm">(လဂ်နက္ခတ်)</span></label>
+      <select id="lagna"></select>
+    </div>
   </div>
-  <div class="ctl">
-    <label>Moon Nakshatra <span class="mm">(စန်းနက္ခတ်)</span></label>
-    <select id="moon"></select>
-  </div>
-  <div class="ctl">
-    <label>Lagna Nakshatra <span class="mm">(လဂ်နက္ခတ်)</span></label>
-    <select id="lagna"></select>
-  </div>
-  <div class="ctl" style="display:flex;align-items:flex-end;min-width:auto;flex:0">
-    <button class="btn" onclick="window.print()">⬇ Save / Print PDF <span class="mm">(သိမ်းဆည်းရန် / PDF ထုတ်ရန်)</span></button>
+  <div style="margin-top: 16px">
+    <button class="btn" onclick="window.print()" style="background: var(--card); border: 1px solid var(--line); color: var(--mut)">⬇ Save / Print PDF <span class="mm">(သိမ်းဆည်းရန် / PDF ထုတ်ရန်)</span></button>
   </div>
 </div>
 
 <div id="printHead"></div>
 
-<div class="section-cap"><b>Step 2.</b> Read “Today's verdict” — your live score for this exact moment, with one-line advice. <span class="mm">(အဆင့် ၂ - ဒီနေ့အတွက် အဖြေနှင့် အကြံပြုချက်ကို ဖတ်ပါ)</span></div>
+<div class="section-cap"><span>Step 2.</span> Today's Verdict <span class="mm">(အဆင့် ၂ - ဒီနေ့အတွက် အဖြေ)</span></div>
 <section class="today" id="today">
   <h2>📅 Today's verdict <span class="mm">(ဒီနေ့အတွက် အဖြေ)</span></h2>
   <div class="when" id="todayWhen">—</div>
-  <div class="grid">
-    <div class="stat"><div class="lbl">Transit Moon <span class="mm">(လက်ရှိ စန်းနက္ခတ်)</span></div><div class="val" id="todayMoon">—</div></div>
-    <div class="stat"><div class="lbl">Transit Lagna <span class="mm">(လက်ရှိ လဂ်နက္ခတ်)</span></div><div class="val" id="todayLagna">—</div></div>
-    <div class="stat"><div class="lbl">Score <span class="mm">(ရမှတ်)</span></div><div class="val" id="todayScore">—</div></div>
+
+  <div class="stats-grid">
+    <div class="stat-box"><div class="lbl">Transit Moon <span class="mm">(စန်း)</span></div><div class="val" id="todayMoon">—</div></div>
+    <div class="stat-box"><div class="lbl">Transit Lagna <span class="mm">(လဂ်)</span></div><div class="val" id="todayLagna">—</div></div>
+    <div class="stat-box"><div class="lbl">Your Score <span class="mm">(ရမှတ်)</span></div><div class="val" id="todayScore">—</div></div>
   </div>
-  <div class="verdict" id="todayVerdict">Computing…</div>
-  <div class="rituals" id="todayRituals"></div>
-  <div class="actions">
-    <button class="btn-sm" id="todayRefresh">↻ Refresh now <span class="mm">(ပြန်ဖွင့်ပါ)</span></button>
-    <button class="btn-sm" id="todayLoc">📍 Use my location <span class="mm">(လက်ရှိနေရာကို သုံးပါ)</span></button>
-    <button class="btn-sm" id="todayCustom">🕒 Custom moment <span class="mm">(အခြားအချိန် ကြည့်ရန်)</span></button>
-    <button class="btn-sm" id="todayClear" title="Clear saved natal data">✕ Forget me <span class="mm">(အချက်အလက်ဖျက်ရန်)</span></button>
+
+  <div class="verdict-box" id="todayVerdict">Computing…</div>
+  <div id="todayRituals" class="rituals"></div>
+
+  <div class="actions" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:20px">
+    <button class="btn" id="todayRefresh" style="padding: 8px 16px; font-size: 0.85rem">↻ Refresh</button>
+    <button class="btn" id="todayLoc" style="padding: 8px 16px; font-size: 0.85rem; background: var(--card); border: 1px solid var(--line)">📍 My Location</button>
+    <button class="btn" id="todayCustom" style="padding: 8px 16px; font-size: 0.85rem; background: var(--card); border: 1px solid var(--line)">🕒 Custom Time</button>
+    <button class="btn" id="todayClear" style="padding: 8px 16px; font-size: 0.85rem; background: var(--avoid); opacity: 0.8">✕ Forget Me</button>
   </div>
-  <div class="grid" id="todayCustomBox" style="display:none">
+  <div class="grid" id="todayCustomBox" style="display:none; gap:12px; margin-top:16px; flex-wrap:wrap">
     <div class="ctl"><label>Date <span class="mm">(ရက်စွဲ)</span></label><input type="date" id="todayDate"></div>
     <div class="ctl"><label>Time <span class="mm">(အချိန်)</span></label><input type="time" id="todayTime"></div>
-    <div class="ctl" style="flex:0;display:flex;gap:8px">
-      <button class="btn-sm" id="todayApply">Apply <span class="mm">(ကြည့်မည်)</span></button>
-      <button class="btn-sm" id="todayNow">Reset to now <span class="mm">(လက်ရှိအချိန်သို့)</span></button>
+    <div class="ctl" style="display:flex; align-items:flex-end; gap:8px">
+      <button class="btn-sm" id="todayApply">Apply</button>
+      <button class="btn-sm" id="todayNow">Reset</button>
     </div>
   </div>
 </section>
 
-<div class="section-cap"><b>Step 3.</b> Plan ahead — each row is a candidate nakshatra (a possible day). <span class="mm">(အဆင့် ၃ - ရှေ့ဆက်ရန် ကြိုတင်ပြင်ဆင်ပါ)</span> Tap a column header to sort. Higher score = more auspicious for fresh starts.</div>
-<table id="tbl">
-  <thead>
-    <tr>
-      <th data-k="name">Nakshatra <br><span class="mm" style="font-weight:400;font-size:.7rem">နက္ခတ်</span></th>
-      <th data-k="lord" title="Vimshottari lord">Lord <br><span class="mm" style="font-weight:400;font-size:.7rem">ဂြိုဟ်မင်း</span></th>
-      <th data-k="moonTara">Moon Tara <br><span class="mm" style="font-weight:400;font-size:.7rem">စန်းတာရာ</span></th>
-      <th data-k="lagnaTara">Lagna Tara <br><span class="mm" style="font-weight:400;font-size:.7rem">လဂ်တာရာ</span></th>
-      <th data-k="special">27-Special <br><span class="mm" style="font-weight:400;font-size:.7rem">အထူးအမှတ်</span></th>
-      <th data-k="score">Score ▾ <br><span class="mm" style="font-weight:400;font-size:.7rem">ရမှတ်</span></th>
-      <th data-k="use">Best Use <br><span class="mm" style="font-weight:400;font-size:.7rem">အကြံပြုချက်</span></th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<div class="section-cap"><span>Step 3.</span> Detailed Forecast <span class="mm">(အဆင့် ၃ - အသေးစိတ် ဇယား)</span></div>
+<div class="table-container">
+  <table id="tbl">
+    <thead>
+      <tr>
+        <th data-k="name">Nakshatra</th>
+        <th data-k="lord">Lord</th>
+        <th data-k="moonTara">Moon Tara</th>
+        <th data-k="lagnaTara">Lagna Tara</th>
+        <th data-k="special">27-Special</th>
+        <th data-k="score" style="text-align:center">Score ▾</th>
+        <th data-k="use">Best Use</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
 <div class="legend">
   <b>Classification <span class="mm">(အမှတ်သတ်မှတ်ချက်များ)</span>:</b>
@@ -377,17 +503,17 @@ const SPECIAL = {
 
 // Burmese counterparts for SPECIAL.use, keyed by the special name.
 const SPECIAL_USE_MY = {
-  "Janma":"ကိုယ်ပိုင်ကိစ္စများ ပြန်လည်စတင်ခြင်း၊ ရည်မှန်းချက်အသစ်များ ချမှတ်ခြင်း",
-  "Sampat":"ငွေကြေးစီးဆင်းမှု၊ ငွေပေးချေမှုနှင့် အရင်းအမြစ် ရှာဖွေမှုများ",
-  "Mitra support":"တွေ့ဆုံဆွေးနွေးခြင်း၊ ကွန်ရက်ချိတ်ဆက်ခြင်းနှင့် မိတ်ဖက်ရှာဖွေခြင်း",
-  "Karma":"အသက်မွေးဝမ်းကျောင်း၊ စီမံကိန်းလုပ်ငန်းများနှင့် လုပ်ငန်းပြီးမြောက်မှုများ",
-  "Sanghatika":"ပဋိပက္ခများ ဖြေရှင်းခြင်းနှင့် ညှိနှိုင်းဆောင်ရွက်ခြင်း (လုပ်ငန်းသစ်စတင်ရန် မသင့်)",
+  "Janma":"ကိုယ်ပိုင်လုပ်ငန်းဆောင်တာများ အစပြုခြင်းနှင့် ရည်မှန်းချက်အသစ်များ ချမှတ်ခြင်း",
+  "Sampat":"ငွေကြေးဥစ္စာ စီးဆင်းမှု၊ အကျိုးအမြတ်ရရှိမှုနှင့် အရင်းအမြစ် ရှာဖွေမှုများ",
+  "Mitra support":"မိတ်ဖက်များနှင့် တွေ့ဆုံဆွေးနွေးခြင်း၊ ကွန်ရက်ချိတ်ဆက်ခြင်းနှင့် အကူအညီရယူခြင်း",
+  "Karma":"အသက်မွေးဝမ်းကျောင်း လုပ်ငန်းများ၊ စီမံကိန်းများနှင့် လုပ်ငန်းပြီးမြောက်မှုများ",
+  "Sanghatika":"ပဋိပက္ခများ ဖြေရှင်းခြင်းနှင့် ညှိနှိုင်းဆောင်ရွက်ခြင်း (အသစ်စတင်ရန် မသင့်)",
   "Samudayika":"လူထုဆက်ဆံရေး၊ ဈေးကွက်ချဲ့ထွင်ခြင်းနှင့် အများပြည်သူသို့ ထုတ်ပြန်ခြင်း",
-  "Adhana":"အခြေခံအုတ်မြစ်များ တည်ဆောက်ခြင်း (ကုမ္ပဏီ သို့မဟုတ် စနစ်များ ထူထောင်ခြင်း)",
-  "Vainashika":"လုပ်ငန်းများ ရပ်စဲခြင်း၊ ဖျက်သိမ်းခြင်းနှင့် ဖြတ်တောက်ခြင်း (အသစ်မစတင်ပါနှင့်)",
-  "Manasa":"အစီအစဉ်ဆွဲခြင်း၊ လေ့လာသင်ယူခြင်းနှင့် စိတ်ဓာတ်ပိုင်းဆိုင်ရာ ပြတ်သားမှု",
-  "Desha":"အာဏာပိုင်များနှင့် ဆက်ဆံခြင်း၊ ခွင့်ပြုချက်ရယူခြင်းနှင့် အဖွဲ့အစည်းဆိုင်ရာ ကိစ္စရပ်များ",
-  "Abhisheka":"ခေါင်းဆောင်မှု၊ ထင်ပေါ်ကျော်ကြားမှုနှင့် အမိန့်အာဏာ တည်ခြင်း"
+  "Adhana":"အခြေခံအုတ်မြစ်များ တည်ဆောက်ခြင်းနှင့် အဖွဲ့အစည်းဆိုင်ရာ စနစ်များ ထူထောင်ခြင်း",
+  "Vainashika":"လုပ်ငန်းများ ရပ်စဲခြင်း၊ ဖျက်သိမ်းခြင်းနှင့် အဟောင်းများကို ဖြတ်တောက်ခြင်း",
+  "Manasa":"စီမံကိန်းရေးဆွဲခြင်း၊ လေ့လာသင်ယူခြင်းနှင့် စိတ်ဓာတ်ပိုင်းဆိုင်ရာ တည်ငြိမ်မှု",
+  "Desha":"အာဏာပိုင်များနှင့် ဆက်ဆံခြင်း၊ ခွင့်ပြုချက်ရယူခြင်းနှင့် စည်းမျဉ်းစည်းကမ်းများ",
+  "Abhisheka":"ခေါင်းဆောင်မှု၊ ထင်ပေါ်ကျော်ကြားမှုနှင့် အဆင့်အတန်း မြှင့်တင်ခြင်း"
 };
 
 // generic best-use by Moon tara when no special marker
@@ -639,7 +765,7 @@ function renderToday(){
   const raw=mt.score+lt.score+bonus;
   let score=raw+vi.pen;
   if(vi.isVedha)score=Math.min(score,0);
-  sEl.innerHTML=`<span class="pill ${cls(score)}">${score>0?"+":""}${score}</span>`;
+  sEl.innerHTML=`<span class="pill ${cls(score)}" style="font-size: 1.2rem; padding: 6px 16px">${score>0?"+":""}${score}</span>`;
   let use=bestUse(mt.name,lt.name,specialName,bonus,raw);
   if(vi.isVedha)use=vedhaUse(vi.reasons);
   const parts=[`Moon Tara <b>${mt.name}</b> <small class="mm">(${TARA_MY_MAP[mt.name]})</small> (${mt.score>0?"+":""}${mt.score})`];
