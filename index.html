@@ -413,8 +413,8 @@
     <div class="ctl"><label>Date <span class="mm">(ရက်စွဲ)</span></label><input type="date" id="todayDate"></div>
     <div class="ctl"><label>Time <span class="mm">(အချိန်)</span></label><input type="time" id="todayTime"></div>
     <div class="ctl" style="display:flex; align-items:flex-end; gap:8px">
-      <button class="btn-sm" id="todayApply">Apply</button>
-      <button class="btn-sm" id="todayNow">Reset</button>
+      <button class="btn-sm" id="todayApply">Apply <span class="mm">(အသုံးပြုမည်)</span></button>
+      <button class="btn-sm" id="todayNow">Now <span class="mm">(ယခု)</span></button>
     </div>
   </div>
 </section>
@@ -741,7 +741,7 @@ function renderToday(){
   const d=todayState.when||new Date();
   const fmtDate=d.toLocaleDateString(undefined,{weekday:"short",year:"numeric",month:"short",day:"numeric"});
   const fmtTime=d.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
-  document.getElementById("todayWhen").textContent=fmtDate+" · "+fmtTime+
+  document.getElementById("todayWhen").innerHTML=fmtDate+" · "+fmtTime+
     (todayState.locLabel?" · "+todayState.locLabel:"");
   const mIdx=todayState.moonIdx, lIdx=todayState.lagnaIdx;
   const mEl=document.getElementById("todayMoon"),
@@ -755,7 +755,7 @@ function renderToday(){
   mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${mPad} · ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
   lEl.innerHTML=lIdx!=null
     ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${lPad} · ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
-    :'<span style="color:var(--mut);font-weight:400">enable location</span>';
+    :'<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location</span>';
   const nm=+moonSel.value, nl=+lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
   const lt=lIdx!=null?taraFrom(nl,lIdx):{name:"—",score:0,count:0};
@@ -962,7 +962,7 @@ if(navigator.permissions && navigator.permissions.query){
     if(p.state==="granted"){
       navigator.geolocation.getCurrentPosition(
         pos=>{saveLoc(pos.coords.latitude,pos.coords.longitude);
-          refreshTransit({lat:pos.coords.latitude,lon:pos.coords.longitude,locLabel:"📍 your location"});},
+          refreshTransit({lat:pos.coords.latitude,lon:pos.coords.longitude,locLabel:"📍 your location <span class='mm'>(လက်ရှိနေရာ)</span>"});},
         ()=>{},{timeout:8000,maximumAge:600000});
     }
   }).catch(()=>{});
