@@ -78,8 +78,22 @@
   .btn:hover{border-color:var(--accent)}
   #printHead{display:none}
   input{width:100%;padding:9px;border-radius:8px;background:#11142a;color:var(--txt);border:1px solid var(--line);font-size:.95rem}
-  details.calc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:12px}
-  details.calc summary{cursor:pointer;padding:12px 0;color:var(--accent);font-weight:600;font-size:.95rem}
+  details.calc,details.guide{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:12px}
+  details.calc summary,details.guide summary{cursor:pointer;padding:12px 0;color:var(--accent);font-weight:600;font-size:.95rem}
+  details.guide{border-color:var(--accent)}
+  .guide-body{padding-bottom:14px;font-size:.85rem;line-height:1.55;color:var(--txt)}
+  .guide-body p{margin:8px 0}
+  .guide-body ol,.guide-body ul{margin:6px 0 8px;padding-left:22px}
+  .guide-body li{margin:4px 0}
+  .guide-body .pill{margin-right:4px}
+  .guide-body .glossary li{color:var(--mut)}
+  .guide-body .glossary b{color:var(--txt)}
+  h1{display:flex;align-items:center;gap:8px;justify-content:space-between}
+  .help-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--accent);
+    background:transparent;color:var(--accent);font-weight:700;cursor:pointer;font-size:.9rem;
+    line-height:1;padding:0;flex:0 0 auto}
+  .help-btn:hover{background:var(--accent);color:#11142a}
+  .section-cap{font-size:.75rem;color:var(--mut);margin:10px 2px 4px;line-height:1.5}
   .calc-grid{display:flex;gap:10px;flex-wrap:wrap;padding-bottom:12px}
   .calc-grid .ctl{flex:1;min-width:130px}
   #customGeo{display:none;width:100%;gap:10px;flex-wrap:wrap}
@@ -87,7 +101,7 @@
   #calcOut{font-size:.82rem;color:#9fe0b8;padding-bottom:12px;min-height:1em}
   @media print{
     body{background:#fff;color:#000;max-width:none}
-    .controls,.legend,.btn,.sub{display:none}
+    .controls,.legend,.btn,.sub,.help-btn,details.guide,.section-cap{display:none}
     h1{color:#000}
     #printHead{display:block;margin-bottom:8px;font-size:.9rem}
     th{position:static;background:#fff;color:#333}
@@ -99,8 +113,37 @@
 </style>
 </head>
 <body>
-<h1>TT27 — Triple Tara + 27 Marker</h1>
+<h1>TT27 — Triple Tara + 27 Marker
+  <button class="help-btn" id="helpBtn" title="How to use this app" aria-label="Help">?</button>
+</h1>
+<div class="sub">A daily nakshatra screener — tells you which moments favor action, money, or rest, based on your natal Moon &amp; Lagna.</div>
 <div class="sub mm">သုံးထပ်တာရာ ၂၇ နက္ခတ် စစ်ထုတ်စနစ်</div>
+
+<details class="guide" id="guide">
+  <summary>👋 New here? How to use this app</summary>
+  <div class="guide-body">
+    <p><b>What is TT27?</b> Given <i>your</i> natal Moon and Lagna nakshatra, it scores every day (or any moment) so you know whether to <i>act, earn, plan,</i> or <i>lay low and clean up</i>.</p>
+    <ol>
+      <li><b>Set your nakshatras.</b> Pick your <b>Moon</b> and <b>Lagna</b> in the controls below. Don't know them? Open <b>🌙 Calculate from birth details</b> and enter your birth date, time, and place — TT27 fills them in offline.</li>
+      <li><b>Read “Today’s verdict.”</b> The score and one-line advice tells you what kind of day it is <i>for you</i>. Green = go; amber = act with a clear purpose; red = repair / cleanup, not launches.</li>
+      <li><b>Plan ahead.</b> Browse the table to see which upcoming nakshatras score well, or tap <b>🕒 Custom moment</b> to score a specific date/time (muhurta).</li>
+    </ol>
+    <p><b>Reading the score:</b> <span class="pill c-green">9+ Excellent</span> <span class="pill c-good">6–8 Good</span> <span class="pill c-use">3–5 Usable</span> <span class="pill c-neu">0–2 Neutral</span> <span class="pill c-avoid">&lt;0 Avoid</span></p>
+    <p><b>Two key rules:</b></p>
+    <ul>
+      <li>A <i>low</i> score is not “bad” — it means use the moment for <b>repair, closure, cleanup</b>, not launches.</li>
+      <li><b>⚠ Vedha</b> = mutual obstruction. Caps the score at 0 even if other layers are positive. Don't start anything major; finish/fix things instead.</li>
+    </ul>
+    <p><b>Quick glossary:</b></p>
+    <ul class="glossary">
+      <li><b>Tara (Moon / Lagna):</b> 9-fold fortune cycle counted from your natal nakshatra. Janma/Sampat/Mitra/Parama Mitra are positive; Vipat/Pratyak/Naidhana are reductive.</li>
+      <li><b>27-Special:</b> TT27's bonus/penalty for specific count-positions from your Moon (e.g. #2 Sampat for money, #10 Karma for work, #23 Vainashika to avoid launches).</li>
+      <li><b>Pada:</b> 1–4, the quarter of the nakshatra the Moon/Lagna is currently in (each ~3°20′).</li>
+      <li><b>Lord:</b> the Vimshottari planetary ruler of that nakshatra.</li>
+    </ul>
+    <p class="calcnote">Your natal data and last-used location are saved in your browser only. Tap <b>✕ Forget me</b> in Today's card to clear them.</p>
+  </div>
+</details>
 
 <details class="calc">
   <summary>🌙 Calculate from birth details <span class="mm">(မွေးနေ့မှ တွက်ရန်)</span></summary>
@@ -123,6 +166,7 @@
   <div class="calcnote">Lagna needs an accurate birth <b>time</b>. Uses Lahiri ayanamsa. Results pre-fill the dropdowns below and remain editable.</div>
 </details>
 
+<div class="section-cap"><b>Step 1.</b> Tell TT27 who you are — pick your natal Moon &amp; Lagna nakshatra (or compute them above).</div>
 <div class="controls">
   <div class="ctl" style="min-width:100%">
     <label>Person's name <span class="mm">(နာမည်)</span> — optional, shows on print</label>
@@ -143,6 +187,7 @@
 
 <div id="printHead"></div>
 
+<div class="section-cap"><b>Step 2.</b> Read “Today's verdict” — your live score for this exact moment, with one-line advice.</div>
 <section class="today" id="today">
   <h2>📅 Today's verdict</h2>
   <div class="when" id="todayWhen">—</div>
@@ -169,6 +214,7 @@
   </div>
 </section>
 
+<div class="section-cap"><b>Step 3.</b> Plan ahead — each row is a candidate nakshatra (a possible day). Tap a column header to sort. Higher score = more auspicious for fresh starts.</div>
 <table id="tbl">
   <thead>
     <tr>
@@ -334,7 +380,23 @@ function loadNatal(){
 }
 function saveLoc(lat,lon){try{localStorage.setItem(LS_LOC,JSON.stringify({lat,lon,t:Date.now()}));}catch(e){}}
 function loadLoc(){try{return JSON.parse(localStorage.getItem(LS_LOC)||"null");}catch(e){return null;}}
+const hasNatal=()=>{try{return !!localStorage.getItem(LS_NATAL);}catch(e){return false;}};
 loadNatal();
+
+/* ===== first-visit guide auto-open + help button ===== */
+(function(){
+  const guide=document.getElementById("guide");
+  const LS_SEEN="tt27.seen";
+  let seen=false; try{seen=!!localStorage.getItem(LS_SEEN);}catch(e){}
+  if(!seen) guide.open=true;
+  guide.addEventListener("toggle",()=>{
+    if(!guide.open){try{localStorage.setItem(LS_SEEN,"1");}catch(e){}}
+  });
+  document.getElementById("helpBtn").onclick=()=>{
+    guide.open=!guide.open;
+    if(guide.open) guide.scrollIntoView({behavior:"smooth",block:"start"});
+  };
+})();
 
 let sortKey="score", sortDir=-1;
 document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
@@ -394,7 +456,8 @@ function renderToday(){
   const parts=[`Moon Tara <b>${mt.name}</b> (${mt.score>0?"+":""}${mt.score})`];
   if(lIdx!=null)parts.push(`Lagna Tara <b>${lt.name}</b> (${lt.score>0?"+":""}${lt.score})`);
   if(sp)parts.push(`<b>${specialName}</b> (${bonus>0?"+":""}${bonus})`);
-  vEl.innerHTML=`<div>${use}</div><div style="color:var(--mut);font-size:.78rem;margin-top:4px">${parts.join(" · ")}${lIdx==null?' · <i>tap "Use my location" for Lagna layer</i>':""}</div>`;
+  const hint=hasNatal()?"":'<div style="background:#2a2e4a;border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:.8rem">👋 <b>This score uses default natal values.</b> Set your own Moon &amp; Lagna in <i>Step 1</i> below (or use 🌙 Calculate from birth details) for a verdict that\'s actually about <i>you</i>.</div>';
+  vEl.innerHTML=hint+`<div>${use}</div><div style="color:var(--mut);font-size:.78rem;margin-top:4px">${parts.join(" · ")}${lIdx==null?' · <i>tap "Use my location" for Lagna layer</i>':""}</div>`;
   // Burmese facing-direction rituals (keyed by transit Moon nakshatra).
   const ds=dirSelf(mIdx), dox=dirOther(mIdx);
   document.getElementById("todayRituals").innerHTML=
