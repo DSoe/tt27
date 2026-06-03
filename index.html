@@ -788,9 +788,9 @@ function renderToday(){
     vEl.textContent="Computing…";return;}
   const mPad=todayState.moonPada, lPad=todayState.lagnaPada;
   const mLord=lordOf(mIdx).f, lLord=lIdx!=null?lordOf(lIdx).f:"";
-  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${mPad}${getPadaHtml(mIdx, mPad)} · ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
+  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">pada ${mPad}${getPadaHtml(mIdx, mPad)} · ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
   lEl.innerHTML=lIdx!=null
-    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${lPad}${getPadaHtml(lIdx, lPad)} · ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
+    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">pada ${lPad}${getPadaHtml(lIdx, lPad)} · ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
     :'<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location</span>';
   const nm=+moonSel.value, nl=+lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
