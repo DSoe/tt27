@@ -292,7 +292,13 @@
       <ul class="glossary">
         <li><b>Tara (Moon / Lagna):</b> 9-fold fortune cycle counted from your natal nakshatra. Janma/Sampat/Mitra/Parama Mitra are positive; Vipat/Pratyak/Naidhana are reductive.</li>
         <li><b>27-Special:</b> TT27's bonus/penalty for specific count-positions from your Moon (e.g. #2 Sampat for money, #10 Karma for work, #23 Vainashika to avoid launches).</li>
-        <li><b>Pada:</b> 1–4, the quarter of the nakshatra the Moon/Lagna is currently in (each ~3°20′).</li>
+        <li><b>Pada:</b> 1–4, the quarter of the nakshatra the Moon/Lagna is currently in (each ~3°20′). Certain nakshatra/pada combinations carry auspicious energies:
+          <ul>
+            <li><b style="color:var(--gold)">Vara Uttama (ဝရဥတ္တမ):</b> Noble/most excellent. Best for gain of recognition, respect, and positioning.</li>
+            <li><b style="color:var(--good)">Wealthy (သူဌေး):</b> Brings prosperity, financial flows, and resource acquisition.</li>
+            <li><b style="color:#00e5ff">Virtuous (သူတော်ကောင်း):</b> Sage/virtuous. Brings safety, protection, and goodwill of noble people.</li>
+          </ul>
+        </li>
         <li><b>Lord:</b> the Vimshottari planetary ruler of that nakshatra.</li>
       </ul>
       <p class="calcnote">Your natal data and last-used location are saved in your browser only. Tap <b>✕ Forget me</b> in Today's card to clear them.</p>
@@ -335,7 +341,13 @@
       <ul class="glossary">
         <li><b>Tara (တာရာ):</b> မိမိနက္ခတ်မှ စတင်ရေတွက်သော တာရာကိုးပါးစက်။ ဇနမ၊ သမ္ပတ္တိ၊ ခေမ၊ သာဓက၊ မိတ္တ၊ အတိမိတ္တ တို့သည် အပြုသဘောဆောင်ပြီး ဝိပတ္တိ၊ ပြတ္တရ၊ ဘာဓ တို့သည် အဟန့်အတား ဖြစ်တတ်ပါသည်။</li>
         <li><b>27-Special:</b> မိမိ၏ စန်းနက္ခတ်မှ တိကျသော နေရာများအတွက် TT27 ၏ အထူးရမှတ်များ (ဥပမာ- #2 သမ္ပတ္တိ-ငွေကြေး၊ #10 ကမ္မ-အလုပ်၊ #25 ဝိနာသက-ရှောင်ရန်)။</li>
-        <li><b>Pada (ပါဒ):</b> နက္ခတ်တစ်ခုကို (၄) ပိုင်း ပိုင်းခြားထားသော အစိတ်အပိုင်း (တစ်ပါဒလျှင် ၃°၂၀′ ရှိပါသည်။)</li>
+        <li><b>Pada (ပါဒ):</b> နက္ခတ်တစ်ခုကို (၄) ပိုင်း ပိုင်းခြားထားသော အစိတ်အပိုင်း (တစ်ပါဒလျှင် ၃°၂၀′ ရှိပါသည်။) အချို့သော နက္ခတ်/ပါဒ ပေါင်းစပ်မှုများသည် အထူးအကျိုးပေး အစွမ်းသတ္တိများ ဆောင်ကြဉ်းပေးပါသည်။
+          <ul>
+            <li><b style="color:var(--gold)">ဝရဥတ္တမ:</b> နေရာရခြင်း၊ အလေးထားခံရခြင်း၊ ထင်ပေါ်ကျော်ကြားခြင်းနှင့် အဆင့်အတန်းမြင့်မားခြင်းတို့ကို အကျိုးပေးသည်။</li>
+            <li><b style="color:var(--good)">သူဌေး:</b> စီးပွားရေး အောင်မြင်ခြင်း၊ ငွေကြေးဥစ္စာ စီးဆင်းမှုကောင်းခြင်းနှင့် လာဘ်လာဘရရှိခြင်းတို့ကို အကျိုးပေးသည်။</li>
+            <li><b style="color:#00e5ff">သူတော်ကောင်း:</b> ဘေးအန္တရာယ်ကင်းခြင်း၊ သူတော်ကောင်းတို့၏ စောင့်ရှောက်မှုခံရခြင်းနှင့် မေတ္တာမေတ္တရရှိခြင်းတို့ကို အကျိုးပေးသည်။</li>
+          </ul>
+        </li>
         <li><b>Lord (ဂြိုဟ်မင်း):</b> နက္ခတ်တစ်ခုချင်းစီကို အုပ်စိုးသော ဝိံသုတ္တရီ (Vimshottari) ဂြိုဟ်။</li>
       </ul>
       <p class="calcnote">မိမိ၏ အချက်အလက်များကို ဤ Browser ထဲတွင်သာ သိမ်းဆည်းထားမည် ဖြစ်ပါသည်။ ပြန်လည်ဖျက်သိမ်းလိုပါက Today Card ရှိ <b>✕ Forget me</b> ကို နှိပ်ပါ။</p>
@@ -468,6 +480,30 @@ const lordOf=i=>LORD_CYCLE[i%9];
 // Pada = quarter (1..4) within the 13°20' nakshatra, 3°20' wide each.
 function padaOf(sidLon){const NAK_W=40/3, PADA_W=NAK_W/4;
   return Math.floor((((sidLon%NAK_W)+NAK_W)%NAK_W)/PADA_W)+1;}
+
+// Function to get the special auspicious designation for a given nakshatra and pada
+function getPadaClass(nakIdx, pada) {
+  if (nakIdx == null || pada == null) return null;
+  const cycle = Math.floor(nakIdx / 9);
+  const offset = nakIdx % 9;
+  const activePadas = [[1], [1], [1, 2], [2], [2, 3], [3], [3, 4], [4], [4]][offset];
+  if (!activePadas.includes(pada)) return null;
+
+  const typeIdx = ((3 - cycle) % 3 + offset) % 3;
+  if (typeIdx === 0) {
+    return { en: "Wara Uttama", my: "ဝရဥတ္တမ", color: "var(--gold)", desc: "Noble/Excellent" };
+  } else if (typeIdx === 1) {
+    return { en: "Wealthy", my: "သူဌေး", color: "var(--good)", desc: "Wealthy" };
+  } else {
+    return { en: "Virtuous", my: "သူတော်ကောင်း", color: "#00e5ff", desc: "Virtuous/Noble" };
+  }
+}
+
+function getPadaHtml(nakIdx, pada) {
+  const cls = getPadaClass(nakIdx, pada);
+  if (!cls) return "";
+  return ` <span class="pada-badge" style="color:${cls.color}; font-weight:700" title="${cls.en} (${cls.desc})">✦ ${cls.my} (${cls.en})</span>`;
+}
 
 // Burmese facing-direction rituals keyed by transit Moon nakshatra.
 // 8-direction cycle from Ashwini: self-prayer = E,SW,N,SE,W,NE,S,NW; other = +6 offset.
@@ -752,9 +788,9 @@ function renderToday(){
     vEl.textContent="Computing…";return;}
   const mPad=todayState.moonPada, lPad=todayState.lagnaPada;
   const mLord=lordOf(mIdx).f, lLord=lIdx!=null?lordOf(lIdx).f:"";
-  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${mPad} · ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
+  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${mPad}${getPadaHtml(mIdx, mPad)} · ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
   lEl.innerHTML=lIdx!=null
-    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${lPad} · ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
+    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span> <span style="color:var(--mut);font-weight:400;font-size:.8rem">· pada ${lPad}${getPadaHtml(lIdx, lPad)} · ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
     :'<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location</span>';
   const nm=+moonSel.value, nl=+lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
@@ -951,7 +987,7 @@ function calcBirth(){
   const mp=padaOf(moonSid), lp=padaOf(ascSid);
   moonSel.value=mi; lagnaSel.value=li;
   out.style.color="#9fe0b8";
-  out.innerHTML=`Moon → <b>${NAK[mi]}</b> <span class="mm">(${NAK_MY[mi]})</span> pada ${mp} (${lordOf(mi).f}) &nbsp;·&nbsp; Lagna → <b>${NAK[li]}</b> <span class="mm">(${NAK_MY[li]})</span> pada ${lp} (${lordOf(li).f})`
+  out.innerHTML=`Moon → <b>${NAK[mi]}</b> <span class="mm">(${NAK_MY[mi]})</span> pada ${mp}${getPadaHtml(mi, mp)} (${lordOf(mi).f}) &nbsp;·&nbsp; Lagna → <b>${NAK[li]}</b> <span class="mm">(${NAK_MY[li]})</span> pada ${lp}${getPadaHtml(li, lp)} (${lordOf(li).f})`
     +(tv?"":` <span style='color:#d8d090'>(no birth time — Lagna unreliable / <span class='mm'>မွေးချိန် မပါဝင်ပါက လဂ်နက္ခတ် မတိကျနိုင်ပါ</span>)</span>`);
   render();
 }
