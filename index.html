@@ -339,7 +339,7 @@
       <p><b>အသုံးအနှုန်းများ:</b></p>
       <ul class="glossary">
         <li><b>Tara (တာရာ):</b> မိမိနက္ခတ်မှ စတင်ရေတွက်သော တာရာကိုးပါးစက်။ ဇနမ၊ သမ္ပတ္တိ၊ ခေမ၊ သာဓက၊ မိတ္တ၊ အတိမိတ္တ တို့သည် အပြုသဘောဆောင်ပြီး ဝိပတ္တိ၊ ပြတ္တရ၊ ဘာဓ တို့သည် အဟန့်အတား ဖြစ်တတ်ပါသည်။</li>
-        <li><b>27-Special:</b> မိမိ၏ စန်းနက္ခတ်မှ တိကျသော နေရာများအတွက် TT27 ၏ အထူးရမှတ်များ (ဥပမာ- #2 သမ္ပတ္တိ-ငွေကြေး၊ #10 ကမ္မ-အလုပ်၊ #25 ဝိနာသက-ရှောင်ရန်)။</li>
+        <li><b>27-Special:</b> မိမိ၏ စန်းနက္ခတ်မှ တိကျသော နေရာများအတွက် TT27 ၏ အထူးရမှတ်များ (ဥပမာ- #1 ဇနမ၊ #4 ဇာတိ-လူမှုအဖွဲ့အစည်း၊ #10 ကမ္မ-အလုပ်၊ #22 ဝိနာသိက-ရှောင်ရန်)။</li>
         <li><b>Pada (ပါဒ):</b> နက္ခတ်တစ်ခုကို (၄) ပိုင်း ပိုင်းခြားထားသော အစိတ်အပိုင်း (တစ်ပါဒလျှင် ၃°၂၀′ ရှိပါသည်။) အချို့သော နက္ခတ်/ပါဒ ပေါင်းစပ်မှုများသည် အထူးအကျိုးပေး အစွမ်းသတ္တိများ ဆောင်ကြဉ်းပေးပါသည်။
           <ul>
             <li><b style="color:var(--gold)">ဝဂ္ဂုတ္တမ:</b> နေရာရခြင်း၊ အလေးထားခံရခြင်း၊ ထင်ပေါ်ကျော်ကြားခြင်းနှင့် အဆင့်အတန်းမြင့်မားခြင်းတို့ကို အကျိုးပေးသည်။</li>
@@ -523,32 +523,36 @@ const TARA = [
 
 // TT27 special bonus keyed by count-from-Moon (1..27)
 const SPECIAL = {
-  1:{n:"Janma",b:1,use:"Personal reset, intention-setting"},
-  2:{n:"Sampat",b:3,use:"Money, payments, resources"},
-  8:{n:"Mitra support",b:2,use:"Meetings, networking, allies"},
-  10:{n:"Karma",b:3,use:"Career, project work, deliverables"},
-  16:{n:"Sanghatika",b:-2,use:"Conflict handling, negotiation — not peaceful starts"},
-  18:{n:"Samudayika",b:2,use:"Community, market, public launch"},
-  19:{n:"Adhana",b:3,use:"Foundations: company / platform setup"},
-  23:{n:"Vainashika",b:-4,use:"Ending, deleting, cutting — not launching"},
-  25:{n:"Manasa",b:1,use:"Planning, study, inner clarity"},
-  26:{n:"Desha",b:3,use:"Authority, approval, institutions"},
-  27:{n:"Abhisheka",b:3,use:"Leadership, visibility, command"}
+  1:{n:"Janma",b:1,use:"You, the crucial reference point — personal reset, intention-setting"},
+  2:{n:"Sampat",b:3,use:"Wealth, money, resources — shows the kind of wealth you should possess"},
+  4:{n:"Jaati",b:3,use:"Community, caste, social group — strong community brings well-being"},
+  7:{n:"Naidhana",b:-4,use:"Death, the worst of the bad stars — not for starting activities"},
+  8:{n:"Mitra support",b:2,use:"Friend, meetings, networking, allies"},
+  10:{n:"Karma",b:3,use:"Profession, career, project work — 10th from Janma"},
+  12:{n:"Desha",b:3,use:"Country, nation, culture, authority, institutions"},
+  16:{n:"Sanghatika",b:-2,use:"Group, inner circle — conflict handling, negotiation"},
+  18:{n:"Samudayika",b:2,use:"Crowd, community, market, public launch — all people coming together"},
+  19:{n:"Adhana",b:3,use:"Conception, foundations — circumstances around conception, company/platform setup"},
+  22:{n:"Vainashika",b:-4,use:"Destruction, ending, deleting, cutting — not launching"},
+  25:{n:"Manasa",b:1,use:"Mind, planning, study, inner clarity — controls the mind, obsessions"},
+  27:{n:"Abhisheka",b:3,use:"Coronation, leadership, visibility, command"}
 };
 
 // Burmese counterparts for SPECIAL.use, keyed by the special name.
 const SPECIAL_USE_MY = {
   "Janma":"ကိုယ်ပိုင်လုပ်ငန်းဆောင်တာများ အစပြုခြင်းနှင့် ရည်မှန်းချက်အသစ်များ ချမှတ်ခြင်း",
-  "Sampat":"ငွေကြေးဥစ္စာ စီးဆင်းမှု၊ အကျိုးအမြတ်ရရှိမှုနှင့် အရင်းအမြစ် ရှာဖွေမှုများ",
-  "Mitra support":"မိတ်ဖက်များနှင့် တွေ့ဆုံဆွေးနွေးခြင်း၊ ကွန်ရက်ချိတ်ဆက်ခြင်းနှင့် အကူအညီရယူခြင်း",
-  "Karma":"အသက်မွေးဝမ်းကျောင်း လုပ်ငန်းများ၊ စီမံကိန်းများနှင့် လုပ်ငန်းပြီးမြောက်မှုများ",
-  "Sanghatika":"ပဋိပက္ခများ ဖြေရှင်းခြင်းနှင့် ညှိနှိုင်းဆောင်ရွက်ခြင်း (အသစ်စတင်ရန် မသင့်)",
-  "Samudayika":"လူထုဆက်ဆံရေး၊ ဈေးကွက်ချဲ့ထွင်ခြင်းနှင့် အများပြည်သူသို့ ထုတ်ပြန်ခြင်း",
-  "Adhana":"အခြေခံအုတ်မြစ်များ တည်ဆောက်ခြင်းနှင့် အဖွဲ့အစည်းဆိုင်ရာ စနစ်များ ထူထောင်ခြင်း",
-  "Vainashika":"လုပ်ငန်းများ ရပ်စဲခြင်း၊ ဖျက်သိမ်းခြင်းနှင့် အဟောင်းများကို ဖြတ်တောက်ခြင်း",
-  "Manasa":"စီမံကိန်းရေးဆွဲခြင်း၊ လေ့လာသင်ယူခြင်းနှင့် စိတ်ဓာတ်ပိုင်းဆိုင်ရာ တည်ငြိမ်မှု",
-  "Desha":"အာဏာပိုင်များနှင့် ဆက်ဆံခြင်း၊ ခွင့်ပြုချက်ရယူခြင်းနှင့် စည်းမျဉ်းစည်းကမ်းများ",
-  "Abhisheka":"ခေါင်းဆောင်မှု၊ ထင်ပေါ်ကျော်ကြားမှုနှင့် အဆင့်အတန်း မြှင့်တင်ခြင်း"
+  "Sampat":"ဥစ္စာဓနုရာန်း၊ ငွေကြေးနှင့် အရင်းအမြစ်များ — ရရှိသင့်သော ဥစ္စာအမျိုးအစားကို ပြသည်",
+  "Jaati":"လူမှုအဖွဲ့အစည်း၊ လူမျိုးစုနှင့် လူမှုအုပ်စု — ခိုင်မာသော လူမှုအဖွဲ့အစည်းသည် ကောင်းကျန်းမှုကို ယူဆောင်ပေးသည်",
+  "Naidhana":"သေခြင်း၊ ဆိုးရွားဆုံးသော နက္ခတ် — လုပ်ငန်းများ စတင်ရန် မသင့်",
+  "Mitra support":"မိတ်ဆွေ၊ တွေ့ဆုံခြင်း၊ ကွန်ရက်ချိတ်ဆက်ခြင်းနှင့် မိတ်ဖက်များ",
+  "Karma":"အသက်မွေးဝမ်းကျောင်း လုပ်ငန်းများ၊ စီမံကိန်းများနှင့် လုပ်ငန်းပြီးမြောက်မှုများ — ဇနမနက္ခတ်မှ ၁၀ ခုမြောက်",
+  "Desha":"နိုင်ငံ၊ နိုင်ငံတော်ယဉ်ကျေးမှု၊ အာဏာပိုင်များနှင့် အဖွဲ့အစည်းများ",
+  "Sanghatika":"အုပ်စု၊ အတွင်းပိုင်းအဖွဲ့ — ပဋိပက္ခများ ဖြေရှင်းခြင်းနှင့် ညှိနှိုင်းဆောင်ရွက်ခြင်း",
+  "Samudayika":"လူထု၊ လူမှုအဖွဲ့အစည်း၊ ဈေးကွက်ချဲ့ထွင်ခြင်းနှင့် အများပြည်သူသို့ ထုတ်ပြန်ခြင်း — လူအားလုံး စုဝေးခြင်း",
+  "Adhana":"ကိုယ်ဝေါက်ခြင်း၊ အခြေခံအုတ်မြစ်များ — ကိုယ်ဝေါက်ချိန်အခြေအနေများ၊ အဖွဲ့အစည်းတည်ထောင်ခြင်း",
+  "Vainashika":"ဖျက်ဆီးခြင်း၊ လုပ်ငန်းများ ရပ်စဲခြင်း၊ ဖျက်သိမ်းခြင်းနှင့် အဟောင်းများကို ဖြတ်တောက်ခြင်း",
+  "Manasa":"စိတ်၊ စီမံကိန်းရေးဆွဲခြင်း၊ လေ့လာသင်ယူခြင်းနှင့် စိတ်ဓာတ်ပိုင်းဆိုင်ရာ တည်ငြိမ်မှု — စိတ်ကို ထိန်းချုပ်သည်၊ စွဲမက်ခြင်း",
+  "Abhisheka":"ဘိသိက်သွန်းခြင်း၊ ခေါင်းဆောင်မှု၊ ထင်ပေါ်ကျော်ကြားမှုနှင့် အဆင့်အတန်း မြှင့်တင်ခြင်း"
 };
 
 // generic best-use by Moon tara when no special marker
@@ -568,7 +572,7 @@ const TARA_USE_MY = {
 };
 
 const TARA_MY_MAP = {"Janma":"ဇနမ","Sampat":"သမ္ပတ္တိ","Vipat":"ဝိပတ္တိ","Kshema":"ခေမ","Pratyak":"ပြတ္တရ","Sadhana":"သာဓက","Naidhana":"ဘာဓ","Mitra":"မိတ္တ","Parama Mitra":"အတိမိတ္တ"};
-const SPECIAL_MY_MAP = {"Janma":"ဇနမ","Sampat":"သမ္ပတ္တိ","Mitra support":"မိတ္တ (အကူ)","Karma":"ကမ္မ","Sanghatika":"သံဃာဋိက","Samudayika":"သမုဒါယိက","Adhana":"အာဓာန","Vainashika":"ဝိနာသိက","Manasa":"မာနသ","Desha":"ဒေသ","Abhisheka":"အဘိသေက"};
+const SPECIAL_MY_MAP = {"Janma":"ဇနမ","Sampat":"သမ္ပတ္တိ","Jaati":"ဇာတိ","Naidhana":"ဘာဓ","Mitra support":"မိတ္တ (အကူ)","Karma":"ကမ္မ","Desha":"ဒေသ","Sanghatika":"သံဃာဋိက","Samudayika":"သမုဒါယိက","Adhana":"အာဓာန","Vainashika":"ဝိနာသိက","Manasa":"မာနသ","Abhisheka":"အဘိသေက"};
 const LORD_MY = {"Ketu":"ကိတ်","Venus":"သောကြာ","Sun":"တနင်္ဂနွေ","Moon":"တနင်္လာ","Mars":"အင်္ဂါ","Rahu":"ရာဟု","Jupiter":"ကြာသပတေး","Saturn":"စနေ","Mercury":"ဗုဒ္ဓဟူး"};
 
 const SUFFIX_REDUCT_EN=" — execution friction; favor repair / cleanup / closure over launch";
