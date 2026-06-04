@@ -178,8 +178,7 @@
     .section-card { padding: 16px; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
     .actions { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; }
-    th:nth-child(2), td:nth-child(2),
-    th:nth-child(5), td:nth-child(5) { display: none; }
+    th:nth-child(2), td:nth-child(2) { display: none; }
     .rituals .row { flex-direction: column; gap: 4px; }
   }
 
@@ -569,7 +568,7 @@ const TARA_USE_MY = {
 };
 
 const TARA_MY_MAP = {"Janma":"ဇနမ","Sampat":"သမ္ပတ္တိ","Vipat":"ဝိပတ္တိ","Kshema":"ခေမ","Pratyak":"ပြတ္တရ","Sadhana":"သာဓက","Naidhana":"ဘာဓ","Mitra":"မိတ္တ","Parama Mitra":"အတိမိတ္တ"};
-const SPECIAL_MY_MAP = {"Janma":"ဇနမ","Sampat":"သမ္ပတ္တိ","Mitra support":"မိတ္တ (အကူ)","Karma":"ကမ္မ","Sanghatika":"သံဃာတိက","Samudayika":"သမုဒယိက","Adhana":"အာဓာန","Vainashika":"ဝိနာသိက","Manasa":"မာနသ","Desha":"ဒေသ","Abhisheka":"အဘိသေက"};
+const SPECIAL_MY_MAP = {"Janma":"ဇနမ","Sampat":"သမ္ပတ္တိ","Mitra support":"မိတ္တ (အကူ)","Karma":"ကမ္မ","Sanghatika":"သံဃာဋိက","Samudayika":"သမုဒါယိက","Adhana":"အာဓာန","Vainashika":"ဝိနာသိက","Manasa":"မာနသ","Desha":"ဒေသ","Abhisheka":"အဘိသေက"};
 const LORD_MY = {"Ketu":"ကိတ်","Venus":"သောကြာ","Sun":"တနင်္ဂနွေ","Moon":"တနင်္လာ","Mars":"အင်္ဂါ","Rahu":"ရာဟု","Jupiter":"ကြာသပတေး","Saturn":"စနေ","Mercury":"ဗုဒ္ဓဟူး"};
 
 const SUFFIX_REDUCT_EN=" — execution friction; favor repair / cleanup / closure over launch";
@@ -788,9 +787,9 @@ function renderToday(){
     vEl.textContent="Computing…";return;}
   const mPad=todayState.moonPada, lPad=todayState.lagnaPada;
   const mLord=lordOf(mIdx).f, lLord=lIdx!=null?lordOf(lIdx).f:"";
-  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">pada ${mPad}${getPadaHtml(mIdx, mPad)} · ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
+  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">pada ${mPad}${getPadaHtml(mIdx, mPad)}<br>${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
   lEl.innerHTML=lIdx!=null
-    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">pada ${lPad}${getPadaHtml(lIdx, lPad)} · ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
+    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">pada ${lPad}${getPadaHtml(lIdx, lPad)}<br>${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
     :'<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location</span>';
   const nm=+moonSel.value, nl=+lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
@@ -808,13 +807,12 @@ function renderToday(){
   if(lIdx!=null)parts.push(`Lagna Tara <b>${lt.name}</b> <small class="mm">(${TARA_MY_MAP[lt.name]})</small> (${lt.score>0?"+":""}${lt.score})`);
   if(sp)parts.push(`<b>${specialName}</b> <small class="mm">(${SPECIAL_MY_MAP[specialName]})</small> (${bonus>0?"+":""}${bonus})`);
   const hint=hasNatal()?"":`<div style="background:#2a2e4a;border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:.8rem">👋 <b>This score uses default natal values.</b> Set your own Moon &amp; Lagna in <i>Step 1</i> below for a verdict that's actually about <i>you</i>.<br><span class="mm">သင့်အတွက် တိကျသော အဖြေရရှိရန် အောက်ပါ အဆင့် (၁) တွင် မိမိ၏ စန်းနက္ခတ်နှင့် လဂ်နက္ခတ်ကို ရွေးချယ်ပေးပါ။</span></div>`;
-  vEl.innerHTML=hint+`<div>${use}</div><div style="color:var(--mut);font-size:.78rem;margin-top:4px">${parts.join(" · ")}${lIdx==null?' · <i>tap "Use my location" for Lagna layer</i> <span class="mm">(လဂ်နက္ခတ် ထည့်တွက်ရန် "လက်ရှိနေရာကို သုံးပါ" ကို နှိပ်ပါ)</span>':""}</div>`;
+  vEl.innerHTML=hint+`<div>${use}</div><div style="color:var(--mut);font-size:.78rem;margin-top:4px">${parts.join("<br>")}${lIdx==null?'<br><i>tap "Use my location" for Lagna layer</i> <span class="mm">(လဂ်နက္ခတ် ထည့်တွက်ရန် "လက်ရှိနေရာကို သုံးပါ" ကို နှိပ်ပါ)</span>':""}</div>`;
   // Burmese facing-direction rituals (keyed by transit Moon nakshatra).
   const ds=dirSelf(mIdx), dox=dirOther(mIdx);
   document.getElementById("todayRituals").innerHTML=
-    `<div class="row"><span class="lbl">🙏 Wish for self <span class="mm">(ကိုယ်တိုင်အတွက် ဆုတောင်းရန်)</span></span>`+
+    `<div class="row"><span class="lbl">🙏 Auspicious directions for prayer and wishes <span class="mm">(ဆုတောင်းပြည့်အရပ်မျက်နှာများ)</span></span>`+
     `<span>face <span class="dir">${ds.en}</span> <span class="my mm">${ds.my}</span></span></div>`+
-    `<div class="row"><span class="lbl">✨ Blessing for another <span class="mm">(အခြားသူများအတွက် မေတ္တာပို့ရန်)</span></span>`+
     `<span>face <span class="dir">${dox.en}</span> <span class="my mm">${dox.my}</span></span></div>`;
 }
 function refreshTransit(opts){
