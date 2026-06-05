@@ -433,9 +433,9 @@
         <li><b>Pada (ပါဒ):</b> နက္ခတ်တစ်ခုကို (၄) ပိုင်း ပိုင်းခြားထားသော အစိတ်အပိုင်း (တစ်ပါဒလျှင် ၃°၂၀′ ရှိပါသည်။)</li>
         <li><b>Lord (ဂြိုဟ်မင်း):</b> နက္ခတ်တစ်ခုချင်းစီကို အုပ်စိုးသော ဝိံသုတ္တရီ (Vimshottari) ဂြိုဟ်။</li>
       </ul>
-      <div id="navataraRef" class="ref-wrap"></div>
       <p class="calcnote">မိမိ၏ အချက်အလက်များကို ဤ Browser ထဲတွင်သာ သိမ်းဆည်းထားမည် ဖြစ်ပါသည်။ ပြန်လည်ဖျက်သိမ်းလိုပါက Today Card ရှိ <b>✕ Forget me</b> ကို နှိပ်ပါ။</p>
     </div>
+    <div id="navataraRef" class="ref-wrap"></div>
   </div>
 </details>
 
@@ -1541,10 +1541,10 @@ function renderReference(){
   </div>`;
 
   host.innerHTML=
-    `<details class="ref-acc"><summary>📜 နက္ခတ် ၂၇ လုံး အဓိပ္ပာယ် (ဇနမမှ ရေတွက်)</summary><div class="ref-body">${pos}</div></details>`+
-    `<details class="ref-acc"><summary>🔄 တာရာ ၉ ပါး — သဘောသဘာဝနှင့် ယတြာ</summary><div class="ref-body">${tara}${timing}</div></details>`+
-    `<details class="ref-acc"><summary>💰 ထီပေါက်ကိန်း / ငွေဝင်ကိန်း (ဥဒယနက္ခတ်)</summary><div class="ref-body">${money}</div></details>`+
-    `<details class="ref-acc"><summary>☀️ ဇနမ ၉ ပါး (နာရီနက္ခတ်) အထူးယတြာ</summary><div class="ref-body">${janma9}</div></details>`;
+    `<details class="ref-acc"><summary>📜 27 Nakshatra Meanings (counted from Janma) <span class="mm">နက္ခတ် ၂၇ လုံး အဓိပ္ပာယ် (ဇနမမှ ရေတွက်)</span></summary><div class="ref-body">${pos}</div></details>`+
+    `<details class="ref-acc"><summary>🔄 9 Tara — Nature &amp; Remedies <span class="mm">တာရာ ၉ ပါး — သဘောသဘာဝနှင့် ယတြာ</span></summary><div class="ref-body">${tara}${timing}</div></details>`+
+    `<details class="ref-acc"><summary>💰 Wealth / Windfall Luck (Udaya Nakshatra) <span class="mm">ထီပေါက်ကိန်း / ငွေဝင်ကိန်း</span></summary><div class="ref-body">${money}</div></details>`+
+    `<details class="ref-acc"><summary>☀️ Janma 9 Vital Nakshatras — Special Remedies <span class="mm">ဇနမ ၉ ပါး (နာရီနက္ခတ်) အထူးယတြာ</span></summary><div class="ref-body">${janma9}</div></details>`;
 }
 renderReference();
 
