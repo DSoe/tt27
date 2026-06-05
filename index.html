@@ -714,6 +714,36 @@ const NAK_POSITION_MY = {
   27:{t:"၂၇ လုံးမြောက် (အဘိသေကနက္ခတ်)",d:"သံသရာမှ ပေးအပ်ထားသော တာဝန်၊ ဒီဘုံကို လာရသည့် အကြောင်းရင်းများကို ကြည့်ရပါသည်။ ကိုယ်တိုင် စီမံပိုင်ခွင့် (ဘိသိက်မြှောက်ခြင်း)၊ လွတ်မြောက်မှု ပေးတတ်ပြီး တတိယမျက်လုံးနက္ခတ် ဟုလည်း ခေါ်ပါသည်။ တိုင်းသိပြည်သိ နာမည်ကျော်ကြား ဂုဏ်ပြုခံရခြင်း (သို့) ရှုတ်ချခံရခြင်းကို ဖြစ်စေပါသည်။"}
 };
 
+const NAK_POSITION_EN = {
+  1:{t:"Janma (Birth)",d:"Inherently supportive but fragile; avoid starting major new ventures."},
+  2:{t:"2nd (Wealth/Dhana)",d:"Reflects preferred foods, persistent behaviors, and habits like yoga or traditional practices."},
+  3:{t:"3rd",d:"Governs close social circles and associates. Also indicates minor obstacles and disturbances."},
+  4:{t:"4th (Jati)",d:"Indicates ancestral traits, family disposition, home environment, past life connections, and life philosophy."},
+  5:{t:"5th",d:"Governs disciples, children, followers, creative intelligence, major life hurdles, and the fruits of past merits like treasure/jewelry."},
+  6:{t:"6th (Bin)",d:"Shows the ability to solve problems and learn from challenges. Reflects intensity and the power to crush rivals if used tactically."},
+  7:{t:"7th (Naidhana)",d:"Points to mortality, intense pain, and glimpses of the next life. Also the position of ultimate refuge and liberation."},
+  8:{t:"8th",d:"Governs relations with the mother or maternal figures, non-intimate friends, and general lifelong health."},
+  9:{t:"9th (Adhana/Conception)",d:"The protector and sustainer. A receptive position that manifests desires and brings fruition to plans."},
+  10:{t:"10th (Kamma)",d:"Indicates profession, livelihood, and food sources. Reflects unfinished tasks from past lives and religious duties."},
+  11:{t:"11th (Manasa)",d:"Governs mental power, intuition, preferred social circles, and the conceptualization of an ideal partner."},
+  12:{t:"12th (Desa)",d:"Shows unbreakable bonds (e.g., parent-child, spouse), personal weaknesses, and the potential to settle in foreign lands."},
+  13:{t:"13th (Abhisheka/Destiny)",d:"Reflects inescapable destiny (past kamma). Can bring either coronation or downfall. Governs the right eye and safety."},
+  14:{t:"14th",d:"Indicates worldview, worldly prestige, and possessions. If afflicted, it causes emotional instability and irreversible errors. Governs the left eye."},
+  15:{t:"15th (Sobhana)",d:"Governs social success, capabilities, and the potential for a smooth, prosperous life path."},
+  16:{t:"16th (Sanghatika)",d:"A position of acquisition and support from partners/associates. If afflicted, indicates betrayal, enemies, or debt."},
+  17:{t:"17th",d:"Governs the underlying causes of success or failure. Indicates acquaintances and neighbors."},
+  18:{t:"18th (Samudayika/Udaya)",d:"Reflects relatives, late-life outcomes, past spiritual merits, and inherent leadership qualities."},
+  19:{t:"19th (Adhana/Father)",d:"Governs the father, teachers, religion, and investments. Can bring sudden fame and shapes one's path through promises and oaths."},
+  20:{t:"20th (Udaya)",d:"Reveals both hidden weaknesses and windfall luck (like lotteries). Favors bulk charity and anonymous donations."},
+  21:{t:"21st",d:"Indicates mental resilience and the ability to maintain harmony with the environment."},
+  22:{t:"22nd (Vinashaka)",d:"A position that tests integrity. Governs rivalries, karmic consequences, and specific forms of spiritual worship."},
+  23:{t:"23rd",d:"Reflects life's rhythm and balance. A testing position that requires constant self-audit (sometimes also called Vinashaka)."},
+  24:{t:"24th (Physician)",d:"The 'Healer' position that cures ailments and ends the spiritual search. Indicates wisdom and the fulfillment of paramis."},
+  25:{t:"25th (Vinashaka/Manasa)",d:"Reflects self-destruction through greed. Governs memory, the mode of death, and the renunciation of worldly ties."},
+  26:{t:"26th (Desa/Raja)",d:"Indicates partners, loyalty, and the ability to build organizations. Governs power, authority, and one's 'kingdom' or domain."},
+  27:{t:"27th (Abhisheka)",d:"Reflects the soul's purpose and inescapable duties. Governs self-mastery, liberation, and wide-reaching fame or infamy."}
+};
+
 
 
 // 9-Tara nature, feeling and yatra remedy (Burmese). Keyed by Tara name.
@@ -1460,91 +1490,151 @@ function calcBirth(){
 function renderReference(){
   const host=document.getElementById("navataraRef");
   if(!host)return;
-  // 27 count-positions with preamble
-  let pos=`<p style="margin-bottom:12px; font-size:0.92rem; color:var(--gold); line-height:1.5;">ပေးထားသော မှတ်တမ်းများအရ ဇနမနက္ခတ် (မူလစန်းစီးနက္ခတ်) မှစတင်ရေတွက်လျှင် ၂ လုံးမြောက်မှ ၂၇ လုံးမြောက်အထိ နက္ခတ်တစ်လုံးချင်းစီ၏ အဓိပ္ပာယ်နှင့် သဘောသဘာဝများမှာ အောက်ပါအတိုင်း ဖြစ်ပါသည် -</p>`;
+  // 27 count-positions with preamble (Myanmar only; English placeholder note)
+  let posMY=`<p style="margin-bottom:12px; font-size:0.92rem; color:var(--gold); line-height:1.5;">ပေးထားသော မှတ်တမ်းများအရ ဇနမနက္ခတ် (မူလစန်းစီးနက္ခတ်) မှစတင်ရေတွက်လျှင် ၂ လုံးမြောက်မှ ၂၇ လုံးမြောက်အထိ နက္ခတ်တစ်လုံးချင်းစီ၏ အဓိပ္ပာယ်နှင့် သဘောသဘာဝများမှာ အောက်ပါအတိုင်း ဖြစ်ပါသည် -</p>`;
   for(let i=1;i<=27;i++){const e=NAK_POSITION_MY[i];
-    pos+=`<div class="ref-item"><span class="rt">${e.t}</span><span class="rd">${e.d}</span></div>`;}
-  // 9 Tara with yatra
+    posMY+=`<div class="ref-item"><span class="rt">${e.t}</span><span class="rd">${e.d}</span></div>`;}
+  const posEN=`<p style="font-size:0.92rem; color:var(--gold); line-height:1.5;">Each nakshatra counted from your Janma nakshatra (positions 2 through 27) carries a specific life theme. The full position-by-position reference is available in the Myanmar tab.</p>`;
+  // 9 Tara with yatra — separate EN and MY
   const order=["Janma","Sampat","Vipat","Kshema","Pratyak","Sadhana","Naidhana","Mitra","Parama Mitra"];
-  let tara="";
-  order.forEach(k=>{const e=TARA_DETAIL_MY[k];if(!e)return;
-    tara+=`<div class="ref-item"><span class="rt">${TARA_MY_MAP[k]} (${k})</span>`+
-      `<div class="rd"><span class="rk">သဘောသဘာဝ:</span> ${e.nature}</div>`+
-      (e.feeling?`<div class="rd"><span class="rk">စိတ်ခံစားချက်:</span> ${e.feeling}</div>`:"")+
-      `<div class="rd"><span class="rk">ယတြာ:</span> ${e.yatra}</div></div>`;});
+  let taraEN="", taraMY="";
+  order.forEach(k=>{const en=TARA_DETAIL_EN[k], my=TARA_DETAIL_MY[k];
+    if(en){taraEN+=`<div class="ref-item"><span class="rt">${k}</span>`+
+      `<div class="rd"><span class="rk">Nature:</span> ${en.nature}</div>`+
+      (en.feeling?`<div class="rd"><span class="rk">Feeling:</span> ${en.feeling}</div>`:"")+
+      `<div class="rd"><span class="rk">Remedy:</span> ${en.yatra}</div></div>`;}
+    if(my){taraMY+=`<div class="ref-item"><span class="rt">${TARA_MY_MAP[k]} (${k})</span>`+
+      `<div class="rd"><span class="rk">သဘောသဘာဝ:</span> ${my.nature}</div>`+
+      (my.feeling?`<div class="rd"><span class="rk">စိတ်ခံစားချက်:</span> ${my.feeling}</div>`:"")+
+      `<div class="rd"><span class="rk">ယတြာ:</span> ${my.yatra}</div></div>`;}});
 
-  const money=`<div class="ref-note">
-    <p><b>Wealth & Windfall Luck (Udaya Nakshatra) / ထီပေါက်ကိန်း / ငွေဝင်ကိန်း</b></p>
+  const moneyEN=`<div class="ref-note">
+    <p><b>Wealth &amp; Windfall Luck (Udaya Nakshatra)</b></p>
     <p>The <b>20th Nakshatra (Udaya)</b> from your Janma Nakshatra is the primary indicator for wealth. When the transit Moon passes over your Udaya Nakshatra, it is an auspicious time for lottery, business ventures, and opening new financial paths.</p>
     <p>If your Udaya Nakshatra is weak in your birth chart, you may find life to be a constant struggle requiring excessive effort. You can improve this by performing the following remedies and practices:</p>
     <ol>
-      <li><b>Bulk Offerings (အစုလိုက်အပုံလိုက် လှူဒါန်းခြင်း)</b> — Perform donations in bulk (e.g., a whole bag of rice or a large container of oil) rather than small quantities, especially when the Moon is in your Udaya Nakshatra.</li>
-      <li><b>Anonymous Charity / Pansakula (ပံ့သကူဒါန)</b> — Placing a small amount of money in an envelope with a note saying "May the deserving receiver benefit" and leaving it in a public place is excellent for wealth.</li>
-      <li><b>General Charity / Satuditha (စတုဒီသာဒါန)</b> — Feeding animals (like ants with sugar or stray dogs) in bulk without specifying a single recipient is a powerful remedy.</li>
-      <li><b>Daily Janma & Udaya Offerings (ဇနမ နှင့် ဥဒယ လှူဖွယ်များ)</b> — Offer daily items associated with both your Janma and Udaya Nakshatras to the Buddha.</li>
-      <li><b>Planting Associated Trees (ဓါတ်အပင်များ တွဲဖက်စိုက်ပျိုးခြင်း)</b> — Plant the tree associated with your Udaya Nakshatra alongside the tree of its ruling transit planet.</li>
-      <li><b>Integrity & Spiritual Practice (တည်ကြည်ဖြောင့်မတ်ခြင်းနှင့် ကျင့်စဉ်)</b> — The Udaya Nakshatra favors <b>upright integrity</b>. Consistent daily practice (e.g., 2 minutes of meditation or chanting) is highly recognized by this Nakshatra for bringing prosperity.</li>
+      <li><b>Bulk Offerings</b> — Perform donations in bulk (e.g., a whole bag of rice or a large container of oil) rather than small quantities, especially when the Moon is in your Udaya Nakshatra.</li>
+      <li><b>Anonymous Charity (Pansakula)</b> — Placing a small amount of money in an envelope with a note saying "May the deserving receiver benefit" and leaving it in a public place is excellent for wealth.</li>
+      <li><b>General Charity (Satuditha)</b> — Feeding animals (like ants with sugar or stray dogs) in bulk without specifying a single recipient is a powerful remedy.</li>
+      <li><b>Daily Janma &amp; Udaya Offerings</b> — Offer daily items associated with both your Janma and Udaya Nakshatras to the Buddha.</li>
+      <li><b>Planting Associated Trees</b> — Plant the tree associated with your Udaya Nakshatra alongside the tree of its ruling transit planet.</li>
+      <li><b>Integrity &amp; Spiritual Practice</b> — The Udaya Nakshatra favors <b>upright integrity</b>. Consistent daily practice (e.g., 2 minutes of meditation or chanting) is highly recognized by this Nakshatra for bringing prosperity.</li>
     </ol>
-
     <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
-
-    <p><b>Jewelry & Treasure Luck (5th Nakshatra) / ရွှေငွေရတနာကံ</b></p>
+    <p><b>Jewelry &amp; Treasure Luck (5th Nakshatra)</b></p>
     <p>The <b>5th Nakshatra</b> from Janma Nakshatra governs your potential for owning jewelry, gold, and treasures according to its nature.</p>
     <ul>
       <li><b>Practical Application:</b> Use this Nakshatra to determine the types of treasures you will own. Buying or wearing gold/jewelry when the transit Moon crosses this 5th Nakshatra can enhance your luck.</li>
-      <li><b>Fruit of Past Merit:</b> This position represents merits from past lives waiting to manifest. The reward is certain and substantial, described as "The hunter finding the fallen deer" (ပိုင်ပိုင်နိုင်နိုင် ရလာမည့် အကျိုးပေး).</li>
+      <li><b>Fruit of Past Merit:</b> This position represents merits from past lives waiting to manifest. The reward is certain and substantial, described as "The hunter finding the fallen deer".</li>
       <li><b>Need for Effort:</b> While the reward is destined, this Nakshatra also indicates significant life hurdles. Just as a hunter must trek through the forest to claim the deer, you must put in the necessary effort and persistence to realize this luck.</li>
     </ul>
   </div>`;
 
-  const timing=`<div class="ref-note">
+  const moneyMY=`<div class="ref-note">
+    <p><b>ထီပေါက်ကိန်း / ငွေဝင်ကိန်း (ဥဒယနက္ခတ်)</b></p>
+    <p>ဇနမနက္ခတ်မှ ၂၀ ခုမြောက် <b>ဥဒယနက္ခတ်</b> သည် ငွေကြေးကံ၏ အဓိကညွှန်ကိန်းဖြစ်သည်။ လစန်းသည် မိမိ၏ ဥဒယနက္ခတ်ကို ဖြတ်ကျော်သောအခါ ထီပေါက်ရန်၊ စီးပွားရေးလုပ်ငန်းသစ်များ စတင်ရန်နှင့် ငွေကြေးလမ်းကြောင်းသစ်များ ဖွင့်လှစ်ရန် အခါကောင်းဖြစ်သည်။</p>
+    <p>ဇာတာတွင် ဥဒယနက္ခတ် အားနည်းနေပါက ဘဝတွင် အလွန်ကြိုးစားရသော်လည်း ရုန်းကန်နေရတတ်သည်။ အောက်ပါ ယတြာများဖြင့် တိုးတက်အောင် ပြုလုပ်နိုင်သည် -</p>
+    <ol>
+      <li><b>အစုလိုက်အပုံလိုက် လှူဒါန်းခြင်း</b> — အနည်းငယ်စီထက် ဆန်တစ်အိတ်လုံး၊ ဆီတစ်ပုလင်းလုံးကဲ့သို့ အစုလိုက် လှူဒါန်းပါ။ ဥဒယနက္ခတ်တွင် လစန်းကျချိန် ပြုလုပ်ပါ။</li>
+      <li><b>ပံ့သကူဒါန</b> — ငွေအနည်းငယ်ကို စာအိတ်တွင်ထည့်၍ "ထိုက်တန်သူ ရရှိပါစေ" ဟုရေးကာ လူသွားများသောနေရာတွင် ချန်ထားခြင်းသည် ငွေကြေးကံအတွက် အလွန်ကောင်းသည်။</li>
+      <li><b>စတုဒီသာဒါန</b> — ပုရွက်ဆိတ်များကို သကြားကျွေးခြင်း၊ ခွေးများကို ကျွေးမွေးခြင်းကဲ့သို့ တိရစ္ဆာန်များကို သီးခြားမရွေးဘဲ အစုလိုက် ကျွေးမွေးခြင်းသည် အားကောင်းသော ယတြာဖြစ်သည်။</li>
+      <li><b>ဇနမ နှင့် ဥဒယ နေ့စဉ်လှူဖွယ်များ</b> — မိမိ၏ ဇနမနှင့် ဥဒယနက္ခတ် နှစ်ခုစလုံးနှင့် ဆက်စပ်သော ပစ္စည်းများကို ဘုရားရှင်အား နေ့စဉ်ကပ်လှူပါ။</li>
+      <li><b>ဓါတ်အပင်များ တွဲဖက်စိုက်ပျိုးခြင်း</b> — မိမိ၏ ဥဒယနက္ခတ်နှင့် ဆက်စပ်သော သစ်ပင်ကို ၎င်းကို အုပ်စိုးသော ဂြိုဟ်၏ သစ်ပင်နှင့်တွဲ၍ စိုက်ပျိုးပါ။</li>
+      <li><b>တည်ကြည်ဖြောင့်မတ်ခြင်းနှင့် ကျင့်စဉ်</b> — ဥဒယနက္ခတ်သည် <b>ဖြောင့်မတ်တည်ကြည်မှု</b> ကို နှစ်သက်သည်။ နေ့စဉ်မှန်မှန် ပြုလုပ်သော ကျင့်စဉ် (ဥပမာ - ၂ မိနစ်ခန့် တရားထိုင်ခြင်း သို့မဟုတ် ဂါထာရွတ်ဖတ်ခြင်း) ကို ဤနက္ခတ်က အလွန်အသိအမှတ်ပြုပြီး ကြွယ်ဝမှုကို ဆောင်ကြဉ်းပေးသည်။</li>
+    </ol>
+    <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
+    <p><b>ရွှေငွေရတနာကံ (၅ ခုမြောက် နက္ခတ်)</b></p>
+    <p>ဇနမနက္ခတ်မှ <b>၅ ခုမြောက် နက္ခတ်</b> သည် ၎င်း၏ သဘောသဘာဝအလိုက် ရွှေ၊ ငွေ၊ ရတနာ ပိုင်ဆိုင်နိုင်မှုကို အုပ်စိုးသည်။</p>
+    <ul>
+      <li><b>လက်တွေ့အသုံးချမှု:</b> ဤနက္ခတ်ကို မိမိပိုင်ဆိုင်မည့် ရတနာအမျိုးအစားများ ဆုံးဖြတ်ရန် အသုံးပြုနိုင်သည်။ ဤ ၅ ခုမြောက်နက္ခတ်ကို လစန်းဖြတ်ကျော်ချိန် ရွှေ/ရတနာ ဝယ်ယူ/ဝတ်ဆင်ခြင်းသည် ကံကို မြှင့်တင်ပေးနိုင်သည်။</li>
+      <li><b>အတိတ်ကုသိုလ်၏ အကျိုးပေး:</b> ဤနေရာသည် ဖြစ်ပေါ်ရန် စောင့်ဆိုင်းနေသော အတိတ်ဘဝမှ ကုသိုလ်များကို ကိုယ်စားပြုသည်။ အကျိုးပေးမှာ သေချာပြီး "မုဆိုးက လဲကျနေသော ဒရယ်ကို တွေ့သကဲ့သို့" သေချာ ရရှိမည်ဖြစ်သည်။</li>
+      <li><b>ကြိုးစားအားထုတ်ရန် လိုအပ်ခြင်း:</b> အကျိုးပေးမှာ ကံကြမ္မာအရ သေချာသော်လည်း ဘဝတွင် အတားအဆီးများလည်း ရှိနေသည်။ မုဆိုးတစ်ဦးသည် ဒရယ်ကို ရယူရန် တောအုပ်ထဲ ဖြတ်သန်းရသကဲ့သို့ ဤကံကို အကောင်အထည်ဖော်ရန် ကြိုးစားအားထုတ်မှု လိုအပ်သည်။</li>
+    </ul>
+  </div>`;
+
+  const timingEN=`<div class="ref-note">
+    <p><b>Compatibility:</b> Check which Tara another person's nakshatra falls in, counted from your Janma, to gauge how the relationship will unfold.</p>
+    <p><b>Choosing the timing (Muhurta):</b> Avoid Janma, Vipat, Pratyak and Naidhana Taras for starting events. If unavoidable, only skip the first portion (Ghati) of those nakshatras.</p>
+  </div>`;
+
+  const timingMY=`<div class="ref-note">
     <p><b>လူမှုဆက်ဆံရေး:</b> မိမိနှင့် ဆက်ဆံရသူများ၏ နက္ခတ်သည် မိမိ၏ မည်သည့်တာရာတွင် ကျရောက်နေသည်ကို ကြည့်၍ ပေါင်းသင်းဆက်ဆံရေးကို ခန့်မှန်းနိုင်သည်။</p>
     <p><b>အခါရွေးချယ်ခြင်း:</b> ဇနမ၊ ဝိပ္ပတ္တိ၊ ပြတ္တရ နှင့် ဘာဓ (နိဓါန) တာရာများကို ရှောင်ကြဉ်ရမည်။ အကယ်၍ မလွှဲမရှောင်သာပါက ထိုနက္ခတ်များ၏ ပထမပိုင်းအချိန် (ဃဋီ) ကိုသာ ရှောင်၍ အသုံးပြုပါ။</p>
   </div>`;
 
-  const janma9=`<div class="ref-note">
-    <p><b>The 9 Vital Nakshatras (Janma 9) / ဇနမ ၉ ပါး (နာရီနက္ခတ် ၉ ပါး)</b></p>
-    <p>မှတ်တမ်းများအရ "ဇနမနက္ခတ် ၉ မျိုးတွဲ၍ လှူဒါန်းရမည့်နည်း" ဟု ပစ္စည်း ၉ မျိုးကို တိုက်ရိုက်တွဲဖက်လှူဒါန်းရန် ဖော်ပြထားခြင်း မရှိပါ။ သို့သော် <b>"ဇနမ ၉ ပါး" (နာရီနက္ခတ် ၉ ပါး)</b> လုံးအတွက် ပေါင်းရုံး၍ ပြုလုပ်နိုင်သော ယတြာ၊ အစီအရင်များနှင့် လှူဒါန်းနည်းများကိုမူ အောက်ပါအတိုင်း အသေးစိတ် လမ်းညွှန်ထားပါသည် -</p>
-    <p><i>While there isn't a single list of 9 items to donate, traditional records highlight 9 vital positions (Janma 9) that are governed by the Sun. Performing Sun remedies can mitigate negative effects for all 9.</i></p>
-
-    <p><b>၁။ ဇနမ (၉) ပါး (သို့မဟုတ်) နာရီနက္ခတ် ၉ ပါးဆိုသည်မှာ / The 9 Vital Positions</b></p>
-    <p>ဇနမ (၁ လုံးမြောက်)၊ ကမ္မ (၁၀)၊ သံဃာဋိက (၁၆)၊ သာမုဒါယိက (၁၈)၊ အာဓါန (၁၉)၊ ဝိနာသက (၂၃) ဟူသော ဇနမ ၆ ပါးအပြင်၊ ဇာတိ (၂၅)၊ တိုင်းပြည် (၂၆)၊ အဘိသေက (၂၇) အစရှိသည့် နက္ခတ် ၃ လုံးကို ထပ်ပေါင်း၍ <b>ဇနမ ၉ ပါး</b> ဟု ခေါ်ဆိုပါသည်။</p>
-    <p><i>(Includes 1st, 10th, 16th, 18th, 19th, 23rd, 25th, 26th, and 27th positions).</i></p>
-
-    <p><b>၂။ ဇနမ ၉ ပါးလုံးအတွက် တနင်္ဂနွေဂြိုဟ် ယတြာဖြင့် လွှမ်းခြုံခြင်း / Sun Coverage</b></p>
-    <p>ဤ နာရီနက္ခတ် ၉ ပါးလုံးကို တနင်္ဂနွေဂြိုဟ် တစ်လုံးတည်းက အုပ်ချုပ်ပါသည်။ ထို့ကြောင့် နက္ခတ်တစ်ခုချင်းစီအတွက် ယတြာများ မလုပ်နိုင်လျှင်တောင် <b>တနင်္ဂနွေဂြိုဟ် ယတြာချည်းပဲ သီးသန့်ချေနေပါက</b> ဤဇနမ ၉ ပါးလုံးမှ ဆိုးကျိုးများ မပေးနိုင်တော့ဘဲ ကောင်းကျိုးများ ပိုရလာစေမည် ဖြစ်ပါသည်။</p>
-    <p><i>Since the Sun rules all 9, Sun-related remedies protect them all collectively.</i></p>
-
-    <p><b>၃။ ဇနမ ၉ ပါးလုံးအတွက် လှူဒါန်းမှုနှင့် အစီအရင်များ / Offerings & Rituals</b></p>
+  const janma9EN=`<div class="ref-note">
+    <p><b>The 9 Vital Nakshatras (Janma 9)</b></p>
+    <p>While there isn't a single list of 9 items to donate, traditional records highlight 9 vital positions (Janma 9) that are all governed by the Sun. Performing Sun remedies can mitigate negative effects across all 9.</p>
+    <p><b>1. The 9 Vital Positions</b></p>
+    <p>Janma (1st), Karma (10th), Sanghatika (16th), Samudayika (18th), Adhana (19th) and Vinashaka (23rd) — the core 6 — plus Jaati (25th), Desha (26th) and Abhisheka (27th), together called the <b>Janma 9</b>.</p>
+    <p><b>2. Sun Coverage</b></p>
+    <p>All 9 of these hour-nakshatras are ruled by a single planet — the Sun. So even if you cannot perform remedies for each nakshatra individually, <b>consistently performing Sun remedies alone</b> prevents these 9 from causing harm and lets their benefits shine through.</p>
+    <p><b>3. Offerings &amp; Rituals</b></p>
     <ul>
-      <li><b>ကုသိုလ်ပြု လှူဒါန်းခြင်း (Donations):</b> ဤနာရီနက္ခတ် ကိုးပါးထဲမှ တစ်ခုခု စန်းယှဉ်သည့် နေ့များတွင် မိမိနှစ်သက်ရာ ကုသိုလ်ကောင်းမှုများ ပြုလုပ်ပေးပါ။ (Perform donations on days when the Moon transits any of these 9).</li>
-      <li><b>နေရောင်ခံခြင်း (Sun Bathing):</b> နံနက်ခင်း ထွက်လာသော နေရောင်ကို (၂၄) မိနစ်မှ (၄၈) မိနစ်အထိ မိမိခန္ဓာကိုယ်ပေါ် ကျရောက်အောင် နေထိုင်ပေးပါ။ (Spend 24-48 mins in morning sunlight to "burn away" impurities).</li>
-      <li><b>သတိပြုရန် (Warning):</b> ဤနာရီနက္ခတ် ၉ ပါးထဲမှ တစ်ခုခုပေါ်တွင် နေကြတ်၊ လကြတ် ဖြစ်ခဲ့ပါက တနင်္ဂနွေယတြာကို ခြောက်လတိုင်တိုင် ဆက်တိုက်ချေပေးရပါမည်။ (If an eclipse occurs on these Nakshatras, perform Sun remedies for 6 months).</li>
+      <li><b>Donations:</b> Perform acts of merit on days when the transit Moon crosses any of these 9 nakshatras.</li>
+      <li><b>Sun Bathing:</b> Spend 24–48 minutes in the early morning sunlight, letting it fall on your body to "burn away" impurities.</li>
+      <li><b>Warning:</b> If a solar or lunar eclipse occurs on any of these 9 nakshatras, perform Sun remedies continuously for 6 months.</li>
     </ul>
-
-    <p><b>၄။ ဇနမ ၉ ပါးလုံးအတွက် ပေါင်းရုံး၍ ဦးခေါင်းဆေးနည်းများ (အထူးယတြာ) / Medicinal Head Wash</b></p>
+    <p><b>4. Medicinal Head Wash (Special Remedy)</b></p>
     <ul>
-      <li><b>ငြိမ်သက် ကောင်းမွန်စေရန် (For Stability):</b> ပန်းပွင့် (၁၀၀)၊ တြိဖလ (ဇီးဖြူ၊ ဖန်ခါး၊ သစ်ဆိမ့်)၊ နံ့သာနီ၊ နံ့သာဖြူ၊ ပန်းယင်း တို့ကို ရေတွင်စိမ်၍ ဦးခေါင်းဆေးပါ။ (Wash with 100 flowers, Triphala, Sandalwood, and Frankincense).</li>
-      <li><b>နက္ခတ်များ နာနေ/ပျက်နေပါက (For Affliction):</b> နံ့သာနီ၊ နံ့သာဖြူ၊ နွားနို့၊ ပန်းယင်း၊ မြေစာမြက် တို့ဖြင့် ဦးခေါင်းဆေးပါ။ (Use Sandalwood, Milk, Frankincense, and Bermuda grass).</li>
-      <li><i>(Best performed when the transit Moon is in your Janma Nakshatra).</i></li>
+      <li><b>For Stability:</b> Soak 100 flowers, Triphala (three myrobalans), red and white sandalwood, and frankincense in water, then wash your head with it.</li>
+      <li><b>For Affliction:</b> Use red and white sandalwood, milk, frankincense, and Bermuda grass.</li>
+      <li><i>Best performed when the transit Moon is in your Janma Nakshatra.</i></li>
     </ul>
-
     <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
-
-    <p><b>(ဖြည့်စွက်ချက်) တာရာကိုးပါးလုံးအတွက် Universal Remedies</b></p>
-    <p>တာရာကိုးပါးစက်တွင် မည်သည့်တာရာညံ့သည်ဖြစ်စေ အလွယ်ကူဆုံး ပြုလုပ်နိုင်သော လှူဒါန်းနည်းမှာ -</p>
+    <p><b>Universal Remedies for all 9 Taras</b></p>
+    <p>Whichever Tara is weak in the 9-fold cycle, the easiest remedies are:</p>
     <ul>
-      <li>ဆန်လှူခြင်း၊ ဆွမ်းကပ်ခြင်း သို့မဟုတ် အစိမ်းစား ဟင်းသီးဟင်းရွက်များကို တရားကျင့်သူအား လှူခြင်း။ (Donate rice or raw vegetables to virtuous practitioners).</li>
-      <li>ဆား (သို့မဟုတ်) နှမ်း တစ်မျိုးမျိုးကို သီးသန့်လှူခြင်း။ (Donate Salt or Sesame seeds).</li>
-      <li>ရွှေနှင့် နှမ်းကို အဆင်ပြေသလို တွဲဖက်လှူဒါန်းခြင်း။ (Donate Gold combined with Sesame).</li>
+      <li>Donate rice or offer food / raw vegetables to virtuous practitioners.</li>
+      <li>Donate salt or sesame seeds on their own.</li>
+      <li>Donate gold combined with sesame as convenient.</li>
     </ul>
   </div>`;
 
+  const janma9MY=`<div class="ref-note">
+    <p><b>ဇနမ ၉ ပါး (နာရီနက္ခတ် ၉ ပါး)</b></p>
+    <p>မှတ်တမ်းများအရ "ဇနမနက္ခတ် ၉ မျိုးတွဲ၍ လှူဒါန်းရမည့်နည်း" ဟု ပစ္စည်း ၉ မျိုးကို တိုက်ရိုက်တွဲဖက်လှူဒါန်းရန် ဖော်ပြထားခြင်း မရှိပါ။ သို့သော် <b>"ဇနမ ၉ ပါး" (နာရီနက္ခတ် ၉ ပါး)</b> လုံးအတွက် ပေါင်းရုံး၍ ပြုလုပ်နိုင်သော ယတြာ၊ အစီအရင်များနှင့် လှူဒါန်းနည်းများကိုမူ အောက်ပါအတိုင်း အသေးစိတ် လမ်းညွှန်ထားပါသည် -</p>
+    <p><b>၁။ ဇနမ ၉ ပါး (နာရီနက္ခတ် ၉ ပါး) ဆိုသည်မှာ</b></p>
+    <p>ဇနမ (၁ လုံးမြောက်)၊ ကမ္မ (၁၀)၊ သံဃာဋိက (၁၆)၊ သာမုဒါယိက (၁၈)၊ အာဓါန (၁၉)၊ ဝိနာသက (၂၃) ဟူသော ဇနမ ၆ ပါးအပြင်၊ ဇာတိ (၂၅)၊ တိုင်းပြည် (၂၆)၊ အဘိသေက (၂၇) အစရှိသည့် နက္ခတ် ၃ လုံးကို ထပ်ပေါင်း၍ <b>ဇနမ ၉ ပါး</b> ဟု ခေါ်ဆိုပါသည်။</p>
+    <p><b>၂။ ဇနမ ၉ ပါးလုံးအတွက် တနင်္ဂနွေဂြိုဟ် ယတြာဖြင့် လွှမ်းခြုံခြင်း</b></p>
+    <p>ဤ နာရီနက္ခတ် ၉ ပါးလုံးကို တနင်္ဂနွေဂြိုဟ် တစ်လုံးတည်းက အုပ်ချုပ်ပါသည်။ ထို့ကြောင့် နက္ခတ်တစ်ခုချင်းစီအတွက် ယတြာများ မလုပ်နိုင်လျှင်တောင် <b>တနင်္ဂနွေဂြိုဟ် ယတြာချည်းပဲ သီးသန့်ချေနေပါက</b> ဤဇနမ ၉ ပါးလုံးမှ ဆိုးကျိုးများ မပေးနိုင်တော့ဘဲ ကောင်းကျိုးများ ပိုရလာစေမည် ဖြစ်ပါသည်။</p>
+    <p><b>၃။ ဇနမ ၉ ပါးလုံးအတွက် လှူဒါန်းမှုနှင့် အစီအရင်များ</b></p>
+    <ul>
+      <li><b>ကုသိုလ်ပြု လှူဒါန်းခြင်း:</b> ဤနာရီနက္ခတ် ကိုးပါးထဲမှ တစ်ခုခု စန်းယှဉ်သည့် နေ့များတွင် မိမိနှစ်သက်ရာ ကုသိုလ်ကောင်းမှုများ ပြုလုပ်ပေးပါ။</li>
+      <li><b>နေရောင်ခံခြင်း:</b> နံနက်ခင်း ထွက်လာသော နေရောင်ကို (၂၄) မိနစ်မှ (၄၈) မိနစ်အထိ မိမိခန္ဓာကိုယ်ပေါ် ကျရောက်အောင် နေထိုင်ပေးပါ။</li>
+      <li><b>သတိပြုရန်:</b> ဤနာရီနက္ခတ် ၉ ပါးထဲမှ တစ်ခုခုပေါ်တွင် နေကြတ်၊ လကြတ် ဖြစ်ခဲ့ပါက တနင်္ဂနွေယတြာကို ခြောက်လတိုင်တိုင် ဆက်တိုက်ချေပေးရပါမည်။</li>
+    </ul>
+    <p><b>၄။ ဇနမ ၉ ပါးလုံးအတွက် ပေါင်းရုံး၍ ဦးခေါင်းဆေးနည်းများ (အထူးယတြာ)</b></p>
+    <ul>
+      <li><b>ငြိမ်သက် ကောင်းမွန်စေရန်:</b> ပန်းပွင့် (၁၀၀)၊ တြိဖလ (ဇီးဖြူ၊ ဖန်ခါး၊ သစ်ဆိမ့်)၊ နံ့သာနီ၊ နံ့သာဖြူ၊ ပန်းယင်း တို့ကို ရေတွင်စိမ်၍ ဦးခေါင်းဆေးပါ။</li>
+      <li><b>နက္ခတ်များ နာနေ/ပျက်နေပါက:</b> နံ့သာနီ၊ နံ့သာဖြူ၊ နွားနို့၊ ပန်းယင်း၊ မြေစာမြက် တို့ဖြင့် ဦးခေါင်းဆေးပါ။</li>
+      <li><i>(မိမိ၏ ဇနမနက္ခတ်တွင် လစန်းကျချိန် ပြုလုပ်လျှင် အကောင်းဆုံးဖြစ်သည်။)</i></li>
+    </ul>
+    <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
+    <p><b>(ဖြည့်စွက်ချက်) တာရာကိုးပါးလုံးအတွက် Universal Remedies</b></p>
+    <p>တာရာကိုးပါးစက်တွင် မည်သည့်တာရာညံ့သည်ဖြစ်စေ အလွယ်ကူဆုံး ပြုလုပ်နိုင်သော လှူဒါန်းနည်းမှာ -</p>
+    <ul>
+      <li>ဆန်လှူခြင်း၊ ဆွမ်းကပ်ခြင်း သို့မဟုတ် အစိမ်းစား ဟင်းသီးဟင်းရွက်များကို တရားကျင့်သူအား လှူခြင်း။</li>
+      <li>ဆား (သို့မဟုတ်) နှမ်း တစ်မျိုးမျိုးကို သီးသန့်လှူခြင်း။</li>
+      <li>ရွှေနှင့် နှမ်းကို အဆင်ပြေသလို တွဲဖက်လှူဒါန်းခြင်း။</li>
+    </ul>
+  </div>`;
+
+  const enAccordions=
+    `<details class="ref-acc"><summary>📜 27 Nakshatra Meanings (counted from Janma)</summary><div class="ref-body">${posEN}</div></details>`+
+    `<details class="ref-acc"><summary>🔄 9 Tara — Nature &amp; Remedies</summary><div class="ref-body">${taraEN}${timingEN}</div></details>`+
+    `<details class="ref-acc"><summary>💰 Wealth / Windfall Luck (Udaya Nakshatra)</summary><div class="ref-body">${moneyEN}</div></details>`+
+    `<details class="ref-acc"><summary>☀️ Janma 9 Vital Nakshatras — Special Remedies</summary><div class="ref-body">${janma9EN}</div></details>`;
+
+  const myAccordions=
+    `<details class="ref-acc"><summary>📜 နက္ခတ် ၂၇ လုံး အဓိပ္ပာယ် (ဇနမမှ ရေတွက်)</summary><div class="ref-body">${posMY}</div></details>`+
+    `<details class="ref-acc"><summary>🔄 တာရာ ၉ ပါး — သဘောသဘာဝနှင့် ယတြာ</summary><div class="ref-body">${taraMY}${timingMY}</div></details>`+
+    `<details class="ref-acc"><summary>💰 ထီပေါက်ကိန်း / ငွေဝင်ကိန်း</summary><div class="ref-body">${moneyMY}</div></details>`+
+    `<details class="ref-acc"><summary>☀️ ဇနမ ၉ ပါး (နာရီနက္ခတ်) အထူးယတြာ</summary><div class="ref-body">${janma9MY}</div></details>`;
+
   host.innerHTML=
-    `<details class="ref-acc"><summary>📜 <span class="lang-en">27 Nakshatra Meanings (counted from Janma)</span><span class="lang-my mm">နက္ခတ် ၂၇ လုံး အဓိပ္ပာယ် (ဇနမမှ ရေတွက်)</span></summary><div class="ref-body">${pos}</div></details>`+
-    `<details class="ref-acc"><summary>🔄 <span class="lang-en">9 Tara — Nature &amp; Remedies</span><span class="lang-my mm">တာရာ ၉ ပါး — သဘောသဘာဝနှင့် ယတြာ</span></summary><div class="ref-body">${tara}${timing}</div></details>`+
-    `<details class="ref-acc"><summary>💰 <span class="lang-en">Wealth / Windfall Luck (Udaya Nakshatra)</span><span class="lang-my mm">ထီပေါက်ကိန်း / ငွေဝင်ကိန်း</span></summary><div class="ref-body">${money}</div></details>`+
-    `<details class="ref-acc"><summary>☀️ <span class="lang-en">Janma 9 Vital Nakshatras — Special Remedies</span><span class="lang-my mm">ဇနမ ၉ ပါး (နာရီနက္ခတ်) အထူးယတြာ</span></summary><div class="ref-body">${janma9}</div></details>`;
+    `<div class="lang-en">${enAccordions}</div>`+
+    `<div class="lang-my mm">${myAccordions}</div>`;
 }
 renderReference();
 
