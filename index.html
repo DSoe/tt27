@@ -177,6 +177,22 @@
   .detail-wrap .dsec.remedy { background: rgba(255,209,102,0.06); border-left: 3px solid var(--gold); border-radius: var(--radius-sm); padding: 10px 12px; }
   .detail-wrap .dsec.vedha .dlbl { color: var(--avoid); }
   .detail-wrap .dsec.vedha { background: rgba(247,92,92,0.06); border-left: 3px solid var(--avoid); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .detail-wrap .dsec.avoid .dlbl { color: var(--avoid); }
+  .detail-wrap .dsec.avoid { background: rgba(247,92,92,0.06); border-left: 3px solid var(--avoid); border-radius: var(--radius-sm); padding: 10px 12px; }
+
+  /* Verdict label (inline in the Best Use cell + dropdown) */
+  .verdict { display: block; font-weight: 800; font-size: 0.78rem; line-height: 1.35; margin-bottom: 6px; padding-left: 8px; border-left: 3px solid var(--mut); }
+  .verdict .mm { display: block; font-weight: 400; font-size: 0.7rem; color: var(--mut); margin-top: 1px; }
+  .verdict.v-green, .verdict-txt.v-green { color: var(--green); }
+  .verdict.v-good,  .verdict-txt.v-good  { color: var(--good); }
+  .verdict.v-use,   .verdict-txt.v-use   { color: var(--use); }
+  .verdict.v-neu,   .verdict-txt.v-neu   { color: var(--mut); }
+  .verdict.v-avoid, .verdict-txt.v-avoid { color: var(--avoid); }
+  .verdict.v-green { border-color: var(--green); }
+  .verdict.v-good  { border-color: var(--good); }
+  .verdict.v-use   { border-color: var(--use); }
+  .verdict.v-neu   { border-color: var(--neu); }
+  .verdict.v-avoid { border-color: var(--avoid); }
 
   /* Status Pills */
   .pill { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; display: inline-block; white-space: nowrap; }
@@ -255,6 +271,30 @@
   .ctx-det > summary::-webkit-details-marker { display: none; }
   .ctx-det > summary::after { display: none; }
   .ctx-body { padding: 0 12px 10px; font-size: 0.8rem; line-height: 1.55; color: var(--mut); }
+
+  /* Daily Outlook narrative (Today card) */
+  .outlook { display: flex; flex-direction: column; gap: 10px; }
+  .ol-head { font-weight: 800; font-size: 0.95rem; padding: 9px 12px; border-radius: var(--radius-sm); border-left: 4px solid var(--mut); background: rgba(255,255,255,0.03); }
+  .ol-head .ol-title { display: block; }
+  .ol-head .mm { display: block; font-weight: 400; font-size: 0.78rem; color: var(--mut); margin-top: 2px; }
+  .ol-head.v-green { border-color: var(--green); color: var(--green); }
+  .ol-head.v-good  { border-color: var(--good);  color: var(--good); }
+  .ol-head.v-use   { border-color: var(--use);   color: var(--use); }
+  .ol-head.v-neu   { border-color: var(--neu);   color: var(--txt); }
+  .ol-head.v-avoid { border-color: var(--avoid); color: var(--avoid); }
+  .ol-sec { border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+  .ol-h { padding: 7px 12px; font-weight: 700; font-size: 0.82rem; background: rgba(255,255,255,0.03); }
+  .ol-h .mm { font-weight: 400; color: var(--mut); font-size: 0.72rem; }
+  .ol-body { padding: 9px 12px; font-size: 0.82rem; line-height: 1.55; color: var(--txt); }
+  .ol-sec.opp .ol-h { color: var(--good); }
+  .ol-sec.catch .ol-h { color: var(--avoid); }
+  .ol-sec.reinforce .ol-h { color: var(--good); }
+  .ol-sec.plan .ol-h { color: var(--gold); }
+  .ol-mind { color: var(--mut); }
+  .ol-act { margin-top: 7px; }
+  .ol-act:first-child { margin-top: 0; }
+  .ol-act.warn { color: var(--avoid); }
+  .ol-note { margin-top: 8px; font-size: 0.78rem; color: var(--accent); }
 
   /* Help / Guide / Tour UI */
   .lang-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--line); padding-bottom: 12px; align-items: center; }
@@ -717,6 +757,90 @@ function vedhaUse(reasons){
     `<br><span class="mm" style="font-weight:400">⚠ ဝေဒ (${r}) — အရေးကြီးသော လုပ်ငန်းသစ်များ စတင်ခြင်းကို ရှောင်ကြဉ်ပါ။ ပြုပြင်ခြင်း၊ ဖြတ်တောက်ခြင်းနှင့် အဆုံးသတ်ခြင်းများအတွက်သာ အသုံးပြုပါ။</span>`;
 }
 
+// Decision-oriented verdict, derived purely from the computed row (generic to any natal chart).
+const TARA_NEG=["Vipat","Pratyak","Naidhana"];          // friction-bearing Taras
+const WEALTH_SPECIAL=/Udaya|Treasure|Sampat/i;          // wealth-flavored 27-Special markers
+function getVerdict(r){
+  const negLagna=TARA_NEG.includes(r.lagnaTara);
+  const sp=r.special;
+  const wealth=r.moonTara==="Sampat"||(sp!=="—"&&WEALTH_SPECIAL.test(sp));
+  const repair=sp!=="—"&&(sp.indexOf("Vainashika")===0||sp.indexOf("Vinashaka")===0||sp==="Naidhana");
+  if(r.isVedha)
+    return {cls:"v-avoid",title:"Avoid major starts",titleMy:"အရေးကြီးသော လုပ်ငန်းသစ်များ ရှောင်ကြဉ်ပါ",
+            avoid:"Major launches, weddings, contracts, big purchases",
+            avoidMy:"လုပ်ငန်းသစ်များ၊ မင်္ဂလာကိစ္စများ၊ စာချုပ်ချုပ်ဆိုခြင်းနှင့် အဖိုးတန်ပစ္စည်းများ ဝယ်ယူခြင်း"};
+  if(repair)
+    return {cls:"v-neu",title:"Repair / cleanup only",titleMy:"ပြုပြင်မွမ်းမံခြင်းနှင့် သန့်ရှင်းရေးအတွက်သာ",
+            avoid:"New launches, investments, expansion",
+            avoidMy:"လုပ်ငန်းသစ်များ၊ ရင်းနှီးမြှုပ်နှံမှုနှင့် လုပ်ငန်းချဲ့ထွင်ခြင်းများ"};
+  if(wealth&&negLagna)
+    return {cls:"v-use",title:"Mixed — money potential, execution stress",titleMy:"ရောထွေးကံ — ငွေဝင်ကိန်းရှိသော်လည်း အကောင်အထည်ဖော်ရာတွင် အတားအဆီးရှိနိုင်သည်",
+            avoid:"Public launch, risky contracts, stressful expansion",
+            avoidMy:"လူသိရှင်ကြား ဖွင့်ပွဲများ၊ စွန့်စားရသော စာချုပ်များနှင့် ဖိစီးမှုများပြားမည့် ချဲ့ထွင်မှုများ"};
+  if(r.score>=9)
+    return {cls:"v-green",title:"Excellent — clean green-light",titleMy:"အထူးကောင်းမွန်သောနေ့ — အစီအစဉ်ကြီးများကို စိတ်ချစွာ ဆောင်ရွက်နိုင်သည်",avoid:"—",avoidMy:"—"};
+  if(r.score>=6)
+    return {cls:"v-good",title:"Good — supportive",titleMy:"ကောင်းမွန်သောနေ့ — အဘက်ဘက်မှ အထောက်အကူရရှိမည်",avoid:"—",avoidMy:"—"};
+  if(r.score>=3)
+    return {cls:"v-use",title:"Usable — with a clear purpose",titleMy:"အသုံးပြုနိုင်သောနေ့ — တိကျသော ရည်ရွယ်ချက်ရှိမှသာ လုပ်ဆောင်ပါ",
+            avoid:"Overextending; high-stakes commitments",
+            avoidMy:"အင်အားကုန်ထုတ်သုံးခြင်းနှင့် အရေးကြီးသော ကတိကဝတ်ပြုခြင်းများ"};
+  return {cls:"v-neu",title:"Weak for major starts",titleMy:"လုပ်ငန်းသစ်များအတွက် အင်အားနည်းသောနေ့",
+          avoid:"Important launches — better for routine / maintenance",
+          avoidMy:"အရေးကြီးသော လုပ်ငန်းသစ်များ — နေ့စဉ်လုပ်ငန်းဆောင်တာနှင့် ထိန်းသိမ်းမှုအတွက်သာ သင့်တော်သည်"};
+}
+
+// Daily Outlook narrative for the Today card — Outlook / Opportunity (Moon) / Catch (Lagna) / Action Plan / Details.
+// Fully generated from live transit values so it stays correct for any natal chart.
+function dailyOutlookHTML(o){
+  const {mt,lt,specialName,bonus,score,isVedha,hasLagna,mLord,lLord,posInfo}=o;
+  const v=getVerdict({isVedha,special:specialName,moonTara:mt.name,lagnaTara:lt.name,score});
+  const moonDet=TARA_DETAIL_MY[mt.name]||{};
+  const lagDet=hasLagna?(TARA_DETAIL_MY[lt.name]||{}):null;
+  const lagFriction=hasLagna&&TARA_NEG.includes(lt.name);
+  // Opportunity text: special-driven if marked, else Moon Tara use
+  let oppEn,oppMy;
+  if(specialName!=="—"){
+    const sk=Object.keys(SPECIAL).find(k=>SPECIAL[k].n===specialName);
+    oppEn=SPECIAL[sk].use; oppMy=SPECIAL_USE_MY[specialName]||"";
+  }else{ oppEn=TARA_USE[mt.name]||"—"; oppMy=TARA_USE_MY[mt.name]||""; }
+
+  let h=`<div class="outlook">`;
+  h+=`<div class="ol-head ${v.cls}"><span class="ol-title">✨ ${v.title}</span><span class="mm">${v.titleMy}</span></div>`;
+
+  h+=`<div class="ol-sec opp"><div class="ol-h">💰 Opportunity — Moon in ${mt.name} <span class="mm">(အခွင့်အလမ်း — စန်းတာရာ ${TARA_MY_MAP[mt.name]||""})</span></div>`+
+     `<div class="ol-body">${oppEn}<br><span class="mm">${oppMy}</span>`+
+     (moonDet.feeling?`<br><span class="ol-mind mm">🧠 ${moonDet.feeling}</span>`:"")+`</div></div>`;
+
+  if(hasLagna){
+    if(lagFriction){
+      h+=`<div class="ol-sec catch"><div class="ol-h">⚠️ The Catch — Lagna in ${lt.name} <span class="mm">(သတိပြုရန် — လဂ်တာရာ ${TARA_MY_MAP[lt.name]||""})</span></div>`+
+         `<div class="ol-body mm">${lagDet.nature||""}${lagDet.feeling?`<br><span style="color:var(--mut)">${lagDet.feeling}</span>`:""}</div></div>`;
+    }else{
+      h+=`<div class="ol-sec reinforce"><div class="ol-h">✅ Lagna supports you — ${lt.name} <span class="mm">(လဂ်တာရာ အထောက်အပံ့ — ${TARA_MY_MAP[lt.name]||""})</span></div>`+
+         `<div class="ol-body mm">${lagDet.nature||""}</div></div>`;
+    }
+  }
+
+  h+=`<div class="ol-sec plan"><div class="ol-h">🪷 Action Plan <span class="mm">(အကြံပြုချက်နှင့် ယတြာ)</span></div><div class="ol-body">`;
+  if(isVedha) h+=`<div class="ol-act warn mm">⚠ ဝေဒသင့်နေပါသည် — အရေးကြီးသော လုပ်ငန်းသစ်များ ရှောင်ကြဉ်ပါ။ ပြုပြင်ခြင်း၊ ဖြတ်တောက်ခြင်းနှင့် အဆုံးသတ်ခြင်းများအတွက်သာ အသုံးပြုပါ။</div>`;
+  if(moonDet.yatra) h+=`<div class="ol-act"><b>✅ To attract success <span class="mm">(အောင်မြင်မှု ရရှိစေရန်)</span>:</b><br><span class="mm">${moonDet.yatra}</span></div>`;
+  if(lagFriction&&lagDet.yatra) h+=`<div class="ol-act"><b>🛡 To ease obstacles <span class="mm">(အတားအဆီးများ ကျော်လွှားရန်)</span>:</b><br><span class="mm">${lagDet.yatra}</span></div>`;
+  if(v.avoid!=="—") h+=`<div class="ol-act warn"><b>❌ Avoid <span class="mm">(ရှောင်ရန်)</span>:</b> ${v.avoid}<br><span class="mm">${v.avoidMy}</span></div>`;
+  h+=`</div></div>`;
+
+  let det=`<details class="ctx-det"><summary>🔬 Astrological details <span class="mm">(နက္ခတ်ဗေဒဆိုင်ရာ အချက်အလက်များ)</span></summary><div class="ctx-body">`;
+  det+=`Moon Tara: <b>${mt.name}</b> (${TARA_MY_MAP[mt.name]||""}) ${mt.score>=0?"+":""}${mt.score}<br>`;
+  if(hasLagna) det+=`Lagna Tara: <b>${lt.name}</b> (${TARA_MY_MAP[lt.name]||""}) ${lt.score>=0?"+":""}${lt.score}<br>`;
+  if(specialName!=="—") det+=`27-Special: <b>${specialName}</b> (${SPECIAL_MY_MAP[specialName]||""})${bonus?` ${bonus>0?"+":""}${bonus}`:""}<br>`;
+  det+=`Moon Lord: <b>${mLord}</b> (${LORD_MY[mLord]||""})`;
+  if(hasLagna&&lLord) det+=` · Lagna Lord: <b>${lLord}</b> (${LORD_MY[lLord]||""})`;
+  if(posInfo) det+=`<br>Position: <span class="mm">ဇနမ စန်းနက္ခတ်မှ ${posInfo.t}</span>`;
+  det+=`</div></details>`;
+  h+=`<div class="ctx-wrap">${det}</div></div>`;
+  return h;
+}
+
 /* ===== Nakshatra Vedha (mutual obstruction) — strict TT27-V rule =====
    Penalties: primary Moon Vedha -6, primary Lagna Vedha -4 (both = -10),
    additional Vedha -3. Any Vedha caps the effective score at 0:
@@ -916,37 +1040,10 @@ function renderToday(){
 
   sEl.innerHTML=`<span class="pill ${cls(score)}" style="font-size: 1.2rem; padding: 6px 16px">${score>0?"+":""}${score}</span>`;
 
-  let use=bestUse(mt.name,lt.name,specialName,bonus,raw);
-  if(vi.isVedha)use=vedhaUse(vi.reasons);
-
-  // Humanized breakdown
-  let summaryEn = `This score reflects your Moon in ${mt.name} (${mt.score})`;
-  let summaryMy = `ဤရမှတ်သည် သင်၏ စန်းတာရာ ${TARA_MY_MAP[mt.name]} (${mt.score}) `;
-
-  if(lIdx!=null) {
-    summaryEn += ` and Lagna in ${lt.name} (${lt.score})`;
-    summaryMy += `နှင့် လဂ်တာရာ ${TARA_MY_MAP[lt.name]} (${lt.score}) တို့ကို ပေါင်းစပ်တွက်ချက်ထားပါသည်။`;
-  }
-  if(sp && bonus!==0) {
-    summaryEn += `, plus a ${specialName} bonus (${bonus > 0 ? "+" : ""}${bonus})`;
-    summaryMy += ` ထို့အပြင် ${SPECIAL_MY_MAP[specialName]} အထူးအမှတ် (${bonus > 0 ? "+" : ""}${bonus}) ပါဝင်သည်။`;
-  } else if(sp) {
-    summaryEn += `, marked ${specialName}`;
-    summaryMy += ` ${SPECIAL_MY_MAP[specialName]} နေရာသို့ ရောက်ရှိနေသည်။`;
-  }
-
   const hint=hasNatal()?"":`<div style="background:#2a2e4a;border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:.8rem">👋 <b>This score uses default natal values.</b> Set your own Moon &amp; Lagna in <i>Step 1</i> below for a verdict that's actually about <i>you</i>.<br><span class="mm">တိကျသော ဟောကိန်းရရှိရန် အဆင့် (၁) တွင် မိမိ၏ စန်းနှင့် လဂ်ကို အရင်ရွေးချယ်ပေးပါ။</span></div>`;
-  // Contextual Burmese detail: count-position meaning + today's Tara yatra remedy.
   const posInfo=NAK_POSITION_MY[mt.count];
-  const taraDet=TARA_DETAIL_MY[mt.name];
-  let context="";
-  if(posInfo){
-    context+=`<details class="ctx-det mm"><summary>📜 ဤနေရာ၏ အဓိပ္ပာယ် — ${posInfo.t}</summary><div class="ctx-body">${posInfo.d}</div></details>`;
-  }
-  if(taraDet){
-    context+=`<details class="ctx-det mm"><summary>🪷 ယနေ့အတွက် ယတြာ (${TARA_MY_MAP[mt.name]})</summary><div class="ctx-body">${taraDet.yatra}</div></details>`;
-  }
-  vEl.innerHTML=hint+`<div>${use}</div><div style="color:var(--mut);font-size:.78rem;margin-top:8px;line-height:1.4">${summaryEn}.<br><span class="mm">${summaryMy}</span>${lIdx==null?'<br><i>tap "Use my location" for Lagna layer</i> <span class="mm">(လဂ်နက္ခတ် ထည့်တွက်ရန် "လက်ရှိနေရာကို သုံးပါ" ကို နှိပ်ပါ)</span>':""}</div>${context?`<div class="ctx-wrap">${context}</div>`:""}`;
+  const setLocNote=lIdx==null?`<div class="ol-note mm">📍 လဂ်အလွှာ ထည့်တွက်ရန် "လက်ရှိနေရာကို သုံးပါ" ကို နှိပ်ပါ။ <span style="color:var(--mut)">(Tap "Use my location" to add the Lagna layer.)</span></div>`:"";
+  vEl.innerHTML=hint+dailyOutlookHTML({mt,lt,specialName,bonus,score,isVedha:vi.isVedha,hasLagna:lIdx!=null,mLord,lLord,posInfo})+setLocNote;
   // Burmese facing-direction rituals (keyed by transit Moon nakshatra).
   const ds=dirSelf(mIdx), dox=dirOther(mIdx);
   document.getElementById("todayRituals").innerHTML=
@@ -1001,6 +1098,7 @@ function render(){
     const idx=NAK.indexOf(r.name);
     if(+moonSel.value===idx) tr.classList.add("row-hl");
     if(todayState.moonIdx===idx) tr.classList.add("row-today");
+    const v=getVerdict(r);
     tr.innerHTML=`
       <td class="nm">${r.name}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${NAK_MY[idx]}</span></td>
       <td title="${r.lordFull}">${r.lord}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${LORD_MY[r.lordFull]||""}</span></td>
@@ -1008,7 +1106,7 @@ function render(){
       <td class="${taraClass(r.lagnaScore)}">${r.lagnaTara}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${TARA_MY_MAP[r.lagnaTara]||""}</span></td>
       <td>${r.special==="—"?"—":`${r.special}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${SPECIAL_MY_MAP[r.special]||""}</span>`}${r.specialScore?` (${r.specialScore>0?"+":""}${r.specialScore})`:""}</td>
       <td class="score"><span class="pill ${cls(r.score)}">${r.score>0?"+":""}${r.score}</span></td>
-      <td class="use${r.isVedha?' vedha':''}">${r.use} <span class="tap-hint mm">▸ ယတြာ</span></td>`;
+      <td class="use${r.isVedha?' vedha':''}"><span class="verdict ${v.cls}">${v.title}<span class="mm">${v.titleMy}</span></span>${r.use} <span class="tap-hint mm">▸ ယတြာ</span></td>`;
     tr.classList.add("clickable");
     tr.addEventListener("click",()=>toggleRowDetail(tr,r));
     tb.appendChild(tr);
@@ -1023,10 +1121,13 @@ function render(){
 function rowDetailHTML(r){
   const pos=NAK_POSITION_MY[r.moonCount];
   const td=TARA_DETAIL_MY[r.moonTara];
+  const v=getVerdict(r);
   let h="";
+  h+=`<div class="dsec"><span class="dlbl">⚖ Verdict <span class="mm">(စီရင်ချက်)</span></span>`+
+     `<div class="dval"><b class="verdict-txt ${v.cls}">${v.title}</b><br><span class="mm">${v.titleMy}</span></div></div>`;
   if(pos){
-    h+=`<div class="dsec"><span class="dlbl">📜 Count #${r.moonCount} <span class="mm">(ဤနေရာ၏ အဓိပ္ပာယ်)</span></span>`+
-       `<div class="dval"><b class="mm">${pos.t}</b><br><span class="mm">${pos.d}</span></div></div>`;
+    h+=`<div class="dsec"><span class="dlbl">📜 Count <span class="mm">(ဇနမ စန်းနက္ခတ်မှ ${pos.t})</span></span>`+
+       `<div class="dval"><span class="mm">${pos.d}</span></div></div>`;
   }
   if(r.special!=="—"){
     h+=`<div class="dsec"><span class="dlbl">✨ 27-Special <span class="mm">(အထူး)</span></span>`+
@@ -1050,6 +1151,10 @@ function rowDetailHTML(r){
   if(ltd && !sameTara){
     h+=`<div class="dsec remedy"><span class="dlbl">🪷 Remedy — Lagna Tara <span class="mm">(လဂ် ယတြာ)</span></span>`+
        `<div class="dval mm">${ltd.yatra}</div></div>`;
+  }
+  if(v.avoid!=="—" && !r.isVedha){
+    h+=`<div class="dsec avoid"><span class="dlbl">❌ Avoid <span class="mm">(ရှောင်ရန်)</span></span>`+
+       `<div class="dval">${v.avoid}<br><span class="mm">${v.avoidMy}</span></div></div>`;
   }
   if(r.isVedha){
     h+=`<div class="dsec vedha"><span class="dlbl">⚠ Vedha (${(r.vedhaReasons||[]).join(" + ")})</span>`+
