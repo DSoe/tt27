@@ -1037,8 +1037,8 @@ function dailyOutlookHTML(o){
   det += `Moon Tara: <b>${mt.name}</b> (${TARA_MY_MAP[mt.name] || ""}) ${mt.score >= 0 ? "+" : ""}${mt.score}<br>`;
   if(hasLagna) det += `Lagna Tara: <b>${lt.name}</b> (${TARA_MY_MAP[lt.name] || ""}) ${lt.score >= 0 ? "+" : ""}${lt.score}<br>`;
   if(specialName !== "—") det += `27-Special: <b>${specialName}</b> (${SPECIAL_MY_MAP[specialName] || ""})${bonus ? ` ${bonus > 0 ? "+" : ""}${bonus}` : ""}<br>`;
-  det += `Moon Lord: <b>${mLord}</b> (${LORD_MY[mLord] || ""})`;
-  if(hasLagna && lLord) det += `<br>Lagna Lord: <b>${lLord}</b> (${LORD_MY[lLord] || ""})`;
+  det += `Moon Nakshatra Lord: <b>${mLord}</b> (${LORD_MY[mLord] || ""})`;
+  if(hasLagna && lLord) det += `<br>Lagna Nakshatra Lord: <b>${lLord}</b> (${LORD_MY[lLord] || ""})`;
   if(posInfo) det += `<br>Position: <span class="mm">ဇနမ စန်းနက္ခတ်မှ ${posInfo.t}</span>`;
   det += `</div></details>`;
   h += `<div class="ctx-wrap">${det}</div></div>`;
