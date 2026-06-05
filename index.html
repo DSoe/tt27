@@ -173,8 +173,9 @@
   .detail-wrap .dsec { display: block; }
   .detail-wrap .dlbl { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
   .detail-wrap .dval { font-size: 0.85rem; line-height: 1.6; color: var(--txt); }
-  .detail-wrap .dsec.remedy .dlbl { color: var(--gold); }
-  .detail-wrap .dsec.remedy { background: rgba(255,209,102,0.06); border-left: 3px solid var(--gold); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .detail-wrap .dsec.remedy .dlbl, .remedy-inline .dlbl { color: var(--gold); }
+  .detail-wrap .dsec.remedy, .remedy-inline { background: rgba(255,209,102,0.06); border-left: 3px solid var(--gold); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .remedy-inline { border-left-width: 3px; border-left-style: solid; }
   .detail-wrap .dsec.vedha .dlbl { color: var(--avoid); }
   .detail-wrap .dsec.vedha { background: rgba(247,92,92,0.06); border-left: 3px solid var(--avoid); border-radius: var(--radius-sm); padding: 10px 12px; }
   .detail-wrap .dsec.avoid .dlbl { color: var(--avoid); }
@@ -1350,9 +1351,9 @@ function rowDetailHTML(r){
   if(td){
     h+=`<div class="dsec"><span class="dlbl">🔄 ${sameTara?"":"Moon "}Tara nature — ${r.moonTara} <span class="mm">(${sameTara?"":"စန်း"}တာရာ ${TARA_MY_MAP[r.moonTara]||""} သဘောသဘာဝ)</span></span>`+
        `<div class="dval mm">${td.nature}${td.feeling?`<br><span style="color:var(--mut)">${td.feeling}</span>`:""}</div>`+
-       `<div class="remedy-inline" style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border)">`+
-         `<span class="dlbl" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px">🪷 Remedy${sameTara?"":" — Moon Tara"} <span class="mm">(${sameTara?"":"စန်း "}ယတြာ)</span></span>`+
-         `<div class="dval mm" style="margin-top:4px">${td.yatra}</div>`+
+       `<div class="remedy-inline" style="margin-top:10px">`+
+         `<span class="dlbl">🪷 Remedy${sameTara?"":" — Moon Tara"} <span class="mm">(${sameTara?"":"စန်း "}ယတြာ)</span></span>`+
+         `<div class="dval mm">${td.yatra}</div>`+
          `<div class="dval" style="margin-top:4px; font-size:0.82rem; opacity:0.8;">${TARA_DETAIL_EN[r.moonTara]?.yatra || ""}</div>`+
        `</div></div>`;
   }
@@ -1360,9 +1361,9 @@ function rowDetailHTML(r){
   if(ltd && !sameTara){
     h+=`<div class="dsec"><span class="dlbl">🔄 Lagna Tara nature — ${r.lagnaTara} <span class="mm">(လဂ်တာရာ ${TARA_MY_MAP[r.lagnaTara]||""} သဘောသဘာဝ)</span></span>`+
        `<div class="dval mm">${ltd.nature}${ltd.feeling?`<br><span style="color:var(--mut)">${ltd.feeling}</span>`:""}</div>`+
-       `<div class="remedy-inline" style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border)">`+
-         `<span class="dlbl" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px">🪷 Remedy — Lagna Tara <span class="mm">(လဂ် ယတြာ)</span></span>`+
-         `<div class="dval mm" style="margin-top:4px">${ltd.yatra}</div>`+
+       `<div class="remedy-inline" style="margin-top:10px">`+
+         `<span class="dlbl">🪷 Remedy — Lagna Tara <span class="mm">(လဂ် ယတြာ)</span></span>`+
+         `<div class="dval mm">${ltd.yatra}</div>`+
          `<div class="dval" style="margin-top:4px; font-size:0.82rem; opacity:0.8;">${TARA_DETAIL_EN[r.lagnaTara]?.yatra || ""}</div>`+
        `</div></div>`;
   }
