@@ -163,6 +163,21 @@
   .row-hl { background: rgba(124, 77, 255, 0.1) !important; box-shadow: inset 4px 0 0 var(--accent); }
   .row-today { background: rgba(255, 209, 102, 0.05) !important; }
 
+  /* Clickable rows + inline detail/remedy panel */
+  #tbl tbody tr.clickable { cursor: pointer; }
+  #tbl tbody tr.expanded > td { background: var(--accent-glow) !important; }
+  .tap-hint { display: inline-block; margin-left: 6px; font-size: 0.7rem; color: var(--accent); opacity: 0.7; white-space: nowrap; }
+  #tbl tbody tr.expanded .tap-hint { opacity: 1; }
+  tr.row-detail > td { padding: 0; border-bottom: 2px solid var(--accent); background: var(--surface); }
+  .detail-wrap { position: sticky; left: 0; box-sizing: border-box; padding: 16px 18px; display: grid; gap: 14px; }
+  .detail-wrap .dsec { display: block; }
+  .detail-wrap .dlbl { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+  .detail-wrap .dval { font-size: 0.85rem; line-height: 1.6; color: var(--txt); }
+  .detail-wrap .dsec.remedy .dlbl { color: var(--gold); }
+  .detail-wrap .dsec.remedy { background: rgba(255,209,102,0.06); border-left: 3px solid var(--gold); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .detail-wrap .dsec.vedha .dlbl { color: var(--avoid); }
+  .detail-wrap .dsec.vedha { background: rgba(247,92,92,0.06); border-left: 3px solid var(--avoid); border-radius: var(--radius-sm); padding: 10px 12px; }
+
   /* Status Pills */
   .pill { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; display: inline-block; white-space: nowrap; }
 
@@ -486,6 +501,7 @@
   <span class="pill c-neu">0–2 Neutral <span class="mm">သာမန်</span></span>
   <span class="pill c-avoid">&lt;0 Avoid <span class="mm">ရှောင်ရန်</span></span>
   <br>Tap any column header to sort. <span class="mm">(ခေါင်းစဉ်များကို နှိပ်၍ အစဉ်လိုက် စီနိုင်သည်)</span>
+  <br>Tap any row for its meaning &amp; remedy. <span class="mm">(အတန်းတစ်ခုကို နှိပ်၍ အဓိပ္ပာယ်နှင့် ယတြာကို ကြည့်နိုင်သည်)</span>
   <br>Score = Moon Tara + Lagna Tara + TT27 bonus. <span class="mm">(ရမှတ် = စန်းတာရာ + လဂ်တာရာ + TT27 အထူးရမှတ်)</span>
 </div>
 
@@ -527,38 +543,64 @@ const TARA = [
   {n:"Sadhana",s:3},{n:"Naidhana",s:-4},{n:"Mitra",s:4},{n:"Parama Mitra",s:5}
 ];
 
-// TT27 special bonus keyed by count-from-Moon (1..27)
+// TT27-B special bonus keyed by count-from-Moon (1..27)
 const SPECIAL = {
-  1:{n:"Janma",b:1,use:"A day for self-reflection and personal resets; set clear intentions for your next chapter."},
-  2:{n:"Sampat",b:3,use:"Prosperity is highlighted; a great time to manage wealth and resources effectively."},
-  4:{n:"Jaati",b:3,use:"Strengthen your community ties; your social circle provides vital support and well-being today."},
-  7:{n:"Naidhana",b:-4,use:"Exercise extreme caution; this is a period of closure rather than new beginnings."},
-  8:{n:"Mitra support",b:2,use:"Reach out to your network; friends and allies are ready to support your goals."},
-  10:{n:"Karma",b:3,use:"Focus on your professional path; career-related projects and long-term goals are favored."},
-  12:{n:"Desha",b:3,use:"A good time to engage with institutions, authorities, or broader cultural matters."},
-  16:{n:"Sanghatika",b:-2,use:"Focus on resolving inner-circle conflicts; use negotiation rather than force."},
-  18:{n:"Samudayika",b:2,use:"Excellent for public launches or community events; the crowd is in your favor."},
-  19:{n:"Adhana",b:3,use:"Build strong foundations; ideal for setting up a company, platform, or long-term system."},
-  22:{n:"Vainashika",b:-4,use:"A time for necessary endings; focus on cutting away what no longer serves you."},
-  25:{n:"Manasa",b:1,use:"Your mental clarity is sharp; use this inner focus for planning and deep study."},
-  27:{n:"Abhisheka",b:3,use:"Step into your power; leadership, visibility, and achieving higher status are highly favored."}
+  1:{n:"Janma",b:1,use:"Self-reflection, personal reset, intention setting."},
+  2:{n:"Sampat",b:3,use:"Food habits, resources, wealth handling, prosperity routines."},
+  4:{n:"Jaati",b:2,use:"Family lineage, community roots, home environment, cultural identity."},
+  5:{n:"Treasure / Punya",b:3,use:"Gold, gems, stored merit, creative intelligence, children, followers."},
+  6:{n:"Bhinna",b:1,use:"Overcoming enemies, learning through difficulty, strategic correction."},
+  7:{n:"Naidhana",b:-4,use:"Closure, bondage-release, danger awareness; avoid major starts."},
+  8:{n:"Mitra support",b:2,use:"Motherly support, helpers, allies, health maintenance, networking."},
+  9:{n:"Adhana I",b:2,use:"Protection, shelter, conception, manifestation of wishes."},
+  10:{n:"Karma",b:3,use:"Career, livelihood, unfinished work, duty, professional effort."},
+  11:{n:"Manasa",b:2,use:"Mind power, imagination, mental focus, desired social circle or spouse image."},
+  12:{n:"Desha I",b:2,use:"Residence, blood bonds, foreign settlement, dependency, place karma."},
+  13:{n:"Abhisheka I",b:2,use:"Rise or fall by destiny, protection, unavoidable karmic turning point."},
+  14:{n:"Worldview",b:0,use:"Worldview, emotional response to environment, attitude toward possessions."},
+  15:{n:"Shobhana",b:3,use:"Success, smooth social progress, easy achievement, graceful advancement."},
+  16:{n:"Sanghatika",b:-2,use:"Partners, helpers, debts, conflict handling; beware betrayal if afflicted."},
+  17:{n:"Neutral Cause",b:0,use:"Causes of success or loss, coworkers, neighbors, neutral karmic testing."},
+  18:{n:"Samudayika / Udaya I",b:2,use:"Community, relatives, final fruits, leadership, accumulated punya."},
+  19:{n:"Adhana II",b:3,use:"Father, guru, dharma, investment, pledges, fame, foundation-building."},
+  20:{n:"Udaya / Windfall",b:3,use:"Sudden money, lottery luck, business rise, large-scale charity, windfall karma."},
+  21:{n:"Mental Strength",b:1,use:"Mental resilience, environmental adjustment, emotional endurance."},
+  22:{n:"Vainashika I",b:-4,use:"Moral danger, punishment, battle, competition, karmic consequences; avoid launches."},
+  23:{n:"Vainashika II",b:-3,use:"Life-balance testing, rhythm disruption, trials; use only for correction."},
+  24:{n:"Medicine",b:3,use:"Healing, cure, knowledge completion, ending a search, remedy work."},
+  25:{n:"Vinashaka / Secondary Manasa",b:-2,use:"Mind-caused self-destruction, memory, renunciation, deep inner caution."},
+  26:{n:"Desha / Raja",b:3,use:"Authority, institution, rulership, organization-building, stable power."},
+  27:{n:"Abhisheka II",b:3,use:"Command, recognition, third-eye insight, public fame or blame, life mission."}
 };
 
-// Burmese counterparts for SPECIAL.use, keyed by the special name.
+// Burmese counterparts for SPECIAL.use, keyed by the (TT27-B) special name.
 const SPECIAL_USE_MY = {
-  "Janma":"ကိုယ်ကိုယ်ကို ပြန်လည်ဆန်းစစ်ပြီး ရည်မှန်းချက်အသစ်များ ချမှတ်ရန် အကောင်းဆုံးအချိန် ဖြစ်ပါသည်။",
-  "Sampat":"စီးပွားဥစ္စာ ကြွယ်ဝနိုင်သော အခါသမယ ဖြစ်ပြီး ငွေကြေးစီမံခန့်ခွဲမှုများကို ထိရောက်စွာ လုပ်ဆောင်သင့်ပါသည်။",
-  "Jaati":"လူမှုဆက်ဆံရေးကို အလေးထားပါ။ မိတ်ဆွေအပေါင်းအသင်းများက သင့်အတွက် အကျိုးကျေးဇူး ဆောင်ကြဉ်းပေးပါလိမ့်မည်။",
-  "Naidhana":"အထူးသတိပြုရမည့် အချိန်ဖြစ်ပါသည်။ အသစ်စတင်ခြင်းထက် အဆုံးသတ်ခြင်းနှင့် ပြုပြင်ခြင်းများကိုသာ လုပ်ဆောင်ပါ။",
-  "Mitra support":"မိတ်ဆွေအပေါင်းအသင်းများနှင့် ချိတ်ဆက်ပါ။ သူတို့၏ အကူအညီက သင့်ရည်မှန်းချက်များအတွက် အရေးပါပါလိမ့်မည်။",
-  "Karma":"အသက်မွေးဝမ်းကျောင်းနှင့် လုပ်ငန်းစီမံကိန်းများကို အာရုံစိုက်ပါ။ ရေရှည်ရည်မှန်းချက်များအတွက် အကျိုးရှိပါလိမ့်မည်။",
-  "Desha":"အဖွဲ့အစည်းများ၊ အာဏာပိုင်များ သို့မဟုတ် ယဉ်ကျေးမှုဆိုင်ရာ ကိစ္စရပ်များတွင် ပါဝင်ဆောင်ရွက်ရန် သင့်တော်ပါသည်။",
-  "Sanghatika":"အတွင်းစည်း ပဋိပက္ခများကို ဖြေရှင်းပါ။ အင်အားသုံးခြင်းထက် ညှိနှိုင်းဆွေးနွေးခြင်းကို ဦးစားပေးပါ။",
-  "Samudayika":"လူထုနှင့် ထိတွေ့ဆက်ဆံရသော အလုပ်များ၊ ဈေးကွက်ချဲ့ထွင်ခြင်းများအတွက် အထူးကောင်းမွန်ပါသည်။",
-  "Adhana":"ခိုင်မာသော အခြေခံအုတ်မြစ်များ တည်ဆောက်ပါ။ လုပ်ငန်းသစ် သို့မဟုတ် စနစ်သစ်များ တည်ထောင်ရန် သင့်တော်ပါသည်။",
-  "Vainashika":"မလိုအပ်သည်များကို စွန့်ပယ်ရမည့်အချိန် ဖြစ်ပါသည်။ အဟောင်းများကို ဖျက်သိမ်းပြီး ဖြတ်တောက်ရန် အာရုံစိုက်ပါ။",
-  "Manasa":"စိတ်ကြည်လင်မှုရှိနေသောကြောင့် နက်နဲသော လေ့လာသင်ယူမှုများနှင့် စီမံကိန်းများအတွက် အသုံးပြုပါ။",
-  "Abhisheka":"ခေါင်းဆောင်မှုကဏ္ဍတွင် ပါဝင်ပါ။ အဆင့်အတန်းနှင့် ဂုဏ်ဒြပ် မြင့်မားလာစေမည့် အခွင့်အရေးများ ရှိပါသည်။"
+  "Janma":"ကိုယ်ကိုယ်ကို ပြန်လည်ဆန်းစစ်ခြင်း၊ ရည်မှန်းချက်အသစ်များ ချမှတ်ခြင်းအတွက် သင့်တော်ပါသည်။",
+  "Sampat":"အစားအသောက်အလေ့အကျင့်၊ ဥစ္စာဓနနှင့် ချမ်းသာကြွယ်ဝမှု စီမံခြင်းအတွက် ကောင်းမွန်ပါသည်။",
+  "Jaati":"မျိုးရိုးစဉ်ဆက်၊ လူမှုအမြစ်၊ နေအိမ်ပတ်ဝန်းကျင်နှင့် ယဉ်ကျေးမှုဆိုင်ရာ ကိစ္စများအတွက် သင့်တော်ပါသည်။",
+  "Treasure / Punya":"ရွှေငွေရတနာ၊ စုဆောင်းကုသိုလ်၊ တီထွင်ဉာဏ်၊ သားသမီး/နောက်လိုက်တို့နှင့် ပတ်သက်၍ အကျိုးပေးပါသည်။",
+  "Bhinna":"ရန်သူကို ကျော်လွှားခြင်း၊ အခက်အခဲမှ သင်ယူခြင်းနှင့် နည်းဗျူဟာဖြင့် ပြုပြင်ခြင်းအတွက် သင့်တော်ပါသည်။",
+  "Naidhana":"အဆုံးသတ်ခြင်း၊ အနှောင်အဖွဲ့မှ လွတ်မြောက်ခြင်း၊ အန္တရာယ်သတိ — အရေးကြီး လုပ်ငန်းသစ် မစတင်ပါနှင့်။",
+  "Mitra support":"မိခင်အကူအညီ၊ ကူညီသူ/မိတ်ဆွေ၊ ကျန်းမာရေးထိန်းသိမ်းခြင်းနှင့် ချိတ်ဆက်ဆက်ဆံခြင်းအတွက်။",
+  "Adhana I":"အကာအကွယ်၊ မှီခိုရာ၊ ကိုယ်ဝန်/တီထွင်မှုနှင့် ဆန္ဒများ အကောင်အထည်ဖော်ခြင်းအတွက် သင့်တော်ပါသည်။",
+  "Karma":"အသက်မွေးဝမ်းကျောင်း၊ မပြီးဆုံးအလုပ်၊ တာဝန်နှင့် အသက်မွေးမှုဆိုင်ရာ ကြိုးပမ်းမှုအတွက် ကောင်းမွန်ပါသည်။",
+  "Manasa":"စိတ်စွမ်းအား၊ စိတ်ကူးဉာဏ်၊ စိတ်အာရုံစူးစိုက်မှုနှင့် ပေါင်းသင်းလိုသော အသိုင်းအဝိုင်း/အိမ်ထောင်ဖက်စိတ်ကူးအတွက်။",
+  "Desha I":"နေထိုင်ရာ၊ သွေးချင်းချည်နှောင်မှု၊ ရေခြားမြေခြားနေထိုင်ခြင်း၊ မှီခိုမှုနှင့် ဒေသကံအတွက်။",
+  "Abhisheka I":"ကံကြမ္မာအရ မြင့်တက်/ကျဆင်းခြင်း၊ အကာအကွယ်နှင့် ရှောင်လွှဲမရသော ကံကြောင်းအလှည့်အပြောင်းအတွက်။",
+  "Worldview":"လောကအမြင်၊ ပတ်ဝန်းကျင်အပေါ် စိတ်ခံစားတုံ့ပြန်မှုနှင့် ပိုင်ဆိုင်မှုအပေါ် သဘောထားကို ဆိုလိုပါသည်။",
+  "Shobhana":"အောင်မြင်မှု၊ ချောမွေ့သော လူမှုတိုးတက်မှု၊ လွယ်ကူသော အောင်မြင်မှုနှင့် ဂုဏ်တက်ခြင်းအတွက် ကောင်းမွန်ပါသည်။",
+  "Sanghatika":"လုပ်ဖော်ကိုင်ဖက်/အကူ၊ အကြွေး၊ ပဋိပက္ခဖြေရှင်းခြင်းအတွက် — ဆိုးကွက်ဆိုက်က နောက်ကျောဓားကို သတိထားပါ။",
+  "Neutral Cause":"အောင်မြင်/ဆုံးရှုံးမှု အကြောင်းရင်း၊ လုပ်ဖော်ကိုင်ဖက်/အိမ်နီးချင်းနှင့် ကြားနေ ကံစမ်းမှုကို ဆိုလိုပါသည်။",
+  "Samudayika / Udaya I":"အသိုင်းအဝိုင်း၊ ဆွေမျိုး၊ နောက်ဆုံးအကျိုးပေး၊ ခေါင်းဆောင်မှုနှင့် စုဆောင်းကုသိုလ်အတွက် သင့်တော်ပါသည်။",
+  "Adhana II":"ဖခင်၊ ဆရာ၊ ဓမ္မ၊ ရင်းနှီးမြှုပ်နှံမှု၊ ကတိ၊ ဂုဏ်သတင်းနှင့် အခြေခံတည်ဆောက်ခြင်းအတွက် ကောင်းမွန်ပါသည်။",
+  "Udaya / Windfall":"ရုတ်တရက်ငွေဝင်၊ ထီကံ၊ စီးပွားတက်ခြင်း၊ အစုလိုက်လှူဒါန်းခြင်းနှင့် ငွေဝင်ကံအတွက် — အန္တရာယ်ရှိ လုပ်ငန်းသစ်အတွက် မဟုတ်ပါ။",
+  "Mental Strength":"စိတ်ဓာတ်ကြံ့ခိုင်မှု၊ ပတ်ဝန်းကျင်နှင့် ညှိနိုင်စွမ်းနှင့် စိတ်ခံနိုင်ရည်အတွက် သင့်တော်ပါသည်။",
+  "Vainashika I":"ကိုယ်ကျင့်တရားအန္တရာယ်၊ ဒဏ်ခတ်ခံ၊ စစ်ပွဲ/ပြိုင်ပွဲ၊ အကုသိုလ်အကျိုး — လုပ်ငန်းသစ် မစတင်ပါနှင့်။",
+  "Vainashika II":"ဘဝဟန်ချက်စမ်းသပ်ခြင်း၊ စည်းချက်ပျက်ခြင်းနှင့် စမ်းသပ်မှု — ပြုပြင်ခြင်းအတွက်သာ အသုံးပြုပါ။",
+  "Medicine":"ရောဂါကုသခြင်း၊ ပျောက်ကင်းခြင်း၊ အသိပညာ ပြည့်စုံခြင်းနှင့် ရှာဖွေမှု အဆုံးသတ်ခြင်းအတွက် ကောင်းမွန်ပါသည်။",
+  "Vinashaka / Secondary Manasa":"စိတ်ကြောင့် ကိုယ်ကိုကိုယ်ဖျက်ဆီးခြင်း၊ မှတ်ဉာဏ်၊ စွန့်လွှတ်ခြင်း — အတွင်းစိတ် သတိကြီးစွာ ထားပါ။",
+  "Desha / Raja":"အာဏာ၊ အဖွဲ့အစည်း၊ အုပ်ချုပ်မှု၊ အဖွဲ့အစည်းတည်ဆောက်ခြင်းနှင့် တည်ငြိမ်သော သြဇာအတွက် ကောင်းမွန်ပါသည်။",
+  "Abhisheka II":"အမိန့်ပေးအုပ်ချုပ်ခြင်း၊ အသိအမှတ်ပြုခံရခြင်း၊ တတိယမျက်လုံးဉာဏ်၊ နာမည်ကျော်/ရှုတ်ချနှင့် ဘဝတာဝန်အတွက်။"
 };
 
 // generic best-use by Moon tara when no special marker
@@ -586,7 +628,14 @@ const TARA_USE_MY = {
 };
 
 const TARA_MY_MAP = {"Janma":"ဇနမ","Sampat":"သမ္ပတ္တိ","Vipat":"ဝိပတ္တိ","Kshema":"ခေမ","Pratyak":"ပြတ္တရ","Sadhana":"သာဓက","Naidhana":"ဘာဓ","Mitra":"မိတ္တ","Parama Mitra":"အတိမိတ္တ"};
-const SPECIAL_MY_MAP = {"Janma":"ဇနမ","Sampat":"သမ္ပတ္တိ","Jaati":"ဇာတိ","Naidhana":"ဘာဓ","Mitra support":"မိတ္တ (အကူ)","Karma":"ကမ္မ","Desha":"ဒေသ","Sanghatika":"သံဃာဋိက","Samudayika":"သမုဒါယိက","Adhana":"အာဓာန","Vainashika":"ဝိနာသက","Manasa":"မာနသ","Abhisheka":"အဘိသေက"};
+const SPECIAL_MY_MAP = {
+  "Janma":"ဇနမ","Sampat":"သမ္ပတ္တိ","Jaati":"ဇာတိ","Treasure / Punya":"ရတနာ / ပုည","Bhinna":"ဘင်",
+  "Naidhana":"နိဓါန","Mitra support":"မိတ္တ (အကူ)","Adhana I":"အာဓါန ၁","Karma":"ကမ္မ","Manasa":"မာနသ",
+  "Desha I":"ဒေသ ၁","Abhisheka I":"အဘိသေက ၁","Worldview":"လောကအမြင်","Shobhana":"သောဘဏ","Sanghatika":"သံဃာဋိက",
+  "Neutral Cause":"အကြောင်းရင်း","Samudayika / Udaya I":"သာမုဒါယိက / ဥဒယ ၁","Adhana II":"အာဓါန ၂","Udaya / Windfall":"ဥဒယ / ငွေဝင်","Mental Strength":"စိတ်ကြံ့ခိုင်မှု",
+  "Vainashika I":"ဝိနာသက ၁","Vainashika II":"ဝိနာသက ၂","Medicine":"ဆေး","Vinashaka / Secondary Manasa":"ဝိနာသက / မာနသ ဒုတိယ","Desha / Raja":"ဒေသ / ရာဇ",
+  "Abhisheka II":"အဘိသေက ၂"
+};
 const LORD_MY = {"Ketu":"ကိတ်","Venus":"သောကြာ","Sun":"တနင်္ဂနွေ","Moon":"တနင်္လာ","Mars":"အင်္ဂါ","Rahu":"ရာဟု","Jupiter":"ကြာသပတေး","Saturn":"စနေ","Mercury":"ဗုဒ္ဓဟူး"};
 
 // Burmese meaning of each count-position (1..27) from natal Janma nakshatra.
@@ -650,8 +699,8 @@ function bestUse(moonTara,lagnaTara,special,specialScore,score){
     baseEn=TARA_USE[moonTara]||"—";
     baseMy=TARA_USE_MY[moonTara]||"";
   }
-  const alreadyReductive=/not launch|cutting|closure|conflict|caution|ending/i.test(baseEn);
-  const reductive = special==="Vainashika"||special==="Sanghatika"||
+  const alreadyReductive=/not launch|avoid launch|avoid major|cutting|closure|conflict|caution|correction|ending/i.test(baseEn);
+  const reductive = (special && (special.indexOf("Vainashika")===0 || special.indexOf("Vinashaka")===0 || special==="Sanghatika"))||
                     moonTara==="Naidhana"||lagnaTara==="Naidhana";
   let en=baseEn, my=baseMy;
   if(reductive && specialScore>=0 && !alreadyReductive){
@@ -877,9 +926,12 @@ function renderToday(){
     summaryEn += ` and Lagna in ${lt.name} (${lt.score})`;
     summaryMy += `နှင့် လဂ်တာရာ ${TARA_MY_MAP[lt.name]} (${lt.score}) အပေါ် အခြေခံထားပါသည်။`;
   }
-  if(sp) {
+  if(sp && bonus!==0) {
     summaryEn += `, plus a ${specialName} bonus (${bonus > 0 ? "+" : ""}${bonus})`;
     summaryMy += ` ထို့အပြင် ${SPECIAL_MY_MAP[specialName]} အထူးရမှတ် (${bonus > 0 ? "+" : ""}${bonus}) ပါဝင်သည်။`;
+  } else if(sp) {
+    summaryEn += `, marked ${specialName}`;
+    summaryMy += ` ${SPECIAL_MY_MAP[specialName]} နေရာ ဖြစ်သည်။`;
   }
 
   const hint=hasNatal()?"":`<div style="background:#2a2e4a;border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:.8rem">👋 <b>This score uses default natal values.</b> Set your own Moon &amp; Lagna in <i>Step 1</i> below for a verdict that's actually about <i>you</i>.<br><span class="mm">သင့်အတွက် တိကျသော အဖြေရရှိရန် အောက်ပါ အဆင့် (၁) တွင် မိမိ၏ စန်းနက္ခတ်နှင့် လဂ်နက္ခတ်ကို ရွေးချယ်ပေးပါ။</span></div>`;
@@ -934,8 +986,8 @@ function render(){
     let use=bestUse(mt.name,lt.name,specialName,bonus,rawScore);
     if(vi.isVedha) use=vedhaUse(vi.reasons);
     const ld=lordOf(i);
-    return {name,lord:ld.s,lordFull:ld.f,moonTara:mt.name,moonScore:mt.score,lagnaTara:lt.name,lagnaScore:lt.score,
-            special:specialName,specialScore:bonus,score,rawScore,isVedha:vi.isVedha,use};
+    return {name,lord:ld.s,lordFull:ld.f,moonTara:mt.name,moonScore:mt.score,moonCount:mt.count,lagnaTara:lt.name,lagnaScore:lt.score,
+            special:specialName,specialScore:bonus,score,rawScore,isVedha:vi.isVedha,vedhaReasons:vi.reasons,use};
   });
   rows.sort((a,b)=>{
     let av=a[sortKey],bv=b[sortKey];
@@ -955,7 +1007,9 @@ function render(){
       <td class="${taraClass(r.lagnaScore)}">${r.lagnaTara}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${TARA_MY_MAP[r.lagnaTara]||""}</span></td>
       <td>${r.special==="—"?"—":`${r.special}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${SPECIAL_MY_MAP[r.special]||""}</span>`}${r.specialScore?` (${r.specialScore>0?"+":""}${r.specialScore})`:""}</td>
       <td class="score"><span class="pill ${cls(r.score)}">${r.score>0?"+":""}${r.score}</span></td>
-      <td class="use${r.isVedha?' vedha':''}">${r.use}</td>`;
+      <td class="use${r.isVedha?' vedha':''}">${r.use} <span class="tap-hint mm">▸ ယတြာ</span></td>`;
+    tr.classList.add("clickable");
+    tr.addEventListener("click",()=>toggleRowDetail(tr,r));
     tb.appendChild(tr);
   });
   // reflect sort arrow
@@ -963,6 +1017,61 @@ function render(){
     th.textContent=th.textContent.replace(/[▾▴]/g,"").trim();
     if(th.dataset.k===sortKey) th.textContent+=" "+(sortDir<0?"▾":"▴");
   });
+}
+// Build the inline detail/remedy panel for a forecast row.
+function rowDetailHTML(r){
+  const pos=NAK_POSITION_MY[r.moonCount];
+  const td=TARA_DETAIL_MY[r.moonTara];
+  let h="";
+  if(pos){
+    h+=`<div class="dsec"><span class="dlbl">📜 Count #${r.moonCount} <span class="mm">(ဤနေရာ၏ အဓိပ္ပာယ်)</span></span>`+
+       `<div class="dval"><b class="mm">${pos.t}</b><br><span class="mm">${pos.d}</span></div></div>`;
+  }
+  if(r.special!=="—"){
+    h+=`<div class="dsec"><span class="dlbl">✨ 27-Special <span class="mm">(အထူး)</span></span>`+
+       `<div class="dval">${r.special}${r.specialScore?` (${r.specialScore>0?"+":""}${r.specialScore})`:""}`+
+       `${SPECIAL_USE_MY[r.special]?`<br><span class="mm">${SPECIAL_USE_MY[r.special]}</span>`:""}</div></div>`;
+  }
+  const ltd=TARA_DETAIL_MY[r.lagnaTara];
+  const sameTara=r.moonTara===r.lagnaTara;
+  if(td){
+    h+=`<div class="dsec"><span class="dlbl">🔄 Moon Tara nature — ${r.moonTara} <span class="mm">(စန်းတာရာ ${TARA_MY_MAP[r.moonTara]||""} သဘောသဘာဝ)</span></span>`+
+       `<div class="dval mm">${td.nature}${td.feeling?`<br><span style="color:var(--mut)">${td.feeling}</span>`:""}</div></div>`;
+  }
+  if(ltd && !sameTara){
+    h+=`<div class="dsec"><span class="dlbl">🔄 Lagna Tara nature — ${r.lagnaTara} <span class="mm">(လဂ်တာရာ ${TARA_MY_MAP[r.lagnaTara]||""} သဘောသဘာဝ)</span></span>`+
+       `<div class="dval mm">${ltd.nature}${ltd.feeling?`<br><span style="color:var(--mut)">${ltd.feeling}</span>`:""}</div></div>`;
+  }
+  if(td){
+    h+=`<div class="dsec remedy"><span class="dlbl">🪷 Remedy${sameTara?"":" — Moon Tara"} <span class="mm">(${sameTara?"":"စန်း "}ယတြာ)</span></span>`+
+       `<div class="dval mm">${td.yatra}</div></div>`;
+  }
+  if(ltd && !sameTara){
+    h+=`<div class="dsec remedy"><span class="dlbl">🪷 Remedy — Lagna Tara <span class="mm">(လဂ် ယတြာ)</span></span>`+
+       `<div class="dval mm">${ltd.yatra}</div></div>`;
+  }
+  if(r.isVedha){
+    h+=`<div class="dsec vedha"><span class="dlbl">⚠ Vedha (${(r.vedhaReasons||[]).join(" + ")})</span>`+
+       `<div class="dval">Avoid major starts; use only for repair / cutting / closure.`+
+       `<br><span class="mm">အရေးကြီး လုပ်ငန်းသစ်များ ရှောင်ပါ။ ပြုပြင်/ဖြတ်တောက်/အဆုံးသတ်ခြင်းအတွက်သာ သုံးပါ။</span></div></div>`;
+  }
+  return h;
+}
+function toggleRowDetail(tr,r){
+  const tb=tr.parentNode;
+  const next=tr.nextElementSibling;
+  if(next && next.classList.contains("row-detail")){
+    next.remove(); tr.classList.remove("expanded"); return;
+  }
+  tb.querySelectorAll("tr.row-detail").forEach(x=>x.remove());
+  tb.querySelectorAll("tr.expanded").forEach(x=>x.classList.remove("expanded"));
+  const cont=document.querySelector(".table-container");
+  const w=cont?cont.clientWidth:document.body.clientWidth;
+  const dr=document.createElement("tr");
+  dr.className="row-detail";
+  dr.innerHTML=`<td colspan="7"><div class="detail-wrap" style="width:${w}px">${rowDetailHTML(r)}</div></td>`;
+  tr.after(dr);
+  tr.classList.add("expanded");
 }
 function onNatalChange(){saveNatal();renderToday();render();}
 moonSel.onchange=onNatalChange; lagnaSel.onchange=onNatalChange;
