@@ -1002,16 +1002,33 @@ function dailyOutlookHTML(o){
 
   const sameTara = hasLagna && mt.name === lt.name;
 
+  // Grouping remedies by purpose instead of source (Moon/Lagna)
+  let successYatras = [];
+  let shieldingYatras = [];
+
+  // 1. Process Moon
   if(moonDet.yatra){
     const yEn = TARA_DETAIL_EN[mt.name]?.yatra || "";
-    h += `<div class="ol-act"><b>✅ To attract success <span class="mm">(အောင်မြင်မှု ရရှိစေရန်)</span>:</b><br>`+
-         `<span class="mm">${moonDet.yatra}</span>${yEn ? `<br><small style="opacity:0.8;">${yEn}</small>` : ""}</div>`;
+    const html = `<span class="mm">${moonDet.yatra}</span>${yEn ? `<br><small style="opacity:0.8;">${yEn}</small>` : ""}`;
+    if(moonFriction) shieldingYatras.push(html);
+    else successYatras.push(html);
   }
-  if(lagFriction && lagDet.yatra && !sameTara){
+
+  // 2. Process Lagna
+  if(hasLagna && !sameTara && lagDet && lagDet.yatra){
     const yEnL = TARA_DETAIL_EN[lt.name]?.yatra || "";
-    h += `<div class="ol-act"><b>🛡 To ease obstacles <span class="mm">(အတားအဆီးများ ကျော်လွှားရန်)</span>:</b><br>`+
-         `<span class="mm">${lagDet.yatra}</span>${yEnL ? `<br><small style="opacity:0.8;">${yEnL}</small>` : ""}</div>`;
+    const html = `<span class="mm">${lagDet.yatra}</span>${yEnL ? `<br><small style="opacity:0.8;">${yEnL}</small>` : ""}`;
+    if(lagFriction) shieldingYatras.push(html);
+    else successYatras.push(html);
   }
+
+  if(successYatras.length > 0){
+    h += `<div class="ol-act"><b>✅ To attract success <span class="mm">(အောင်မြင်မှု ရရှိစေရန်)</span>:</b><br>${successYatras.join('<br><div style="margin-top:4px;"></div>')}</div>`;
+  }
+  if(shieldingYatras.length > 0){
+    h += `<div class="ol-act"><b>🛡 To ease obstacles <span class="mm">(အတားအဆီးများ ကျော်လွှားရန်)</span>:</b><br>${shieldingYatras.join('<br><div style="margin-top:4px;"></div>')}</div>`;
+  }
+
   if(v.avoid !== "—") h += `<div class="ol-act warn"><b>❌ Avoid <span class="mm">(ရှောင်ရန်)</span>:</b> ${v.avoid}<br><span class="mm">${v.avoidMy}</span></div>`;
   h += `</div></div>`;
 
