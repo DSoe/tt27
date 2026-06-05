@@ -798,6 +798,8 @@ function dailyOutlookHTML(o){
   const moonDet=TARA_DETAIL_MY[mt.name]||{};
   const lagDet=hasLagna?(TARA_DETAIL_MY[lt.name]||{}):null;
   const lagFriction=hasLagna&&TARA_NEG.includes(lt.name);
+  const moonFriction = TARA_NEG.includes(mt.name) || (specialName !== "—" && (specialName.indexOf("Vainashika") === 0 || specialName.indexOf("Vinashaka") === 0 || specialName === "Naidhana" || specialName === "Sanghatika"));
+
   // Opportunity text: special-driven if marked, else Moon Tara use
   let oppEn,oppMy;
   if(specialName!=="—"){
@@ -808,7 +810,11 @@ function dailyOutlookHTML(o){
   let h=`<div class="outlook">`;
   h+=`<div class="ol-head ${v.cls}"><span class="ol-title">✨ ${v.title}</span><span class="mm">${v.titleMy}</span></div>`;
 
-  h+=`<div class="ol-sec opp"><div class="ol-h">💰 Opportunity — Moon in ${mt.name} <span class="mm">(အခွင့်အလမ်း — စန်းတာရာ ${TARA_MY_MAP[mt.name]||""})</span></div>`+
+  const mTitleEn = moonFriction ? "Primary Challenge" : "Opportunity";
+  const mTitleMy = moonFriction ? "အဓိက သတိပြုရန်" : "အခွင့်အလမ်း";
+  const mIcon = moonFriction ? "⚠️" : "💰";
+
+  h+=`<div class="ol-sec ${moonFriction?'catch':'opp'}"><div class="ol-h">${mIcon} ${mTitleEn} — Moon in ${mt.name} <span class="mm">(${mTitleMy} — စန်းတာရာ ${TARA_MY_MAP[mt.name]||""})</span></div>`+
      `<div class="ol-body">${oppEn}<br><span class="mm">${oppMy}</span>`+
      (moonDet.feeling?`<br><span class="ol-mind mm">🧠 ${moonDet.feeling}</span>`:"")+`</div></div>`;
 
