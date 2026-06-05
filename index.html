@@ -1289,7 +1289,7 @@ function rowDetailHTML(r){
   const ltd=TARA_DETAIL_MY[r.lagnaTara];
   const sameTara=r.moonTara===r.lagnaTara;
   if(td){
-    h+=`<div class="dsec"><span class="dlbl">🔄 Moon Tara nature — ${r.moonTara} <span class="mm">(စန်းတာရာ ${TARA_MY_MAP[r.moonTara]||""} သဘောသဘာဝ)</span></span>`+
+    h+=`<div class="dsec"><span class="dlbl">🔄 ${sameTara?"":"Moon "}Tara nature — ${r.moonTara} <span class="mm">(${sameTara?"":"စန်း"}တာရာ ${TARA_MY_MAP[r.moonTara]||""} သဘောသဘာဝ)</span></span>`+
        `<div class="dval mm">${td.nature}${td.feeling?`<br><span style="color:var(--mut)">${td.feeling}</span>`:""}</div></div>`;
   }
   if(ltd && !sameTara){
@@ -1298,10 +1298,6 @@ function rowDetailHTML(r){
   }
   if(td){
     h+=`<div class="dsec remedy"><span class="dlbl">🪷 Remedy${sameTara?"":" — Moon Tara"} <span class="mm">(${sameTara?"":"စန်း "}ယတြာ)</span></span>`+
-       `<div class="dval mm">${td.yatra}</div></div>`;
-  }
-  if(td){
-    h+=`<div class="dsec remedy"><span class="dlbl">🪷 Remedy — Moon Tara <span class="mm">(စန်း ယတြာ)</span></span>`+
        `<div class="dval mm">${td.yatra}</div>`+
        `<div class="dval" style="margin-top:4px; font-size:0.85rem; opacity:0.8;">${TARA_DETAIL_EN[r.moonTara]?.yatra || ""}</div></div>`;
   }
