@@ -437,22 +437,23 @@
     </div>
     <div id="navataraRef" class="ref-wrap"></div>
   </div>
+</div>
 </details>
 
 <details class="calc">
   <summary>🌙 Calculate from birth details <span class="mm">(မွေးသက္ကရာဇ်ဖြင့် ဇာတာတွက်ရန်)</span></summary>
   <div class="details-content">
     <div class="calc-grid">
-    <div class="ctl"><label>Birth date <span class="mm">(မွေးနေ့)</span></label><input type="date" id="bdate"></div>
-    <div class="ctl"><label>Birth time (local, 24h) <span class="mm">(မွေးချိန်)</span></label><input type="time" id="btime"></div>
-    <div class="ctl"><label>Place <span class="mm">(မွေးဖွားရာဒေသ)</span></label>
+    <div class="ctl"><label for="bdate">Birth date <span class="mm">(မွေးနေ့)</span></label><input type="date" id="bdate"></div>
+    <div class="ctl"><label for="btime">Birth time (local, 24h) <span class="mm">(မွေးချိန်)</span></label><input type="time" id="btime"></div>
+    <div class="ctl"><label for="bcity">Place <span class="mm">(မွေးဖွားရာဒေသ)</span></label>
       <select id="bcity"></select>
     </div>
   </div>
   <div class="calc-grid" id="customGeo">
-    <div class="ctl"><label>Latitude (°, N+) <span class="mm">(လတ္တီတွဒ်)</span></label><input type="number" id="blat" step="0.0001" placeholder="16.84"></div>
-    <div class="ctl"><label>Longitude (°, E+) <span class="mm">(လောင်ဂျီတွဒ်)</span></label><input type="number" id="blon" step="0.0001" placeholder="96.17"></div>
-    <div class="ctl"><label>UTC offset (hrs) <span class="mm">(အချိန်ကွာခြားချက်)</span></label><input type="number" id="boff" step="0.25" placeholder="6.5"></div>
+    <div class="ctl"><label for="blat">Latitude (°, N+) <span class="mm">(လတ္တီတွဒ်)</span></label><input type="number" id="blat" step="0.0001" placeholder="16.84"></div>
+    <div class="ctl"><label for="blon">Longitude (°, E+) <span class="mm">(လောင်ဂျီတွဒ်)</span></label><input type="number" id="blon" step="0.0001" placeholder="96.17"></div>
+    <div class="ctl"><label for="boff">UTC offset (hrs) <span class="mm">(အချိန်ကွာခြားချက်)</span></label><input type="number" id="boff" step="0.25" placeholder="6.5"></div>
   </div>
   <div class="calc-grid" style="align-items:flex-end">
     <button class="btn" onclick="calcBirth()">Calculate &amp; fill <span class="mm">(တွက်ချက်၍ ဖြည့်သွင်းပါ)</span></button>
@@ -466,15 +467,15 @@
 <div class="section-card">
   <div class="controls">
     <div class="ctl" style="grid-column: 1 / -1">
-      <label>Person's name <span class="mm">(အမည်)</span></label>
+      <label for="pname">Person's name <span class="mm">(အမည်)</span></label>
       <input type="text" id="pname" placeholder="e.g. Soe">
     </div>
     <div class="ctl">
-      <label>Moon Nakshatra <span class="mm">(စန်းနက္ခတ်)</span></label>
+      <label for="moon">Moon Nakshatra <span class="mm">(စန်းနက္ခတ်)</span></label>
       <select id="moon"></select>
     </div>
     <div class="ctl">
-      <label>Lagna Nakshatra <span class="mm">(လဂ်နက္ခတ်)</span></label>
+      <label for="lagna">Lagna Nakshatra <span class="mm">(လဂ်နက္ခတ်)</span></label>
       <select id="lagna"></select>
     </div>
   </div>
@@ -506,8 +507,8 @@
     <button class="btn" id="todayClear" style="padding: 8px 16px; font-size: 0.85rem; background: var(--avoid); opacity: 0.8">✕ Forget Me</button>
   </div>
   <div class="grid" id="todayCustomBox" style="display:none; gap:12px; margin-top:16px; flex-wrap:wrap">
-    <div class="ctl"><label>Date <span class="mm">(ရက်စွဲ)</span></label><input type="date" id="todayDate"></div>
-    <div class="ctl"><label>Time <span class="mm">(အချိန်)</span></label><input type="time" id="todayTime"></div>
+    <div class="ctl"><label for="todayDate">Date <span class="mm">(ရက်စွဲ)</span></label><input type="date" id="todayDate"></div>
+    <div class="ctl"><label for="todayTime">Time <span class="mm">(အချိန်)</span></label><input type="time" id="todayTime"></div>
     <div class="ctl" style="display:flex; align-items:flex-end; gap:8px">
       <button class="btn-sm" id="todayApply">Apply <span class="mm">(အသုံးပြုမည်)</span></button>
       <button class="btn-sm" id="todayNow">Now <span class="mm">(ယခု)</span></button>
@@ -798,51 +799,50 @@ const TARA_DETAIL_MY = {
 const TARA_DETAIL_EN = {
   "Janma":{
     nature:"Inherently supportive but fragile like a newborn; avoid major events like housewarmings or weddings.",
-    feeling:"Good ideas may surface but are hard to implement; prone to feeling vulnerable or lacking confidence.",
-    yatra:"Donate rice, vegetables, fruits, or pumpkin. Trust and use your intuition."
+    feeling:"New ideas may emerge, but execution feels difficult. Confidence may be low with a tendency to feel vulnerable.",
+    yatra:"Donate rice, vegetables, fruits, or pumpkin. Trust your intuition."
   },
   "Sampat":{
-    nature:"Provides a full measure of wealth, success, fame, authority, and wisdom.",
-    feeling:"Optimistic; inclined to forgive, understand, and accept.",
-    yatra:"Give alms of food and water. Mindful speech, conduct, and attire will enhance your charisma and prosperity."
+    nature:"Brings wealth, success, fame, authority, and wisdom.",
+    feeling:"Optimistic and inclined toward forgiveness, understanding, and acceptance.",
+    yatra:"Offer food or alms. Graceful speech and tidy appearance enhance your prosperity and charm."
   },
   "Vipat":{
-    nature:"Brings obstacles, disturbances, bad luck, loss, and intense anger.",
-    feeling:"Negative mindset; low tolerance for negotiation or forgiveness.",
-    yatra:"Donate palm sugar, jaggery, brown sugar, flowers, or milk rice. Maintain gentle speech and conduct."
+    nature:"Can cause obstacles, misfortune, loss, and irritability.",
+    feeling:"Pessimistic and irritable; patience and willingness to negotiate are low.",
+    yatra:"Donate jaggery, brown sugar, or milk rice. Be extra mindful of harsh words and actions."
   },
   "Kshema":{
-    nature:"Brings peace, safety, benefit to others, steady growth, and healing.",
-    feeling:"Able to express your best talents. Feeling secure and self-satisfied.",
-    yatra:"Burn camphor as an offering. Resolve any emerging problems immediately before this Tara ends."
+    nature:"Brings peace, safety, steady progress, and healing.",
+    feeling:"Feeling capable and secure; a sense of pride and self-satisfaction.",
+    yatra:"Burn camphor as an offering. Resolve any issues quickly while in this Tara."
   },
   "Pratyak":{
-    nature:"Causes obstacles and intense mental distress (like facing an 'equal rival').",
-    feeling:"Frustrated and aggressive about getting your own way.",
-    yatra:"Donate sea salt. Practice patience. Help those of different faiths."
+    nature:"Causes obstacles and intense mental distress; represents an 'equal rival'.",
+    feeling:"Frustrated and prone to using force or anger to get results.",
+    yatra:"Donate sea salt. Practice patience and help those of different faiths."
   },
   "Sadhana":{
-    nature:"The 'Practitioner' Tara — gives full benefits but requires disciplined effort and patience.",
-    feeling:"Recognizing the value of persistence and hard work.",
-    yatra:"Donate clothing (don't stay in pajamas all day). Feed dogs or help spiritual practitioners."
+    nature:"'The Practitioner'—brings full benefits but requires effort and patience.",
+    feeling:"Gaining an appreciation for persistence and hard work.",
+    yatra:"Donate clothes (avoid staying in pajamas during the day). Feed animals or support spiritual practitioners."
   },
   "Naidhana":{
-    nature:"Gives false hope only to bring fatal failure (Vadha); requires extreme caution.",
+    nature:"'The Obstruction'—can cause sudden loss after giving hope; requires extreme caution.",
     feeling:"Unable to find satisfaction even when things go well; high anxiety.",
-    yatra:"Donate sesame, gold, or educational items. Practice forgiveness and release captive animals."
+    yatra:"Donate sesame, gold, or support education. Practice forgiveness and release captives (animals)."
   },
   "Mitra":{
-    nature:"Favorable for love, marriage, children, and gaining good business partners or customers.",
-    feeling:"Empathy, love, compassion, humility, and joy.",
-    yatra:"Donate milk and dairy (butter). Offer butter lamps. Treat the opposite sex with respect."
+    nature:"Favors love, marriage, good children, and quality business partners.",
+    feeling:"Empathy, love, compassion, and humility are heightened.",
+    yatra:"Donate milk or ghee. Light ghee lamps. Treat the opposite sex with respect."
   },
   "Parama Mitra":{
-    nature:"Similar to Mitra but more powerful; brings glory, success, and exceptional luck.",
-    feeling:"Strong drive toward achieving excellence and noble goals.",
-    yatra:"Offer a golden robe to a Buddha statue. Feed elephants or birds. If heavily afflicted, donate rice equal to your body weight."
+    nature:"Similar to Mitra but more powerful; brings general luck, success, and prosperity.",
+    feeling:"Strong desire to pursue noble goals and achieve success.",
+    yatra:"Offer gold leaf to Buddha. Feed birds or elephants. If highly afflicted, donate rice equal to your body weight."
   }
 };
-
 
 const SUFFIX_REDUCT_EN=" — execution friction; favor repair / cleanup / closure over launch";
 const SUFFIX_REDUCT_MY=" — အသစ်စတင်ခြင်းထက် ဟောင်းနွမ်းသည်များကို ပြုပြင်ခြင်း သို့မဟုတ် အဆုံးသတ်ခြင်းကိုသာ ဦးစားပေးသင့်ပါသည်";
@@ -1490,11 +1490,13 @@ function calcBirth(){
 function renderReference(){
   const host=document.getElementById("navataraRef");
   if(!host)return;
-  // 27 count-positions with preamble (Myanmar only; English placeholder note)
-  let posMY=`<p style="margin-bottom:12px; font-size:0.92rem; color:var(--gold); line-height:1.5;">ပေးထားသော မှတ်တမ်းများအရ ဇနမနက္ခတ် (မူလစန်းစီးနက္ခတ်) မှစတင်ရေတွက်လျှင် ၂ လုံးမြောက်မှ ၂၇ လုံးမြောက်အထိ နက္ခတ်တစ်လုံးချင်းစီ၏ အဓိပ္ပာယ်နှင့် သဘောသဘာဝများမှာ အောက်ပါအတိုင်း ဖြစ်ပါသည် -</p>`;
+  // 27 count-positions with preamble (Myanmar & English)
+  let posMY=`<p style="margin-bottom:12px; font-size:0.92rem; color:var(--gold); line-height:1.5;">ဇနမနက္ခတ် (မူလစန်းစီးနက္ခတ်) မှစတင်ရေတွက်လျှင် ၁ လုံးမြောက်မှ ၂၇ လုံးမြောက်အထိ နက္ခတ်တစ်လုံးချင်းစီ၏ အဓိပ္ပာယ်နှင့် သဘောသဘာဝများမှာ အောက်ပါအတိုင်း ဖြစ်ပါသည် -</p>`;
   for(let i=1;i<=27;i++){const e=NAK_POSITION_MY[i];
-    posMY+=`<div class="ref-item"><span class="rt">${e.t}</span><span class="rd">${e.d}</span></div>`;}
-  const posEN=`<p style="font-size:0.92rem; color:var(--gold); line-height:1.5;">Each nakshatra counted from your Janma nakshatra (positions 2 through 27) carries a specific life theme. The full position-by-position reference is available in the Myanmar tab.</p>`;
+    if(e) posMY+=`<div class="ref-item"><span class="rt">${e.t}</span><span class="rd">${e.d}</span></div>`;}
+  let posEN=`<p style="margin-bottom:12px; font-size:0.92rem; color:var(--gold); line-height:1.5;">Each nakshatra counted from your Janma nakshatra (positions 1 through 27) carries a specific life theme:</p>`;
+  for(let i=1;i<=27;i++){const e=NAK_POSITION_EN[i];
+    if(e) posEN+=`<div class="ref-item"><span class="rt">${e.t}</span><span class="rd">${e.d}</span></div>`;}
   // 9 Tara with yatra — separate EN and MY
   const order=["Janma","Sampat","Vipat","Kshema","Pratyak","Sadhana","Naidhana","Mitra","Parama Mitra"];
   let taraEN="", taraMY="";
@@ -1564,7 +1566,7 @@ function renderReference(){
 
   const janma9EN=`<div class="ref-note">
     <p><b>The 9 Vital Nakshatras (Janma 9)</b></p>
-    <p>While there isn't a single list of 9 items to donate, traditional records highlight 9 vital positions (Janma 9) that are all governed by the Sun. Performing Sun remedies can mitigate negative effects across all 9.</p>
+    <p>Traditional records highlight 9 vital positions (Janma 9) that are all governed by the Sun. Performing Sun remedies can mitigate negative effects across all 9.</p>
     <p><b>1. The 9 Vital Positions</b></p>
     <p>Janma (1st), Karma (10th), Sanghatika (16th), Samudayika (18th), Adhana (19th) and Vinashaka (23rd) — the core 6 — plus Jaati (25th), Desha (26th) and Abhisheka (27th), together called the <b>Janma 9</b>.</p>
     <p><b>2. Sun Coverage</b></p>
@@ -1593,7 +1595,7 @@ function renderReference(){
 
   const janma9MY=`<div class="ref-note">
     <p><b>ဇနမ ၉ ပါး (နာရီနက္ခတ် ၉ ပါး)</b></p>
-    <p>မှတ်တမ်းများအရ "ဇနမနက္ခတ် ၉ မျိုးတွဲ၍ လှူဒါန်းရမည့်နည်း" ဟု ပစ္စည်း ၉ မျိုးကို တိုက်ရိုက်တွဲဖက်လှူဒါန်းရန် ဖော်ပြထားခြင်း မရှိပါ။ သို့သော် <b>"ဇနမ ၉ ပါး" (နာရီနက္ခတ် ၉ ပါး)</b> လုံးအတွက် ပေါင်းရုံး၍ ပြုလုပ်နိုင်သော ယတြာ၊ အစီအရင်များနှင့် လှူဒါန်းနည်းများကိုမူ အောက်ပါအတိုင်း အသေးစိတ် လမ်းညွှန်ထားပါသည် -</p>
+    <p><b>"ဇနမ ၉ ပါး" (နာရီနက္ခတ် ၉ ပါး)</b> လုံးအတွက် ပေါင်းရုံး၍ ပြုလုပ်နိုင်သော ယတြာ၊ အစီအရင်များနှင့် လှူဒါန်းနည်းများကို အောက်ပါအတိုင်း အသေးစိတ် လမ်းညွှန်ထားပါသည်-</p>
     <p><b>၁။ ဇနမ ၉ ပါး (နာရီနက္ခတ် ၉ ပါး) ဆိုသည်မှာ</b></p>
     <p>ဇနမ (၁ လုံးမြောက်)၊ ကမ္မ (၁၀)၊ သံဃာဋိက (၁၆)၊ သာမုဒါယိက (၁၈)၊ အာဓါန (၁၉)၊ ဝိနာသက (၂၃) ဟူသော ဇနမ ၆ ပါးအပြင်၊ ဇာတိ (၂၅)၊ တိုင်းပြည် (၂၆)၊ အဘိသေက (၂၇) အစရှိသည့် နက္ခတ် ၃ လုံးကို ထပ်ပေါင်း၍ <b>ဇနမ ၉ ပါး</b> ဟု ခေါ်ဆိုပါသည်။</p>
     <p><b>၂။ ဇနမ ၉ ပါးလုံးအတွက် တနင်္ဂနွေဂြိုဟ် ယတြာဖြင့် လွှမ်းခြုံခြင်း</b></p>
