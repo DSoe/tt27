@@ -828,8 +828,8 @@ function getVerdict(r, isToday){
 // Daily Outlook narrative for the Today card — Outlook / Opportunity (Moon) / Catch (Lagna) / Action Plan / Details.
 // Fully generated from live transit values so it stays correct for any natal chart.
 function dailyOutlookHTML(o){
-  const {mt,lt,specialName,bonus,score,isVedha,hasLagna,mLord,lLord,posInfo}=o;
-  const v=getVerdict({isVedha,special:specialName,moonTara:mt.name,lagnaTara:lt.name,score,name:NAK[mIdx]}, true);
+  const {mt,lt,specialName,bonus,score,isVedha,hasLagna,mLord,lLord,posInfo,moonName}=o;
+  const v=getVerdict({isVedha,special:specialName,moonTara:mt.name,lagnaTara:lt.name,score,name:moonName}, true);
   const moonDet=TARA_DETAIL_MY[mt.name]||{};
   const lagDet=hasLagna?(TARA_DETAIL_MY[lt.name]||{}):null;
   const lagFriction=hasLagna&&TARA_NEG.includes(lt.name);
@@ -1086,7 +1086,7 @@ function renderToday(){
   const hint=hasNatal()?"":`<div style="background:#2a2e4a;border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:.8rem">👋 <b>This score uses default natal values.</b> Set your own Moon &amp; Lagna in <i>Step 1</i> below for a verdict that's actually about <i>you</i>.<br><span class="mm">တိကျသော ဟောကိန်းရရှိရန် အဆင့် (၁) တွင် မိမိ၏ စန်းနှင့် လဂ်ကို အရင်ရွေးချယ်ပေးပါ။</span></div>`;
   const posInfo=NAK_POSITION_MY[mt.count];
   const setLocNote=lIdx==null?`<div class="ol-note mm">📍 လဂ်အလွှာ ထည့်တွက်ရန် "လက်ရှိနေရာကို သုံးပါ" ကို နှိပ်ပါ။ <span style="color:var(--mut)">(Tap "Use my location" to add the Lagna layer.)</span></div>`:"";
-  vEl.innerHTML=hint+dailyOutlookHTML({mt,lt,specialName,bonus,score,isVedha:vi.isVedha,hasLagna:lIdx!=null,mLord,lLord,posInfo})+setLocNote;
+  vEl.innerHTML=hint+dailyOutlookHTML({mt,lt,specialName,bonus,score,isVedha:vi.isVedha,hasLagna:lIdx!=null,mLord,lLord,posInfo,moonName:NAK[mIdx]})+setLocNote;
   // Burmese facing-direction rituals (keyed by transit Moon nakshatra).
   const ds=dirSelf(mIdx), dox=dirOther(mIdx);
   document.getElementById("todayRituals").innerHTML=
