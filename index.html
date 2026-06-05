@@ -1346,23 +1346,25 @@ function rowDetailHTML(r){
   }
   const ltd=TARA_DETAIL_MY[r.lagnaTara];
   const sameTara=r.moonTara===r.lagnaTara;
+
   if(td){
     h+=`<div class="dsec"><span class="dlbl">🔄 ${sameTara?"":"Moon "}Tara nature — ${r.moonTara} <span class="mm">(${sameTara?"":"စန်း"}တာရာ ${TARA_MY_MAP[r.moonTara]||""} သဘောသဘာဝ)</span></span>`+
-       `<div class="dval mm">${td.nature}${td.feeling?`<br><span style="color:var(--mut)">${td.feeling}</span>`:""}</div></div>`;
+       `<div class="dval mm">${td.nature}${td.feeling?`<br><span style="color:var(--mut)">${td.feeling}</span>`:""}</div>`+
+       `<div class="remedy-inline" style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border)">`+
+         `<span class="dlbl" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px">🪷 Remedy${sameTara?"":" — Moon Tara"} <span class="mm">(${sameTara?"":"စန်း "}ယတြာ)</span></span>`+
+         `<div class="dval mm" style="margin-top:4px">${td.yatra}</div>`+
+         `<div class="dval" style="margin-top:4px; font-size:0.82rem; opacity:0.8;">${TARA_DETAIL_EN[r.moonTara]?.yatra || ""}</div>`+
+       `</div></div>`;
   }
+
   if(ltd && !sameTara){
     h+=`<div class="dsec"><span class="dlbl">🔄 Lagna Tara nature — ${r.lagnaTara} <span class="mm">(လဂ်တာရာ ${TARA_MY_MAP[r.lagnaTara]||""} သဘောသဘာဝ)</span></span>`+
-       `<div class="dval mm">${ltd.nature}${ltd.feeling?`<br><span style="color:var(--mut)">${ltd.feeling}</span>`:""}</div></div>`;
-  }
-  if(td){
-    h+=`<div class="dsec remedy"><span class="dlbl">🪷 Remedy${sameTara?"":" — Moon Tara"} <span class="mm">(${sameTara?"":"စန်း "}ယတြာ)</span></span>`+
-       `<div class="dval mm">${td.yatra}</div>`+
-       `<div class="dval" style="margin-top:4px; font-size:0.85rem; opacity:0.8;">${TARA_DETAIL_EN[r.moonTara]?.yatra || ""}</div></div>`;
-  }
-  if(ltd && !sameTara){
-    h+=`<div class="dsec remedy"><span class="dlbl">🪷 Remedy — Lagna Tara <span class="mm">(လဂ် ယတြာ)</span></span>`+
-       `<div class="dval mm">${ltd.yatra}</div>`+
-       `<div class="dval" style="margin-top:4px; font-size:0.85rem; opacity:0.8;">${TARA_DETAIL_EN[r.lagnaTara]?.yatra || ""}</div></div>`;
+       `<div class="dval mm">${ltd.nature}${ltd.feeling?`<br><span style="color:var(--mut)">${ltd.feeling}</span>`:""}</div>`+
+       `<div class="remedy-inline" style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border)">`+
+         `<span class="dlbl" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px">🪷 Remedy — Lagna Tara <span class="mm">(လဂ် ယတြာ)</span></span>`+
+         `<div class="dval mm" style="margin-top:4px">${ltd.yatra}</div>`+
+         `<div class="dval" style="margin-top:4px; font-size:0.82rem; opacity:0.8;">${TARA_DETAIL_EN[r.lagnaTara]?.yatra || ""}</div>`+
+       `</div></div>`;
   }
   if(v.avoid!=="—" && !r.isVedha){
     h+=`<div class="dsec avoid"><span class="dlbl">❌ Avoid <span class="mm">(ရှောင်ရန်)</span></span>`+
