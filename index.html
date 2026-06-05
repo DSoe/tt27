@@ -828,59 +828,86 @@ function getVerdict(r, isToday){
 // Daily Outlook narrative for the Today card — Outlook / Opportunity (Moon) / Catch (Lagna) / Action Plan / Details.
 // Fully generated from live transit values so it stays correct for any natal chart.
 function dailyOutlookHTML(o){
-  const {mt,lt,specialName,bonus,score,isVedha,hasLagna,mLord,lLord,posInfo,moonName}=o;
-  const v=getVerdict({isVedha,special:specialName,moonTara:mt.name,lagnaTara:lt.name,score,name:moonName}, true);
-  const moonDet=TARA_DETAIL_MY[mt.name]||{};
-  const lagDet=hasLagna?(TARA_DETAIL_MY[lt.name]||{}):null;
-  const lagFriction=hasLagna&&TARA_NEG.includes(lt.name);
-  const moonFriction = TARA_NEG.includes(mt.name) || (specialName !== "—" && (specialName.indexOf("Vainashika") === 0 || specialName.indexOf("Vinashaka") === 0 || specialName === "Naidhana" || specialName === "Sanghatika"));
+  // 1. Destructure properties (moonName is passed here from renderToday)
+  const {mt, lt, specialName, bonus, score, isVedha, hasLagna, mLord, lLord, posInfo, moonName} = o;
 
-  // Opportunity text: special-driven if marked, else Moon Tara use
-  let oppEn,oppMy;
-  if(specialName!=="—"){
-    const sk=Object.keys(SPECIAL).find(k=>SPECIAL[k].n===specialName);
-    oppEn=SPECIAL[sk].use; oppMy=SPECIAL_USE_MY[specialName]||"";
-  }else{ oppEn=TARA_USE[mt.name]||"—"; oppMy=TARA_USE_MY[mt.name]||""; }
+  // 2. Call getVerdict.
+  // We pass 'moonName' as 'name'. getVerdict will calculate its own index safely.
+  const v = getVerdict({
+    isVedha,
+    special: specialName,
+    moonTara: mt.name,
+    lagnaTara: lt.name,
+    score,
+    name: moonName
+  }, true);
 
-  let h=`<div class="outlook">`;
-  h+=`<div class="ol-head ${v.cls}"><span class="ol-title">✨ ${v.title}</span><span class="mm">${v.titleMy}</span></div>`;
+  const moonDet = TARA_DETAIL_MY[mt.name] || {};
+  const lagDet = hasLagna ? (TARA_DETAIL_MY[lt.name] || {}) : null;
+
+  const lagFriction = hasLagna && TARA_NEG.includes(lt.name);
+
+  // Logic check for challenges/friction
+  const moonFriction = TARA_NEG.includes(mt.name) || (
+    specialName !== "—" && (
+      specialName.indexOf("Vainashika") === 0 ||
+      specialName.indexOf("Vinashaka") === 0 ||
+      specialName === "Naidhana" ||
+      specialName === "Sanghatika"
+    )
+  );
+
+  // ... (rest of the HTML generation logic remains the same)
+  let oppEn, oppMy;
+  if(specialName !== "—"){
+    const sk = Object.keys(SPECIAL).find(k => SPECIAL[k].n === specialName);
+    oppEn = SPECIAL[sk].use;
+    oppMy = SPECIAL_USE_MY[specialName] || "";
+  } else {
+    oppEn = TARA_USE[mt.name] || "—";
+    oppMy = TARA_USE_MY[mt.name] || "";
+  }
+
+  let h = `<div class="outlook">`;
+  h += `<div class="ol-head ${v.cls}"><span class="ol-title">✨ ${v.title}</span><span class="mm">${v.titleMy}</span></div>`;
 
   const mTitleEn = moonFriction ? "Primary Challenge" : "Opportunity";
   const mTitleMy = moonFriction ? "အဓိက သတိပြုရန်" : "အခွင့်အလမ်း";
   const mIcon = moonFriction ? "⚠️" : "💰";
 
-  h+=`<div class="ol-sec ${moonFriction?'catch':'opp'}"><div class="ol-h">${mIcon} ${mTitleEn} — Moon in ${mt.name} <span class="mm">(${mTitleMy} — စန်းတာရာ ${TARA_MY_MAP[mt.name]||""})</span></div>`+
-     `<div class="ol-body">${oppEn}<br><span class="mm">သင်ရဲ့ စန်းသည် ${TARA_MY_MAP[mt.name]||""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${oppMy}</span>`+
-     (moonDet.feeling?`<br><span class="ol-mind mm">🧠 ${moonDet.feeling}</span>`:"")+`</div></div>`;
+  h += `<div class="ol-sec ${moonFriction ? 'catch' : 'opp'}"><div class="ol-h">${mIcon} ${mTitleEn} — Moon in ${mt.name} <span class="mm">(${mTitleMy} — စန်းတာရာ ${TARA_MY_MAP[mt.name] || ""})</span></div>` +
+     `<div class="ol-body">${oppEn}<br><span class="mm">သင်ရဲ့ စန်းသည် ${TARA_MY_MAP[mt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${oppMy}</span>` +
+     (moonDet.feeling ? `<br><span class="ol-mind mm">🧠 ${moonDet.feeling}</span>` : "") + `</div></div>`;
 
   if(hasLagna){
     const lagUseEn = TARA_USE[lt.name] || "";
     const lagDetEn = TARA_DETAIL_EN[lt.name] || {};
     if(lagFriction){
-      h+=`<div class="ol-sec catch"><div class="ol-h">⚠️ The Catch — Lagna in ${lt.name} <span class="mm">(သတိပြုရန် — လဂ်တာရာ ${TARA_MY_MAP[lt.name]||""})</span></div>`+
-         `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature||""}<br><span class="mm">သင်ရဲ့ လဂ်သည် ${TARA_MY_MAP[lt.name]||""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature||""}${lagDet.feeling?`<br><span style="color:var(--mut)">${lagDet.feeling}</span>`:""}</span></div></div>`;
-    }else{
-      h+=`<div class="ol-sec reinforce"><div class="ol-h">✅ Lagna supports you — ${lt.name} <span class="mm">(လဂ်တာရာ အထောက်အပံ့ — ${TARA_MY_MAP[lt.name]||""})</span></div>`+
-         `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature||""}<br><span class="mm">သင်ရဲ့ လဂ်သည် ${TARA_MY_MAP[lt.name]||""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature||""}</span></div></div>`;
+      h += `<div class="ol-sec catch"><div class="ol-h">⚠️ The Catch — Lagna in ${lt.name} <span class="mm">(သတိပြုရန် — လဂ်တာရာ ${TARA_MY_MAP[lt.name] || ""})</span></div>` +
+         `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature || ""}<br><span class="mm">သင်ရဲ့ လဂ်သည် ${TARA_MY_MAP[lt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature || ""}${lagDet.feeling ? `<br><span style="color:var(--mut)">${lagDet.feeling}</span>` : ""}</span></div></div>`;
+    } else {
+      h += `<div class="ol-sec reinforce"><div class="ol-h">✅ Lagna supports you — ${lt.name} <span class="mm">(လဂ်တာရာ အထောက်အပံ့ — ${TARA_MY_MAP[lt.name] || ""})</span></div>` +
+         `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature || ""}<br><span class="mm">သင်ရဲ့ လဂ်သည် ${TARA_MY_MAP[lt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature || ""}</span></div></div>`;
     }
   }
 
-  h+=`<div class="ol-sec plan"><div class="ol-h">🪷 Action Plan <span class="mm">(အကြံပြုချက်နှင့် ယတြာ)</span></div><div class="ol-body">`;
-  if(isVedha) h+=`<div class="ol-act warn">⚠️ Vedha — avoid major starts; OK for repair / cutting / closure<br><span class="mm">⚠ ဝေဒသင့်နေပါသည် — အရေးကြီးသော လုပ်ငန်းသစ်များ ရှောင်ကြဉ်ပါ။ ပြုပြင်ခြင်း၊ ဖြတ်တောက်ခြင်းနှင့် အဆုံးသတ်ခြင်းများအတွက်သာ အသုံးပြုပါ။</span></div>`;
-  if(moonDet.yatra) h+=`<div class="ol-act"><b>✅ To attract success <span class="mm">(အောင်မြင်မှု ရရှိစေရန်)</span>:</b><br><span class="mm">${moonDet.yatra}</span></div>`;
-  if(lagFriction&&lagDet.yatra) h+=`<div class="ol-act"><b>🛡 To ease obstacles <span class="mm">(အတားအဆီးများ ကျော်လွှားရန်)</span>:</b><br><span class="mm">${lagDet.yatra}</span></div>`;
-  if(v.avoid!=="—") h+=`<div class="ol-act warn"><b>❌ Avoid <span class="mm">(ရှောင်ရန်)</span>:</b> ${v.avoid}<br><span class="mm">${v.avoidMy}</span></div>`;
-  h+=`</div></div>`;
+  h += `<div class="ol-sec plan"><div class="ol-h">🪷 Action Plan <span class="mm">(အကြံပြုချက်နှင့် ယတြာ)</span></div><div class="ol-body">`;
+  if(isVedha) h += `<div class="ol-act warn">⚠️ Vedha — avoid major starts; OK for repair / cutting / closure<br><span class="mm">⚠ ဝေဒသင့်နေပါသည် — အရေးကြီးသော လုပ်ငန်းသစ်များ ရှောင်ကြဉ်ပါ။ ပြုပြင်ခြင်း၊ ဖြတ်တောက်ခြင်းနှင့် အဆုံးသတ်ခြင်းများအတွက်သာ အသုံးပြုပါ။</span></div>`;
+  if(moonDet.yatra) h += `<div class="ol-act"><b>✅ To attract success <span class="mm">(အောင်မြင်မှု ရရှိစေရန်)</span>:</b><br><span class="mm">${moonDet.yatra}</span></div>`;
+  if(lagFriction && lagDet.yatra) h += `<div class="ol-act"><b>🛡 To ease obstacles <span class="mm">(အတားအဆီးများ ကျော်လွှားရန်)</span>:</b><br><span class="mm">${lagDet.yatra}</span></div>`;
+  if(v.avoid !== "—") h += `<div class="ol-act warn"><b>❌ Avoid <span class="mm">(ရှောင်ရန်)</span>:</b> ${v.avoid}<br><span class="mm">${v.avoidMy}</span></div>`;
+  h += `</div></div>`;
 
-  let det=`<details class="ctx-det"><summary>🔬 Astrological details <span class="mm">(နက္ခတ်ဗေဒဆိုင်ရာ အချက်အလက်များ)</span></summary><div class="ctx-body">`;
-  det+=`Moon Tara: <b>${mt.name}</b> (${TARA_MY_MAP[mt.name]||""}) ${mt.score>=0?"+":""}${mt.score}<br>`;
-  if(hasLagna) det+=`Lagna Tara: <b>${lt.name}</b> (${TARA_MY_MAP[lt.name]||""}) ${lt.score>=0?"+":""}${lt.score}<br>`;
-  if(specialName!=="—") det+=`27-Special: <b>${specialName}</b> (${SPECIAL_MY_MAP[specialName]||""})${bonus?` ${bonus>0?"+":""}${bonus}`:""}<br>`;
-  det+=`Moon Lord: <b>${mLord}</b> (${LORD_MY[mLord]||""})`;
-  if(hasLagna&&lLord) det+=`<br>Lagna Lord: <b>${lLord}</b> (${LORD_MY[lLord]||""})`;
-  if(posInfo) det+=`<br>Position: <span class="mm">ဇနမ စန်းနက္ခတ်မှ ${posInfo.t}</span>`;
-  det+=`</div></details>`;
-  h+=`<div class="ctx-wrap">${det}</div></div>`;
+  let det = `<details class="ctx-det"><summary>🔬 Astrological details <span class="mm">(နက္ခတ်ဗေဒဆိုင်ရာ အချက်အလက်များ)</span></summary><div class="ctx-body">`;
+  det += `Moon Tara: <b>${mt.name}</b> (${TARA_MY_MAP[mt.name] || ""}) ${mt.score >= 0 ? "+" : ""}${mt.score}<br>`;
+  if(hasLagna) det += `Lagna Tara: <b>${lt.name}</b> (${TARA_MY_MAP[lt.name] || ""}) ${lt.score >= 0 ? "+" : ""}${lt.score}<br>`;
+  if(specialName !== "—") det += `27-Special: <b>${specialName}</b> (${SPECIAL_MY_MAP[specialName] || ""})${bonus ? ` ${bonus > 0 ? "+" : ""}${bonus}` : ""}<br>`;
+  det += `Moon Lord: <b>${mLord}</b> (${LORD_MY[mLord] || ""})`;
+  if(hasLagna && lLord) det += `<br>Lagna Lord: <b>${lLord}</b> (${LORD_MY[lLord] || ""})`;
+  if(posInfo) det += `<br>Position: <span class="mm">ဇနမ စန်းနက္ခတ်မှ ${posInfo.t}</span>`;
+  det += `</div></details>`;
+  h += `<div class="ctx-wrap">${det}</div></div>`;
+
   return h;
 }
 
