@@ -776,39 +776,51 @@ function vedhaUse(reasons){
 // Decision-oriented verdict, derived purely from the computed row (generic to any natal chart).
 const TARA_NEG=["Vipat","Pratyak","Naidhana"];          // friction-bearing Taras
 const WEALTH_SPECIAL=/Udaya|Treasure|Sampat/i;          // wealth-flavored 27-Special markers
-function getVerdict(r){
+function getVerdict(r, isToday){
   const negLagna=TARA_NEG.includes(r.lagnaTara);
   const sp=r.special;
   const wealth=r.moonTara==="Sampat"||(sp!=="—"&&WEALTH_SPECIAL.test(sp));
   const repair=sp!=="—"&&(sp.indexOf("Vainashika")===0||sp.indexOf("Vinashaka")===0||sp==="Naidhana");
+  const nakIdx = NAK.indexOf(r.name);
+  const nakMy = NAK_MY[nakIdx] || r.name;
+
+  let prefixEn, prefixMy;
+  if(isToday){
+    prefixEn = `Based on the score, this moment is `;
+    prefixMy = `ရရှိသော ရမှတ်များအရ ယခုအချိန်သည် သင့်အတွက် `;
+  } else {
+    prefixEn = `Based on the score, days with transit Moon in ${r.name} are `;
+    prefixMy = `ရရှိသော ရမှတ်များအရ ${nakMy} စန်းယှဥ်သောနေ့များသည် သင့်အတွက် `;
+  }
+
   if(r.isVedha)
-    return {cls:"v-avoid",title:"Based on the score, this moment is: ⚠ Avoid major starts",
-            titleMy:"ရရှိသော ရမှတ်များအရ ယခုအချိန်တွင် အရေးကြီးသော လုပ်ငန်းသစ်များ ရှောင်ကြဉ်ပါ (ဝေဒသင့်နေပါသည်)",
+    return {cls:"v-avoid",title:prefixEn + "⚠ Avoid major starts",
+            titleMy:prefixMy + (isToday ? "အရေးကြီးသော လုပ်ငန်းသစ်များ ရှောင်ကြဉ်ရန် အချိန်ဖြစ်ပါသည် (ဝေဒသင့်နေပါသည်)" : "အရေးကြီးသော လုပ်ငန်းသစ်များ ရှောင်ကြဉ်ရန်နေ့ ဖြစ်ပါသည် (ဝေဒသင့်နေပါသည်)"),
             avoid:"Major launches, weddings, contracts, big purchases",
             avoidMy:"လုပ်ငန်းသစ်များ၊ မင်္ဂလာကိစ္စများ၊ စာချုပ်ချုပ်ဆိုခြင်းနှင့် အဖိုးတန်ပစ္စည်းများ ဝယ်ယူခြင်း"};
   if(repair)
-    return {cls:"v-neu",title:"Based on the score, this moment is good for: ✨ Repair / cleanup only",
-            titleMy:"ရရှိသော ရမှတ်များအရ ယခုအချိန်သည် ပြုပြင်မွမ်းမံခြင်းနှင့် သန့်ရှင်းရေးအတွက်သာ သင့်တော်ပါသည်",
+    return {cls:"v-neu",title:prefixEn + (isToday ? "good for: ✨ Repair / cleanup only" : "good for ✨ Repair / cleanup only"),
+            titleMy:prefixMy + (isToday ? "ပြုပြင်မွမ်းမံခြင်းနှင့် သန့်ရှင်းရေးအတွက်သာ သင့်တော်ပါသည်" : "ပြုပြင်မွမ်းမံခြင်းနှင့် သန့်ရှင်းရေးအတွက်သာ သင့်တော်သောနေ့ ဖြစ်ပါသည်"),
             avoid:"New launches, investments, expansion",
             avoidMy:"လုပ်ငန်းသစ်များ၊ ရင်းနှီးမြှုပ်နှံမှုနှင့် လုပ်ငန်းချဲ့ထွင်ခြင်းများ"};
   if(wealth&&negLagna)
-    return {cls:"v-use",title:"Based on the score, this moment is: Mixed — money potential, execution stress",
-            titleMy:"ရရှိသော ရမှတ်များအရ ရောထွေးကံဖြစ်နေပြီး ငွေဝင်ကိန်းရှိသော်လည်း အကောင်အထည်ဖော်ရာတွင် အတားအဆီးရှိနိုင်ပါသည်",
+    return {cls:"v-use",title:prefixEn + "Mixed — money potential, execution stress",
+            titleMy:prefixMy + (isToday ? "ရောထွေးကံဖြစ်နေပြီး ငွေဝင်ကိန်းရှိသော်လည်း အကောင်အထည်ဖော်ရာတွင် အတားအဆီးရှိနိုင်ပါသည်" : "ရောထွေးကံဖြစ်နေပြီး ငွေဝင်ကိန်းရှိသော်လည်း အကောင်အထည်ဖော်ရာတွင် အတားအဆီးရှိနိုင်သောနေ့ ဖြစ်ပါသည်"),
             avoid:"Public launch, risky contracts, stressful expansion",
             avoidMy:"လူသိရှင်ကြား ဖွင့်ပွဲများ၊ စွန့်စားရသော စာချုပ်များနှင့် ဖိစီးမှုများပြားမည့် ချဲ့ထွင်မှုများ"};
   if(r.score>=9)
-    return {cls:"v-green",title:"Based on the score, this moment is: Excellent — clean green-light",
-            titleMy:"ရရှိသော ရမှတ်များအရ အထူးကောင်းမွန်သောနေ့ဖြစ်သဖြင့် အစီအစဉ်ကြီးများကို စိတ်ချစွာ ဆောင်ရွက်နိုင်ပါသည်",avoid:"—",avoidMy:"—"};
+    return {cls:"v-green",title:prefixEn + "Excellent — clean green-light",
+            titleMy:prefixMy + (isToday ? "အထူးကောင်းမွန်သော အချိန်ဖြစ်သဖြင့် အစီအစဉ်ကြီးများကို စိတ်ချစွာ ဆောင်ရွက်နိုင်ပါသည်" : "အထူးကောင်းမွန်သောနေ့ဖြစ်သဖြင့် အစီအစဉ်ကြီးများကို စိတ်ချစွာ ဆောင်ရွက်နိုင်ပါသည်"),avoid:"—",avoidMy:"—"};
   if(r.score>=6)
-    return {cls:"v-good",title:"Based on the score, this moment is: Good — supportive",
-            titleMy:"ရရှိသော ရမှတ်များအရ ကောင်းမွန်သောနေ့ဖြစ်ပြီး အဘက်ဘက်မှ အထောက်အကူရရှိပါမည်",avoid:"—",avoidMy:"—"};
+    return {cls:"v-good",title:prefixEn + "Good — supportive",
+            titleMy:prefixMy + (isToday ? "ကောင်းမွန်သော အချိန်ဖြစ်ပြီး အဘက်ဘက်မှ အထောက်အကူရရှိပါမည်" : "ကောင်းမွန်သောနေ့ဖြစ်ပြီး အဘက်ဘက်မှ အထောက်အကူရရှိပါမည်"),avoid:"—",avoidMy:"—"};
   if(r.score>=3)
-    return {cls:"v-use",title:"Based on the score, this moment is: Usable — with a clear purpose",
-            titleMy:"ရရှိသော ရမှတ်များအရ အသုံးပြုနိုင်သောနေ့ဖြစ်ပြီး တိကျသော ရည်ရွယ်ချက်ရှိမှသာ လုပ်ဆောင်ပါ",
+    return {cls:"v-use",title:prefixEn + "Usable — with a clear purpose",
+            titleMy:prefixMy + (isToday ? "အသုံးပြုနိုင်သော အချိန်ဖြစ်ပြီး တိကျသော ရည်ရွယ်ချက်ရှိမှသာ လုပ်ဆောင်ပါ" : "အသုံးပြုနိုင်သောနေ့ဖြစ်ပြီး တိကျသော ရည်ရွယ်ချက်ရှိမှသာ လုပ်ဆောင်ပါ"),
             avoid:"Overextending; high-stakes commitments",
             avoidMy:"မနိုင်ဝန်ထမ်းခြင်းနှင့် ဆုံးရှုံးနိုင်ခြေများသော ကတိကဝတ်များကို ရှောင်ကြဉ်ပါ"};
-  return {cls:"v-neu",title:"Based on the score, this moment is: Neutral",
-          titleMy:"ရရှိသော ရမှတ်များအရ သာမန်နေ့တစ်နေ့သာ ဖြစ်ပါသည်",
+  return {cls:"v-neu",title:prefixEn + "Neutral",
+          titleMy:prefixMy + (isToday ? "သာမန်အချိန်တစ်ခုသာ ဖြစ်ပါသည်" : "သာမန်နေ့တစ်နေ့သာ ဖြစ်ပါသည်"),
           avoid:"Important launches — better for routine / maintenance",
           avoidMy:"အရေးကြီးသော လုပ်ငန်းသစ်များ — နေ့စဉ်လုပ်ငန်းဆောင်တာနှင့် ထိန်းသိမ်းမှုအတွက်သာ သင့်တော်သည်"};
 }
@@ -817,7 +829,7 @@ function getVerdict(r){
 // Fully generated from live transit values so it stays correct for any natal chart.
 function dailyOutlookHTML(o){
   const {mt,lt,specialName,bonus,score,isVedha,hasLagna,mLord,lLord,posInfo}=o;
-  const v=getVerdict({isVedha,special:specialName,moonTara:mt.name,lagnaTara:lt.name,score});
+  const v=getVerdict({isVedha,special:specialName,moonTara:mt.name,lagnaTara:lt.name,score,name:NAK[mIdx]}, true);
   const moonDet=TARA_DETAIL_MY[mt.name]||{};
   const lagDet=hasLagna?(TARA_DETAIL_MY[lt.name]||{}):null;
   const lagFriction=hasLagna&&TARA_NEG.includes(lt.name);
@@ -1129,7 +1141,7 @@ function render(){
     const idx=NAK.indexOf(r.name);
     if(+moonSel.value===idx) tr.classList.add("row-hl");
     if(todayState.moonIdx===idx) tr.classList.add("row-today");
-    const v=getVerdict(r);
+    const v=getVerdict(r, false);
     tr.innerHTML=`
       <td class="nm">${r.name}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${NAK_MY[idx]}</span></td>
       <td title="${r.lordFull}">${r.lord}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${LORD_MY[r.lordFull]||""}</span></td>
@@ -1152,7 +1164,7 @@ function render(){
 function rowDetailHTML(r){
   const pos=NAK_POSITION_MY[r.moonCount];
   const td=TARA_DETAIL_MY[r.moonTara];
-  const v=getVerdict(r);
+  const v=getVerdict(r, false);
   let h="";
   h+=`<div class="dsec"><span class="dlbl">⚖ Verdict <span class="mm">(စီရင်ချက်)</span></span>`+
      `<div class="dval"><b class="verdict-txt ${v.cls}">${v.title}</b><br><span class="mm">${v.titleMy}</span></div></div>`;
