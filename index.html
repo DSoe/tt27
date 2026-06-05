@@ -819,16 +819,16 @@ function dailyOutlookHTML(o){
   const mIcon = moonFriction ? "⚠️" : "💰";
 
   h+=`<div class="ol-sec ${moonFriction?'catch':'opp'}"><div class="ol-h">${mIcon} ${mTitleEn} — Moon in ${mt.name} <span class="mm">(${mTitleMy} — စန်းတာရာ ${TARA_MY_MAP[mt.name]||""})</span></div>`+
-     `<div class="ol-body">${oppEn}<br><span class="mm">${oppMy}</span>`+
+     `<div class="ol-body">${oppEn}<br><span class="mm">သင်ရဲ့ စန်းသည် ${TARA_MY_MAP[mt.name]||""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${oppMy}</span>`+
      (moonDet.feeling?`<br><span class="ol-mind mm">🧠 ${moonDet.feeling}</span>`:"")+`</div></div>`;
 
   if(hasLagna){
     if(lagFriction){
       h+=`<div class="ol-sec catch"><div class="ol-h">⚠️ The Catch — Lagna in ${lt.name} <span class="mm">(သတိပြုရန် — လဂ်တာရာ ${TARA_MY_MAP[lt.name]||""})</span></div>`+
-         `<div class="ol-body mm">${lagDet.nature||""}${lagDet.feeling?`<br><span style="color:var(--mut)">${lagDet.feeling}</span>`:""}</div></div>`;
+         `<div class="ol-body mm">သင်ရဲ့ လဂ်သည် ${TARA_MY_MAP[lt.name]||""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature||""}${lagDet.feeling?`<br><span style="color:var(--mut)">${lagDet.feeling}</span>`:""}</div></div>`;
     }else{
       h+=`<div class="ol-sec reinforce"><div class="ol-h">✅ Lagna supports you — ${lt.name} <span class="mm">(လဂ်တာရာ အထောက်အပံ့ — ${TARA_MY_MAP[lt.name]||""})</span></div>`+
-         `<div class="ol-body mm">${lagDet.nature||""}</div></div>`;
+         `<div class="ol-body mm">သင်ရဲ့ လဂ်သည် ${TARA_MY_MAP[lt.name]||""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature||""}</div></div>`;
     }
   }
 
