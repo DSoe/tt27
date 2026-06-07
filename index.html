@@ -1327,6 +1327,13 @@ function render(){
   });
 }
 // Build the inline detail/remedy panel for a forecast row.
+function getOrdinalSuffix(i) {
+  const j = i % 10, k = i % 100;
+  if (j == 1 && k != 11) return "st";
+  if (j == 2 && k != 12) return "nd";
+  if (j == 3 && k != 13) return "rd";
+  return "th";
+}
 function rowDetailHTML(r){
   const posMy=NAK_POSITION_MY[r.moonCount];
   const posEn=NAK_POSITION_EN[r.moonCount];
@@ -1335,16 +1342,20 @@ function rowDetailHTML(r){
   let h="";
   h+=`<div class="dsec"><span class="dlbl">⚖ Verdict <span class="mm">(စီရင်ချက်)</span></span>`+
      `<div class="dval"><b class="verdict-txt ${v.cls}">${v.title}</b><br><span class="mm">${v.titleMy}</span></div></div>`;
-  if(posMy && posEn){
-    h+=`<div class="dsec"><span class="dlbl">📜 Count ${r.moonCount}: ${posEn.t} <span class="mm">(ဇနမ စန်းနက္ခတ်မှ ${posMy.t})</span></span>`+
-       `<div class="dval">${posEn.d}<br><span class="mm">${posMy.d}</span></div></div>`;
-  }
+
   if(r.special!=="—"){
     const sk=Object.keys(SPECIAL).find(k=>SPECIAL[k].n===r.special);
     const spEn = SPECIAL[sk] ? SPECIAL[sk].use : "";
     const spMy = SPECIAL_USE_MY[r.special] || "";
-    h+=`<div class="dsec"><span class="dlbl">✨ 27-Special — ${r.special} <span class="mm">(အထူး - ${SPECIAL_MY_MAP[r.special]||""})</span></span>`+
-       `<div class="dval">${spEn}${spMy?`<br><span class="mm">${spMy}</span>`:""}</div></div>`;
+    // Combined description for the special position
+    const combinedEn = posEn ? `${posEn.d} ${spEn}` : spEn;
+    const combinedMy = posMy ? `${posMy.d} ${spMy}` : spMy;
+
+    h+=`<div class="dsec"><span class="dlbl">✨ 27-Special — This nakshatra is ${r.moonCount}${getOrdinalSuffix(r.moonCount)} from your Moon Nakshatra (${r.special}) <span class="mm">(အထူး - ဇနမ စန်းနက္ခတ်မှ ${r.moonCount} လုံးမြောက် ${SPECIAL_MY_MAP[r.special]||""})</span></span>`+
+       `<div class="dval">${combinedEn}${combinedMy?`<br><span class="mm">${combinedMy}</span>`:""}</div></div>`;
+  } else if(posMy && posEn){
+    h+=`<div class="dsec"><span class="dlbl">📜 Count ${r.moonCount}: ${posEn.t} <span class="mm">(ဇနမ စန်းနက္ခတ်မှ ${posMy.t})</span></span>`+
+       `<div class="dval">${posEn.d}<br><span class="mm">${posMy.d}</span></div></div>`;
   }
   const ltd=TARA_DETAIL_MY[r.lagnaTara];
   const sameTara=r.moonTara===r.lagnaTara;
