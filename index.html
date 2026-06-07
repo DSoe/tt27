@@ -1328,15 +1328,16 @@ function render(){
 }
 // Build the inline detail/remedy panel for a forecast row.
 function rowDetailHTML(r){
-  const pos=NAK_POSITION_MY[r.moonCount];
+  const posMy=NAK_POSITION_MY[r.moonCount];
+  const posEn=NAK_POSITION_EN[r.moonCount];
   const td=TARA_DETAIL_MY[r.moonTara];
   const v=getVerdict(r, false);
   let h="";
   h+=`<div class="dsec"><span class="dlbl">⚖ Verdict <span class="mm">(စီရင်ချက်)</span></span>`+
      `<div class="dval"><b class="verdict-txt ${v.cls}">${v.title}</b><br><span class="mm">${v.titleMy}</span></div></div>`;
-  if(pos){
-    h+=`<div class="dsec"><span class="dlbl">📜 Count <span class="mm">(ဇနမ စန်းနက္ခတ်မှ ${pos.t})</span></span>`+
-       `<div class="dval"><span class="mm">${pos.d}</span></div></div>`;
+  if(posMy && posEn){
+    h+=`<div class="dsec"><span class="dlbl">📜 Count ${r.moonCount}: ${posEn.t} <span class="mm">(ဇနမ စန်းနက္ခတ်မှ ${posMy.t})</span></span>`+
+       `<div class="dval">${posEn.d}<br><span class="mm">${posMy.d}</span></div></div>`;
   }
   if(r.special!=="—"){
     const sk=Object.keys(SPECIAL).find(k=>SPECIAL[k].n===r.special);
@@ -1510,13 +1511,6 @@ function calcBirth(){
 function renderReference(){
   const host=document.getElementById("navataraRef");
   if(!host)return;
-  // 27 count-positions with preamble (Myanmar & English)
-  let posMY=`<p style="margin-bottom:12px; font-size:0.92rem; color:var(--gold); line-height:1.5;">ဇနမနက္ခတ် (မူလစန်းစီးနက္ခတ်) မှစတင်ရေတွက်လျှင် ၁ လုံးမြောက်မှ ၂၇ လုံးမြောက်အထိ နက္ခတ်တစ်လုံးချင်းစီ၏ အဓိပ္ပာယ်နှင့် သဘောသဘာဝများမှာ အောက်ပါအတိုင်း ဖြစ်ပါသည် -</p>`;
-  for(let i=1;i<=27;i++){const e=NAK_POSITION_MY[i];
-    if(e) posMY+=`<div class="ref-item"><span class="rt">${e.t}</span><span class="rd">${e.d}</span></div>`;}
-  let posEN=`<p style="margin-bottom:12px; font-size:0.92rem; color:var(--gold); line-height:1.5;">Each nakshatra counted from your Janma nakshatra (positions 1 through 27) carries a specific life theme:</p>`;
-  for(let i=1;i<=27;i++){const e=NAK_POSITION_EN[i];
-    if(e) posEN+=`<div class="ref-item"><span class="rt">${e.t}</span><span class="rd">${e.d}</span></div>`;}
   // 9 Tara with yatra — separate EN and MY
   const order=["Janma","Sampat","Vipat","Kshema","Pratyak","Sadhana","Naidhana","Mitra","Parama Mitra"];
   let taraEN="", taraMY="";
@@ -1687,14 +1681,12 @@ function renderReference(){
   </div>`;
 
   const enAccordions=
-    `<details class="ref-acc"><summary>📜 27 Nakshatra Meanings (counted from Janma)</summary><div class="ref-body">${posEN}</div></details>`+
     `<details class="ref-acc"><summary>🔄 9 Tara — Nature &amp; Remedies</summary><div class="ref-body">${taraEN}${timingEN}</div></details>`+
     `<details class="ref-acc"><summary>⚔️ Overcoming Pratyak (The Equal Rival)</summary><div class="ref-body">${pratyakEN}</div></details>`+
     `<details class="ref-acc"><summary>💰 Wealth / Windfall Luck (Udaya Nakshatra)</summary><div class="ref-body">${moneyEN}</div></details>`+
     `<details class="ref-acc"><summary>☀️ Janma 9 Vital Nakshatras — Special Remedies</summary><div class="ref-body">${janma9EN}</div></details>`;
 
   const myAccordions=
-    `<details class="ref-acc"><summary>📜 နက္ခတ် ၂၇ လုံး အဓိပ္ပာယ် (ဇနမမှ ရေတွက်)</summary><div class="ref-body">${posMY}</div></details>`+
     `<details class="ref-acc"><summary>🔄 တာရာ ၉ ပါး — သဘောသဘာဝနှင့် ယတြာ</summary><div class="ref-body">${taraMY}${timingMY}</div></details>`+
     `<details class="ref-acc"><summary>⚔️ ပြတ္တရတာရာ (လက်ရည်တူရန်သူ) ကို အောင်နိုင်ခြင်း</summary><div class="ref-body">${pratyakMY}</div></details>`+
     `<details class="ref-acc"><summary>💰 ထီပေါက်ကိန်း / ငွေဝင်ကိန်း</summary><div class="ref-body">${moneyMY}</div></details>`+
