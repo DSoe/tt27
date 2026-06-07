@@ -1,6 +1,6 @@
 /* TT27 service worker — offline-first cache.
    Bump CACHE_VERSION on every release to invalidate old caches. */
-const CACHE_VERSION = "tt27-v21";
+const CACHE_VERSION = "tt27-v22";
 const ASSETS = [
   "./",
   "./index.html",

@@ -1380,6 +1380,34 @@ function rowDetailHTML(r){
          `</div></div>`;
     }
 
+    if(r.moonCount === 20) {
+      h+=`<div class="dsec" style="border:1px solid #444; padding:8px; border-radius:4px; margin-top:8px;">`+
+         `<div class="lang-en" style="font-size:0.9em;">`+
+           `<b>Wealth & Windfall Luck (Udaya Nakshatra)</b><br>`+
+           `• Primary indicator for wealth. Auspicious for lottery and new business when transit Moon passes here.<br>`+
+           `• Remedy: Bulk donations (whole bag/container), anonymous charity (envelopes), and feeding animals in bulk.`+
+         `</div>`+
+         `<div class="lang-my mm" style="font-size:0.9em; margin-top:5px;">`+
+           `<b>ထီပေါက်ကိန်း / ငွေဝင်ကိန်း (ဥဒယနက္ခတ်)</b><br>`+
+           `• ငွေကြေးကံ၏ အဓိကညွှန်ကိန်း။ လစန်းဖြတ်ချိန် ထီထိုးခြင်း၊ စီးပွားသစ်စခြင်းများအတွက် အထူးကောင်းသည်။<br>`+
+           `• ယတြာ - အစုလိုက်အပုံလိုက် လှူဒါန်းခြင်း (ဥပမာ-ဆန်တစ်အိတ်)၊ ပံ့သကူဒါန (စာအိတ်ဖြင့်ငွေချန်ထားခြင်း) နှင့် တိရစ္ဆာန်များကို အစုလိုက်ကျွေးခြင်း။`+
+         `</div></div>`;
+    }
+
+    if(r.moonCount === 5) {
+      h+=`<div class="dsec" style="border:1px solid #444; padding:8px; border-radius:4px; margin-top:8px;">`+
+         `<div class="lang-en" style="font-size:0.9em;">`+
+           `<b>Jewelry & Treasure Luck (5th Nakshatra)</b><br>`+
+           `• Governs gold and treasures. Buying or wearing jewelry when transit Moon crosses this nakshatra enhances luck.<br>`+
+           `• Nature: "The hunter finding the fallen deer" (Certain reward from past merit, but requires effort).`+
+         `</div>`+
+         `<div class="lang-my mm" style="font-size:0.9em; margin-top:5px;">`+
+           `<b>ရွှေငွေရတနာကံ (၅ ခုမြောက် နက္ခတ်)</b><br>`+
+           `• ရွှေနှင့် ရတနာပိုင်ဆိုင်မှုကို အုပ်စိုးသည်။ ဤနက္ခတ်ကို လစန်းဖြတ်ချိန် ရွှေဝယ်ခြင်း/ဝတ်ဆင်ခြင်းက ကံကိုမြှင့်တင်ပေးသည်။<br>`+
+           `• သဘော - "မုဆိုးက လဲကျနေသော ဒရယ်ကို တွေ့သကဲ့သို့" (အတိတ်ကုသိုလ်အကျိုး သေချာသော်လည်း ကြိုးစားအားထုတ်မှု လိုအပ်သည်)။`+
+         `</div></div>`;
+    }
+
     h+=`<div class="remedy-inline" style="margin-top:10px">`+
          `<span class="dlbl">🪷 Remedy${sameTara?"":" — Moon Tara"} <span class="mm">(${sameTara?"":"စန်း "}ယတြာ)</span></span>`+
          `<div class="dval mm">${td.yatra}</div>`+
@@ -1710,12 +1738,10 @@ function renderReference(){
 
   const enAccordions=
     `<details class="ref-acc"><summary>🔄 9 Tara — Nature &amp; Remedies</summary><div class="ref-body">${taraEN}${timingEN}</div></details>`+
-    `<details class="ref-acc"><summary>💰 Wealth / Windfall Luck (Udaya Nakshatra)</summary><div class="ref-body">${moneyEN}</div></details>`+
     `<details class="ref-acc"><summary>☀️ Janma 9 Vital Nakshatras — Special Remedies</summary><div class="ref-body">${janma9EN}</div></details>`;
 
   const myAccordions=
     `<details class="ref-acc"><summary>🔄 တာရာ ၉ ပါး — သဘောသဘာဝနှင့် ယတြာ</summary><div class="ref-body">${taraMY}${timingMY}</div></details>`+
-    `<details class="ref-acc"><summary>💰 ထီပေါက်ကိန်း / ငွေဝင်ကိန်း</summary><div class="ref-body">${moneyMY}</div></details>`+
     `<details class="ref-acc"><summary>☀️ ဇနမ ၉ ပါး (နာရီနက္ခတ်) အထူးယတြာ</summary><div class="ref-body">${janma9MY}</div></details>`;
 
   host.innerHTML=
