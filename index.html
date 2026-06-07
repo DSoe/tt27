@@ -973,8 +973,24 @@ function dailyOutlookHTML(o){
     oppMy = TARA_USE_MY[mt.name] || "";
   }
 
+  // 27-Special Nakshatra Position Info
+  const posMy = NAK_POSITION_MY[mt.count];
+  const posEn = NAK_POSITION_EN[mt.count];
+  let posHtml = "";
+  if(posMy && posEn){
+    posHtml = `<div class="ol-sec" style="border: 1px dashed var(--line); background: rgba(255,255,255,0.02); margin-bottom: 12px;">`+
+         `<div class="ol-body"><b>📍 Position ${mt.count}: ${posEn.t}</b><br>`+
+         `<span class="mm">ယခုအချိန်သည် သင့်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${posMy.t} ရောက်ရှိနေပါသဖြင့် ${posMy.d}</span>`+
+         `<div style="margin-top:8px; opacity:0.9; font-size:0.85rem;">`+
+         `🪐 <b>Nakshatra Lord:</b> ${mLord} (${LORD_MY[mLord] || ""}) | <b>Pada:</b> ${o.mPad}`+
+         (hasLagna && lLord ? `<br><b>Lagna Nakshatra Lord:</b> ${lLord} (${LORD_MY[lLord] || ""}) | <b>Pada:</b> ${o.lPad}` : "")+
+         `</div></div></div>`;
+  }
+
   let h = `<div class="outlook">`;
   h += `<div class="ol-head ${v.cls}"><span class="ol-title">✨ ${v.title}</span><span class="mm">${v.titleMy}</span></div>`;
+
+  h += posHtml;
 
   const mTitleEn = moonFriction ? "Primary Challenge" : "Opportunity";
   const mTitleMy = moonFriction ? "အဓိက သတိပြုရန်" : "အခွင့်အလမ်း";
@@ -1029,22 +1045,6 @@ function dailyOutlookHTML(o){
   }
 
   if(v.avoid !== "—") h += `<div class="ol-act warn"><b>❌ Avoid <span class="mm">(ရှောင်ရန်)</span>:</b> ${v.avoid}<br><span class="mm">${v.avoidMy}</span></div>`;
-
-  // 27-Special Nakshatra Position Info
-  const posMy = NAK_POSITION_MY[mt.count];
-  const posEn = NAK_POSITION_EN[mt.count];
-  if(posMy && posEn){
-    h += `<div class="ol-act" style="border-top:1px dashed #555; margin-top:12px; padding-top:8px;">`+
-         `<b>📍 Position ${mt.count}: ${posEn.t}</b><br>`+
-         `<span class="mm">ယခုအချိန်သည် သင့်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${posMy.t} ရောက်ရှိနေပါသဖြင့် ${posMy.d}</span>`+
-         `</div>`;
-  }
-
-  // Lord & Pada Info
-  h += `<div class="ol-act" style="opacity:0.9; font-size:0.9rem;">`+
-       `<b>🪐 Nakshatra Lord:</b> ${mLord} (${LORD_MY[mLord] || ""}) | <b>Pada:</b> ${o.mPad}`+
-       (hasLagna && lLord ? `<br><b>Lagna Nakshatra Lord:</b> ${lLord} (${LORD_MY[lLord] || ""}) | <b>Pada:</b> ${o.lPad}` : "")+
-       `</div>`;
 
   h += `</div></div></div>`;
 
