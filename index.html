@@ -997,7 +997,6 @@ function dailyOutlookHTML(o){
          `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature || ""}<br><span class="mm">တာရာကိုးပါးစက်အရ ယခုအချိန်သည် သင့်ရဲ့ လဂ်တာရာသည် ${TARA_MY_MAP[lt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature || ""}</span></div></div>`;
     }
   }
-
   h += `<div class="ol-sec plan"><div class="ol-h">🪷 Action Plan: Success & Shielding <span class="mm">(အောင်မြင်မှုရယူရန်နှင့် အတားအဆီးများ ကျော်လွှားရန်)</span></div><div class="ol-body">`;
   if(isVedha) h += `<div class="ol-act warn">⚠️ Vedha — avoid major starts; OK for repair / cutting / closure<br><span class="mm">⚠ ဝေဒသင့်နေပါသည် — အရေးကြီးသော လုပ်ငန်းသစ်များ ရှောင်ကြဉ်ပါ။ ပြုပြင်ခြင်း၊ ဖြတ်တောက်ခြင်းနှင့် အဆုံးသတ်ခြင်းများအတွက်သာ အသုံးပြုပါ။</span></div>`;
 
@@ -1031,17 +1030,17 @@ function dailyOutlookHTML(o){
   }
 
   if(v.avoid !== "—") h += `<div class="ol-act warn"><b>❌ Avoid <span class="mm">(ရှောင်ရန်)</span>:</b> ${v.avoid}<br><span class="mm">${v.avoidMy}</span></div>`;
-  h += `</div></div>`;
 
-  let det = `<details class="ctx-det"><summary>🔬 Astrological details <span class="mm">(နက္ခတ်ဗေဒဆိုင်ရာ အချက်အလက်များ)</span></summary><div class="ctx-body">`;
-  det += `Moon Tara: <b>${mt.name}</b> (${TARA_MY_MAP[mt.name] || ""}) ${mt.score >= 0 ? "+" : ""}${mt.score}<br>`;
-  if(hasLagna) det += `Lagna Tara: <b>${lt.name}</b> (${TARA_MY_MAP[lt.name] || ""}) ${lt.score >= 0 ? "+" : ""}${lt.score}<br>`;
-  if(specialName !== "—") det += `27-Special: <b>${specialName}</b> (${SPECIAL_MY_MAP[specialName] || ""})${bonus ? ` ${bonus > 0 ? "+" : ""}${bonus}` : ""}<br>`;
-  det += `Moon Nakshatra Lord: <b>${mLord}</b> (${LORD_MY[mLord] || ""})`;
-  if(hasLagna && lLord) det += `<br>Lagna Nakshatra Lord: <b>${lLord}</b> (${LORD_MY[lLord] || ""})`;
-  if(posInfo) det += `<br>Position: <span class="mm">ဇနမ စန်းနက္ခတ်မှ ${posInfo.t}</span>`;
-  det += `</div></details>`;
-  h += `<div class="ctx-wrap">${det}</div></div>`;
+  // Astrological Details (merged into Outlook card)
+  h += `<div style="margin-top:12px; padding-top:8px; border-top:1px dashed #555; font-size:0.82rem; opacity:0.9;">`+
+       `<b>🔬 Technicals:</b> Moon Tara: ${mt.name} (${TARA_MY_MAP[mt.name] || ""}) ${mt.score >= 0 ? "+" : ""}${mt.score}`+
+       (hasLagna ? ` | Lagna Tara: ${lt.name} (${TARA_MY_MAP[lt.name] || ""}) ${lt.score >= 0 ? "+" : ""}${lt.score}` : "")+
+       (specialName !== "—" ? `<br>27-Special: ${specialName} (${SPECIAL_MY_MAP[specialName] || ""})` : "")+
+       `<br>Lord: ${mLord} (${LORD_MY[mLord] || ""})`+
+       (posInfo ? ` | Position: <span class="mm">ဇနမမှ ${posInfo.t}</span>` : "")+
+       `</div>`;
+
+  h += `</div></div></div>`;
 
   return h;
 }
