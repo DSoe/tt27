@@ -981,7 +981,7 @@ function dailyOutlookHTML(o){
   const mTitleMy = moonFriction ? "အဓိက သတိပြုရန်" : "အခွင့်အလမ်း";
   const mIcon = moonFriction ? "⚠️" : "💰";
 
-  h += `<div class="ol-sec ${moonFriction ? 'catch' : 'opp'}"><div class="ol-h">${mIcon} ${mTitleEn} — Moon in ${mt.name} <span class="mm">(${mTitleMy} — စန်းတာရာ ${TARA_MY_MAP[mt.name] || ""})</span></div>` +
+  h += `<div class="ol-sec ${moonFriction ? 'catch' : 'opp'}"><div class="ol-h">${mIcon} ${mTitleEn} — Moon in your ${mt.name} <span class="mm">(${mTitleMy} — စန်းတာရာ ${TARA_MY_MAP[mt.name] || ""})</span></div>` +
      `<div class="ol-body">${oppEn}<br><span class="mm">တာရာကိုးပါးစက်အရ ယခုအချိန်သည် သင့်ရဲ့ စန်းတာရာသည် ${TARA_MY_MAP[mt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${oppMy}</span>` +
      (moonDet.nature ? `<br><span class="ol-mind mm">📖 ${moonDet.nature}</span>` : "") +
      (moonDet.feeling ? `<br><span class="ol-mind mm">🧠 ${moonDet.feeling}</span>` : "") + `</div></div>`;
@@ -990,11 +990,11 @@ function dailyOutlookHTML(o){
     const lagUseEn = TARA_USE[lt.name] || "";
     const lagDetEn = TARA_DETAIL_EN[lt.name] || {};
     if(lagFriction){
-      h += `<div class="ol-sec catch"><div class="ol-h">⚠️ The Catch — Lagna in ${lt.name} <span class="mm">(သတိပြုရန် — လဂ်တာရာ ${TARA_MY_MAP[lt.name] || ""})</span></div>` +
+      h += `<div class="ol-sec catch"><div class="ol-h">⚠️ The Catch — Lagna in your ${lt.name} <span class="mm">(သတိပြုရန် — လဂ်တာရာ ${TARA_MY_MAP[lt.name] || ""})</span></div>` +
          `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature || ""}<br><span class="mm">တာရာကိုးပါးစက်အရ ယခုအချိန်သည် သင့်ရဲ့ လဂ်တာရာသည် ${TARA_MY_MAP[lt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature || ""}${lagDet.feeling ? `<br><span style="color:var(--mut)">${lagDet.feeling}</span>` : ""}</span></div></div>`;
     } else {
-      h += `<div class="ol-sec reinforce"><div class="ol-h">✅ Lagna supports you — ${lt.name} <span class="mm">(လဂ်တာရာ အထောက်အပံ့ — ${TARA_MY_MAP[lt.name] || ""})</span></div>` +
-         `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature || ""}<br><span class="mm">တာရာကိုးပါးစက်အရ ယခုအချိန်သည် သင့်ရဲ့ လဂ်တာရာသည်${TARA_MY_MAP[lt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature || ""}</span></div></div>`;
+      h += `<div class="ol-sec reinforce"><div class="ol-h">✅ Lagna in your - ${lt.name} supports you <span class="mm">(လဂ်တာရာ အထောက်အပံ့ — ${TARA_MY_MAP[lt.name] || ""})</span></div>` +
+         `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature || ""}<br><span class="mm">တာရာကိုးပါးစက်အရ ယခုအချိန်သည် သင့်ရဲ့ လဂ်တာရာသည် ${TARA_MY_MAP[lt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature || ""}</span></div></div>`;
     }
   }
 
