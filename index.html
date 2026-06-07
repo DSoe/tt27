@@ -247,22 +247,6 @@
 
   /* Navatara reference accordions */
   .ref-wrap { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
-  /* Nakshatra Display Styles */
-  .nak-disp { display: flex; align-items: flex-start; gap: 10px; }
-  .nak-pada-num {
-    font-family: serif;
-    font-size: 1.6rem;
-    color: var(--avoid);
-    line-height: 1;
-    margin-top: -2px;
-    font-weight: bold;
-    min-width: 1.2rem;
-    text-align: center;
-  }
-  .nak-info { display: flex; flex-direction: column; gap: 2px; }
-  .nak-name { font-weight: 700; font-size: 1rem; color: var(--txt); }
-  .nak-sub { font-size: 0.8rem; color: var(--mut); }
-  .nak-lord-pada { font-size: 0.8rem; color: var(--mut); margin-top: 2px; }
   .ref-acc > summary { padding: 12px 14px; cursor: pointer; font-weight: 700; font-size: 0.9rem; color: var(--gold); list-style: none; display: flex; align-items: center; justify-content: flex-start; gap: 8px; }
   .ref-acc > summary::-webkit-details-marker { display: none; }
   .ref-acc > summary::after { display: none; }
@@ -1234,9 +1218,33 @@ function computeTransit(date,lat,lon){
   }
   return {moonIdx,moonPada,lagnaIdx,lagnaPada};
 }
-function getPadaChar(p) {
-  const chars = ["","၁","၂","၃","၄"]; // Burmese digits for Pada
-  return chars[p] || p;
+function findNakshatraEnd(startJD, targetIdx) {
+  let jd = startJD;
+  // Step by 10 minutes to find the transition
+  for (let i = 0; i < 200; i++) {
+    const ayan = lahiri(jd);
+    const sid = norm360(moonTrop(jd) - ayan);
+    if (nakIndex(sid) !== targetIdx) return jd;
+    jd += (10 / (24 * 60));
+  }
+  return jd;
+}
+
+function findPadaEnd(startJD, targetNakIdx, targetPada) {
+  let jd = startJD;
+  // Step by 2 minutes to find the transition
+  for (let i = 0; i < 500; i++) {
+    const ayan = lahiri(jd);
+    const sid = norm360(moonTrop(jd) - ayan);
+    if (nakIndex(sid) !== targetNakIdx || padaOf(sid) !== targetPada) return jd;
+    jd += (2 / (24 * 60));
+  }
+  return jd;
+}
+
+function formatJDTime(jd) {
+  const d = new Date((jd - 2440587.5) * 86400000);
+  return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
 }
 
 function renderToday(){
@@ -1255,24 +1263,14 @@ function renderToday(){
   const mPad=todayState.moonPada, lPad=todayState.lagnaPada;
   const mLord=lordOf(mIdx).f, lLord=lIdx!=null?lordOf(lIdx).f:"";
 
-  mEl.innerHTML = `
-    <div class="nak-disp">
-      <div class="nak-pada-num">${getPadaChar(mPad)}</div>
-      <div class="nak-info">
-        <div class="nak-name">${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span></div>
-        <div class="nak-lord-pada">Nakshatra Lord - ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></div>
-      </div>
-    </div>`;
+  const JD = jdFromDate(d);
+  const mPadaEnd = findPadaEnd(JD, mIdx, mPad);
+  const mTimeStr = formatJDTime(mPadaEnd);
 
-  lEl.innerHTML = lIdx != null
-    ? `<div class="nak-disp">
-        <div class="nak-pada-num">${getPadaChar(lPad)}</div>
-        <div class="nak-info">
-          <div class="nak-name">${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span></div>
-          <div class="nak-lord-pada">Nakshatra Lord - ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></div>
-        </div>
-      </div>`
-    : '<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location</span>';
+  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${mPad} <span style="opacity:0.7">upto ${mTimeStr}</span><br>Nakshatra Lord - ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
+  lEl.innerHTML=lIdx!=null
+    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${lPad}<br>Nakshatra Lord - ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
+    :'<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location</span>';
 
   const nm = +moonSel.value, nl = +lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
