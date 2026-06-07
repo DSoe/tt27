@@ -679,6 +679,25 @@ const lordOf=i=>LORD_CYCLE[i%9];
 function padaOf(sidLon){const NAK_W=40/3, PADA_W=NAK_W/4;
   return Math.floor((((sidLon%NAK_W)+NAK_W)%NAK_W)/PADA_W)+1;}
 
+// Traditional auspicious designation for specific nakshatra/pada combinations.
+function getPadaClass(nakIdx,pada){
+  if(nakIdx==null||pada==null)return null;
+  const cycle=Math.floor(nakIdx/9);
+  const offset=nakIdx%9;
+  const activePadas=[[1],[1],[1,2],[2],[2,3],[3],[3,4],[4],[4]][offset];
+  if(!activePadas.includes(pada))return null;
+
+  const typeIdx=((3-cycle)%3+offset)%3;
+  if(typeIdx===0)return {en:"Wara Uttama Pada",my:"ဝရဥတ္တမပါဒ",color:"var(--gold)"};
+  if(typeIdx===1)return {en:"Wealth Pada",my:"သူဌေးပါဒ",color:"var(--good)"};
+  return {en:"Virtuous Pada",my:"သူတော်ကောင်းပါဒ",color:"#00e5ff"};
+}
+
+function padaClassHtml(nakIdx,pada,lang){
+  const cls=getPadaClass(nakIdx,pada);
+  return cls?` · <b style="color:${cls.color}">✦ ${cls[lang]}</b>`:"";
+}
+
 // Burmese facing-direction rituals keyed by transit Moon nakshatra.
 // 8-direction cycle from Ashwini: self-prayer = E,SW,N,SE,W,NE,S,NW; other = +6 offset.
 const DIR8=[
@@ -1504,8 +1523,8 @@ function renderToday(){
   const mPadaEnd = findPadaEnd(JD, mIdx, mPad);
   const mTimeStr = formatJDTime(mPadaEnd);
 
-  mEl.innerHTML=`<span class="lang-en">${NAK[mIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${mPad} <span style="opacity:0.7">upto ${mTimeStr}</span><br>Nakshatra Lord - ${mLord}</span></span>`+
-    `<span class="lang-my mm">${NAK_MY[mIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">ပါဒ ${toMyanmarDigits(mPad)}<br><span style="opacity:0.7">ပြီးဆုံးချိန် - ${toMyanmarTime(mTimeStr)}</span><br>နက္ခတ်သခင် - ${LORD_MY[mLord]}</span></span>`;
+  mEl.innerHTML=`<span class="lang-en">${NAK[mIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${mPad}${padaClassHtml(mIdx,mPad,"en")} <span style="opacity:0.7">upto ${mTimeStr}</span><br>Nakshatra Lord - ${mLord}</span></span>`+
+    `<span class="lang-my mm">${NAK_MY[mIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">ပါဒ ${toMyanmarDigits(mPad)}${padaClassHtml(mIdx,mPad,"my")}<br><span style="opacity:0.7">ပြီးဆုံးချိန် - ${toMyanmarTime(mTimeStr)}</span><br>နက္ခတ်သခင် - ${LORD_MY[mLord]}</span></span>`;
   lEl.innerHTML=lIdx!=null
     ?`<span class="lang-en">${NAK[lIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${lPad}<br>Nakshatra Lord - ${lLord}</span></span>`+
       `<span class="lang-my mm">${NAK_MY[lIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">ပါဒ - ${toMyanmarDigits(lPad)}<br>နက္ခတ်သခင် - ${LORD_MY[lLord]}</span></span>`
