@@ -263,7 +263,68 @@
     .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
     .stat-box:nth-child(3) { grid-column: span 2; }
     .actions { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; }
-    th:nth-child(2), td:nth-child(2) { display: none; }
+    .table-container { overflow-x: hidden; border-radius: var(--radius-md); }
+    #tbl { min-width: 0; table-layout: auto; }
+    #tbl thead { display: none; }
+    #tbl tbody { display: block; }
+    #tbl tbody tr.clickable {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px 12px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    #tbl tbody tr.clickable > td {
+      display: none;
+      width: auto;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+    }
+    #tbl tbody tr.clickable > td:nth-child(1),
+    #tbl tbody tr.clickable > td:nth-child(6),
+    #tbl tbody tr.clickable > td:nth-child(7) { display: block; }
+    #tbl tbody tr.clickable > td:nth-child(1) { align-self: center; }
+    #tbl tbody tr.clickable > td:nth-child(6) {
+      align-self: start;
+      text-align: right;
+    }
+    #tbl tbody tr.clickable > td:nth-child(7) {
+      grid-column: 1 / -1;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    #tbl tbody tr.clickable > td:nth-child(7)::before {
+      display: block;
+      margin: 0 0 7px 10px;
+      color: var(--mut);
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    body[data-lang="en"] #tbl tbody tr.clickable > td:nth-child(7)::before { content: "Best Use"; }
+    body[data-lang="my"] #tbl tbody tr.clickable > td:nth-child(7)::before { content: "အသုံးချရန်"; }
+    #tbl tbody tr.clickable .verdict {
+      margin-bottom: 0;
+      padding-left: 10px;
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+    #tbl tbody tr.clickable .tap-hint {
+      display: block;
+      margin: 8px 0 0 10px;
+    }
+    #tbl tbody tr.row-detail { display: block; }
+    #tbl tbody tr.row-detail > td {
+      display: block;
+      width: 100%;
+    }
+    #tbl tbody tr.row-detail .detail-wrap {
+      position: static;
+      width: 100% !important;
+      padding: 16px 14px;
+    }
     .rituals .row { flex-direction: column; gap: 4px; }
     .verdict-box { font-size: 0.95rem; padding: 16px; }
     .stat-box { padding: 12px; }
@@ -1802,6 +1863,7 @@ function nakIndex(sid){return Math.floor(norm360(sid)/(40/3));}
 
 const CITIES=[
   ["Yangon",16.8409,96.1735,6.5],["Mandalay",21.9588,96.0891,6.5],
+  ["Mogok",22.9177,96.5098,6.5],
   ["Naypyidaw",19.7633,96.0785,6.5],["Mawlamyine",16.4900,97.6256,6.5],
   ["Bago",17.3350,96.4815,6.5],["Taunggyi",20.7892,97.0378,6.5],
   ["Pathein",16.7790,94.7320,6.5],["Monywa",22.1083,95.1358,6.5],
