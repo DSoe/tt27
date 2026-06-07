@@ -1041,10 +1041,10 @@ function dailyOutlookHTML(o){
          `</div>`;
   }
 
-  // Lord Info
+  // Lord & Pada Info
   h += `<div class="ol-act" style="opacity:0.9; font-size:0.9rem;">`+
-       `<b>🪐 Lord <span class="mm">(နက္ခတ်အစိုးရသောဂြိုဟ်)</span>:</b> ${mLord} (${LORD_MY[mLord] || ""})`+
-       (hasLagna && lLord ? ` | Lagna Lord: ${lLord} (${LORD_MY[lLord] || ""})` : "")+
+       `<b>🪐 Nakshatra Lord:</b> ${mLord} (${LORD_MY[mLord] || ""}) | <b>Pada:</b> ${o.mPad}`+
+       (hasLagna && lLord ? `<br><b>Lagna Nakshatra Lord:</b> ${lLord} (${LORD_MY[lLord] || ""}) | <b>Pada:</b> ${o.lPad}` : "")+
        `</div>`;
 
   h += `</div></div></div>`;
@@ -1234,9 +1234,9 @@ function renderToday(){
     vEl.textContent="Computing…";return;}
   const mPad=todayState.moonPada, lPad=todayState.lagnaPada;
   const mLord=lordOf(mIdx).f, lLord=lIdx!=null?lordOf(lIdx).f:"";
-  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">pada ${mPad}<br>${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
+  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${mPad}<br>Nakshatra Lord - ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
   lEl.innerHTML=lIdx!=null
-    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">pada ${lPad}<br>${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
+    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${lPad}<br>Nakshatra Lord - ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
     :'<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location</span>';
   const nm = +moonSel.value, nl = +lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
@@ -1254,7 +1254,7 @@ function renderToday(){
   const hint=hasNatal()?"":`<div style="background:#2a2e4a;border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:.8rem">👋 <b>This score uses default natal values.</b> Set your own Moon &amp; Lagna in <i>Step 1</i> below for a verdict that's actually about <i>you</i>.<br><span class="mm">တိကျသော ဟောကိန်းရရှိရန် အဆင့် (၁) တွင် မိမိ၏ စန်းနှင့် လဂ်ကို အရင်ရွေးချယ်ပေးပါ။</span></div>`;
   const posInfo=NAK_POSITION_MY[mt.count];
   const setLocNote=lIdx==null?`<div class="ol-note mm">📍 လဂ်ကို ထည့်တွက်ရန် "လက်ရှိနေရာကို သုံးပါ" ကို နှိပ်ပါ။ <span style="color:var(--mut)">(Tap "Use my location" to add the Lagna layer.)</span></div>`:"";
-  vEl.innerHTML=hint+dailyOutlookHTML({mt,lt,specialName,bonus,score,isVedha:vi.isVedha,hasLagna:lIdx!=null,mLord,lLord,posInfo,moonName:NAK[mIdx]})+setLocNote;
+  vEl.innerHTML=hint+dailyOutlookHTML({mt,lt,specialName,bonus,score,isVedha:vi.isVedha,hasLagna:lIdx!=null,mLord,lLord,posInfo,moonName:NAK[mIdx],mPad,lPad})+setLocNote;
   // Burmese facing-direction rituals (keyed by transit Moon nakshatra).
   const ds=dirSelf(mIdx), dox=dirOther(mIdx);
   document.getElementById("todayRituals").innerHTML=
