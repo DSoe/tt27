@@ -1362,8 +1362,25 @@ function rowDetailHTML(r){
 
   if(td){
     h+=`<div class="dsec"><span class="dlbl">🔄 ${sameTara?"":"Moon "}Tara nature — ${r.moonTara} <span class="mm">(${sameTara?"":"စန်း"}တာရာ ${TARA_MY_MAP[r.moonTara]||""} သဘောသဘာဝ)</span></span>`+
-       `<div class="dval mm">${td.nature}${td.feeling?`<br><span style="color:var(--mut)">${td.feeling}</span>`:""}</div>`+
-       `<div class="remedy-inline" style="margin-top:10px">`+
+       `<div class="dval mm">${td.nature}${td.feeling?`<br><span style="color:var(--mut)">${td.feeling}</span>`:""}</div>`;
+
+    if(r.moonTara === "Pratyak") {
+      h+=`<div class="dsec" style="border:1px solid #444; padding:8px; border-radius:4px; margin-top:8px;">`+
+         `<div class="lang-en" style="font-size:0.9em;">`+
+           `<b>Overcoming an "Equal Rival" (Pratyak)</b><br>`+
+           `• Strategy: Focus on self-strengthening and inner virtue. When you rise in merit, the rival is no longer equal.<br>`+
+           `• Practice: Extreme patience and helping people of different faiths.<br>`+
+           `• Remedy: Donate salt (Saturn).`+
+         `</div>`+
+         `<div class="lang-my mm" style="font-size:0.9em; margin-top:5px;">`+
+           `<b>ပြတ္တရတာရာ (လက်ရည်တူရန်သူ) ကို အောင်နိုင်ခြင်း</b><br>`+
+           `• ဗျူဟာ - မိမိ၏ သီလ၊ သမာဓိ၊ ကုသိုလ်အင်အားကို မြှင့်တင်ပါ။ မိမိအဆင့်မြင့်သွားပါက ရန်သူသည် လက်ရည်တူ (ပြတ္တရ) အဆင့် မဟုတ်တော့ပါ။<br>`+
+           `• ကျင့်စဉ် - စိတ်ရှည်သည်းခံခြင်းနှင့် ဘာသာခြားများကို ကူညီပေးခြင်း။<br>`+
+           `• ယတြာ - ဆားလှူဒါန်းပါ။ (စနေဂြိုဟ်)`+
+         `</div></div>`;
+    }
+
+    h+=`<div class="remedy-inline" style="margin-top:10px">`+
          `<span class="dlbl">🪷 Remedy${sameTara?"":" — Moon Tara"} <span class="mm">(${sameTara?"":"စန်း "}ယတြာ)</span></span>`+
          `<div class="dval mm">${td.yatra}</div>`+
          `<div class="dval" style="margin-top:4px; font-size:0.82rem; opacity:0.8;">${TARA_DETAIL_EN[r.moonTara]?.yatra || ""}</div>`+
@@ -1693,13 +1710,11 @@ function renderReference(){
 
   const enAccordions=
     `<details class="ref-acc"><summary>🔄 9 Tara — Nature &amp; Remedies</summary><div class="ref-body">${taraEN}${timingEN}</div></details>`+
-    `<details class="ref-acc"><summary>⚔️ Overcoming Pratyak (The Equal Rival)</summary><div class="ref-body">${pratyakEN}</div></details>`+
     `<details class="ref-acc"><summary>💰 Wealth / Windfall Luck (Udaya Nakshatra)</summary><div class="ref-body">${moneyEN}</div></details>`+
     `<details class="ref-acc"><summary>☀️ Janma 9 Vital Nakshatras — Special Remedies</summary><div class="ref-body">${janma9EN}</div></details>`;
 
   const myAccordions=
     `<details class="ref-acc"><summary>🔄 တာရာ ၉ ပါး — သဘောသဘာဝနှင့် ယတြာ</summary><div class="ref-body">${taraMY}${timingMY}</div></details>`+
-    `<details class="ref-acc"><summary>⚔️ ပြတ္တရတာရာ (လက်ရည်တူရန်သူ) ကို အောင်နိုင်ခြင်း</summary><div class="ref-body">${pratyakMY}</div></details>`+
     `<details class="ref-acc"><summary>💰 ထီပေါက်ကိန်း / ငွေဝင်ကိန်း</summary><div class="ref-body">${moneyMY}</div></details>`+
     `<details class="ref-acc"><summary>☀️ ဇနမ ၉ ပါး (နာရီနက္ခတ်) အထူးယတြာ</summary><div class="ref-body">${janma9MY}</div></details>`;
 
