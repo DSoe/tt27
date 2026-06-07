@@ -57,6 +57,47 @@
     line-height: 1.5;
   }
 
+  .app-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .app-heading { min-width: 0; }
+  .app-heading .sub:last-child { margin-bottom: 0; }
+  .language-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .language-toggle button {
+    min-width: 48px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--mut);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .language-toggle button.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 10px var(--accent-glow);
+  }
+  body[data-lang="en"] .mm,
+  body[data-lang="en"] .lang-my,
+  body[data-lang="my"] .lang-en,
+  body[data-lang="my"] .lang-en-auto { display: none !important; }
+  body[data-lang="my"] { line-height: 1.8; }
+
   /* Typography */
   h1 { font-size: 1.75rem; margin: 0; font-weight: 800; background: linear-gradient(135deg, #fff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; }
   .sub { color: var(--mut); font-size: 0.9rem; margin-top: 4px; margin-bottom: 24px; font-weight: 400; }
@@ -215,6 +256,8 @@
   /* Mobile Adjustments */
   @media (max-width: 600px) {
     body { padding: 12px; }
+    .app-header { gap: 12px; margin-bottom: 20px; }
+    .language-toggle button { min-width: 42px; padding: 7px 9px; }
     h1 { font-size: 1.4rem; }
     .section-card { padding: 16px; }
     .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -228,7 +271,7 @@
   }
 
   /* Utility */
-  .help-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--accent); cursor: pointer; font-weight: 800; }
+  .help-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); color: var(--accent); -webkit-text-fill-color: currentColor; cursor: pointer; font-weight: 800; }
   .help-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
   .section-cap { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 32px 0 12px; display: flex; align-items: center; gap: 8px; }
   .section-cap::after { content: ""; flex: 1; height: 1px; background: var(--line); }
@@ -302,9 +345,6 @@
   .lang-tabs button.active { color: var(--accent); background: var(--accent-glow); }
   .lang-tabs .tour-link { color: var(--gold); font-size: 0.85rem; text-decoration: underline; }
 
-  .guide-body[data-lang="en"] .lang-my { display: none; }
-  .guide-body[data-lang="my"] .lang-en { display: none; }
-
   .tour-pop {
     position: fixed;
     z-index: 10000;
@@ -333,20 +373,27 @@
   }
 </style>
 </head>
-<body>
-<h1>TT27 — Triple Tara + 27 Marker
-  <button class="help-btn" id="helpBtn" title="How to use this app" aria-label="Help">?</button>
-</h1>
-<div class="sub">A daily nakshatra screener — Tells you which moments favor action, money, or rest.</div>
-<div class="sub mm" style="margin-top:-16px">သုံးထပ်တာရာ (Triple Tara) နှင့် ၂၇ နက္ခတ် စစ်ဆေးမှုစနစ်</div>
+<body data-lang="en">
+<header class="app-header">
+  <div class="app-heading">
+    <h1>TT27 — Triple Tara + 27 Marker
+      <span class="mm">TT27 — သုံးထပ်တာရာ + ၂၇ နက္ခတ်</span>
+      <button class="help-btn" id="helpBtn" title="How to use this app" aria-label="Help">?</button>
+    </h1>
+    <div class="sub">A daily nakshatra screener — Tells you which moments favor action, money, or rest.</div>
+    <div class="sub mm">သုံးထပ်တာရာ (Triple Tara) နှင့် ၂၇ နက္ခတ် စစ်ဆေးမှုစနစ်</div>
+  </div>
+  <div class="language-toggle" role="group" aria-label="Language">
+    <button type="button" id="globalLangEn" class="active" aria-pressed="true">EN</button>
+    <button type="button" id="globalLangMy" aria-pressed="false">MY</button>
+  </div>
+</header>
 
 <details class="guide" id="guide">
   <summary>👋 New here? How to use this app <span class="mm">(အသုံးပြုပုံ လမ်းညွှန်)</span></summary>
   <div class="details-content">
     <div class="guide-body" id="guideBody" data-lang="en">
     <div class="lang-tabs">
-      <button id="langEn" class="active">English</button>
-      <button id="langMy" class="mm">မြန်မာ</button>
       <button id="tourBtn" class="tour-link" style="margin-left:auto">🎯 Take the tour</button>
     </div>
 
@@ -540,11 +587,11 @@
 
 <div class="legend">
   <b>Classification <span class="mm">(အမှတ်သတ်မှတ်ချက်များ)</span>:</b>
-  <span class="pill c-green">9+ Excellent <span class="mm">အထူးကောင်း</span></span>
-  <span class="pill c-good">6–8 Good <span class="mm">ကောင်း</span></span>
-  <span class="pill c-use">3–5 Usable <span class="mm">သုံးနိုင်</span></span>
-  <span class="pill c-neu">0–2 Neutral <span class="mm">သာမန်</span></span>
-  <span class="pill c-avoid">&lt;0 Avoid <span class="mm">ရှောင်ရန်</span></span>
+  <span class="pill c-green"><span class="lang-en">9+ Excellent</span><span class="lang-my mm">၉+ အထူးကောင်း</span></span>
+  <span class="pill c-good"><span class="lang-en">6–8 Good</span><span class="lang-my mm">၆–၈ ကောင်း</span></span>
+  <span class="pill c-use"><span class="lang-en">3–5 Usable</span><span class="lang-my mm">၃–၅ သုံးနိုင်</span></span>
+  <span class="pill c-neu"><span class="lang-en">0–2 Neutral</span><span class="lang-my mm">၀–၂ သာမန်</span></span>
+  <span class="pill c-avoid"><span class="lang-en">&lt;0 Avoid</span><span class="lang-my mm">&lt;၀ ရှောင်ရန်</span></span>
   <br>Tap any column header to sort. <span class="mm">(ခေါင်းစဉ်များကို နှိပ်၍ အစဉ်လိုက် စီနိုင်သည်)</span>
   <br>Tap any row for its meaning &amp; remedy. <span class="mm">(အတန်းတစ်ခုကို နှိပ်၍ အဓိပ္ပာယ်နှင့် ယတြာကို ကြည့်နိုင်သည်)</span>
   <br>Score = Moon Tara + Lagna Tara + TT27 bonus. <span class="mm">(ရမှတ် = စန်းတာရာ + လဂ်တာရာ + TT27 အထူးရမှတ်)</span>
@@ -934,7 +981,7 @@ function getVerdict(r, isToday){
 // Fully generated from live transit values so it stays correct for any natal chart.
 function dailyOutlookHTML(o){
   // 1. Destructure properties (moonName is passed here from renderToday)
-  const {mt, lt, specialName, bonus, score, isVedha, hasLagna, mLord, lLord, posInfo, moonName} = o;
+  const {mt, lt, specialName, bonus, score, isVedha, hasLagna, mLord, lLord, posInfo, moonName, lagnaName} = o;
 
   // 2. Call getVerdict.
   // We pass 'moonName' as 'name'. getVerdict will calculate its own index safely.
@@ -962,27 +1009,41 @@ function dailyOutlookHTML(o){
     )
   );
 
-  // ... (rest of the HTML generation logic remains the same)
-  let oppEn, oppMy;
-  if(specialName !== "—"){
-    const sk = Object.keys(SPECIAL).find(k => SPECIAL[k].n === specialName);
-    oppEn = SPECIAL[sk].use;
-    oppMy = SPECIAL_USE_MY[specialName] || "";
-  } else {
-    oppEn = TARA_USE[mt.name] || "—";
-    oppMy = TARA_USE_MY[mt.name] || "";
-  }
+  const oppEn = TARA_USE[mt.name] || "—";
+  const oppMy = TARA_USE_MY[mt.name] || "";
 
   // 27-Special Nakshatra Position Info
   const posMy = NAK_POSITION_MY[mt.count];
   const posEn = NAK_POSITION_EN[mt.count];
   let posHtml = "";
   if(posMy && posEn){
+    const moonIdx=NAK.indexOf(moonName);
+    const moonNameMy=NAK_MY[moonIdx]||moonName;
+    const specialEn=specialName!=="—"
+      ?(SPECIAL[Object.keys(SPECIAL).find(k=>SPECIAL[k].n===specialName)]?.use||"")
+      :"";
+    const specialMy=specialName!=="—"?(SPECIAL_USE_MY[specialName]||""):"";
     posHtml = `<div class="ol-sec" style="border: 1px dashed var(--line); background: rgba(255,255,255,0.02); margin-bottom: 12px;">`+
-         `<div class="ol-body"><b>📍 Position ${mt.count}: ${posEn.t}</b><br>`+
-         `<span class="mm">ယခုအချိန်သည် သင့်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${posMy.t} ရောက်ရှိနေပါသဖြင့် ${posMy.d}</span>`+
-         `<div style="margin-top:8px; opacity:0.9; font-size:0.85rem;">`+
-         `</div></div></div>`;
+         `<div class="ol-body">`+
+           `<div class="lang-en">`+
+             `<b>📍 The Moon is now in ${moonName}</b>`+
+             `<div style="margin-top:6px">Counted from your natal Moon nakshatra, ${moonName} is the <b>${mt.count}${getOrdinalSuffix(mt.count)} position</b> in the cycle of 27 nakshatras.</div>`+
+             `<div style="margin-top:12px"><b>What the ${mt.count}${getOrdinalSuffix(mt.count)} position means</b></div>`+
+             `<div style="margin-top:4px">${posEn.d}</div>`+
+             (specialName!=="—"?`<div style="margin-top:6px">${specialEn}</div>`:"")+
+             `<div style="margin-top:12px"><b>How to strengthen this position</b></div>`+
+             `<div style="margin-top:4px">Because ${moonName} currently carries your ${mt.count}${getOrdinalSuffix(mt.count)}-position influence, practices and remedies associated with ${moonName} can help cultivate the positive qualities of this position.</div>`+
+           `</div>`+
+           `<div class="lang-my mm">`+
+             `<b>📍 ယခုအချိန်တွင် စန်းသည် ${moonNameMy} နက္ခတ်၌ ရောက်ရှိနေပါသည်</b>`+
+             `<div style="margin-top:6px">မိမိ၏ ဇနမစန်းနက္ခတ်မှ စတင်ရေတွက်လျှင် ${moonNameMy} သည် နက္ခတ် ၂၇ လုံးအနက် <b>${toMyanmarDigits(mt.count)} လုံးမြောက်နေရာ</b>တွင် ကျရောက်ပါသည်။</div>`+
+             `<div style="margin-top:12px"><b>${toMyanmarDigits(mt.count)} လုံးမြောက်နေရာ၏ အဓိပ္ပာယ်</b></div>`+
+             `<div style="margin-top:4px">${posMy.d}</div>`+
+             (specialName!=="—"?`<div style="margin-top:6px">${specialMy}</div>`:"")+
+             `<div style="margin-top:12px"><b>ဤနေရာ၏ ကောင်းကျိုးကို အားဖြည့်နည်း</b></div>`+
+             `<div style="margin-top:4px">${moonNameMy} သည် ယခု မိမိ၏ ${toMyanmarDigits(mt.count)} လုံးမြောက်နေရာအဖြစ် ကျရောက်နေသောကြောင့် ${moonNameMy} နက္ခတ်နှင့် သက်ဆိုင်သော ကုသိုလ်ပြုမှု၊ ကျင့်စဉ်နှင့် ယတြာများကို ပြုလုပ်ခြင်းဖြင့် ဤနေရာ၏ ကောင်းသောအရည်အသွေးများကို ပိုမိုအားကောင်းစေနိုင်ပါသည်။</div>`+
+           `</div>`+
+         `</div></div>`;
   }
 
   let h = `<div class="outlook">`;
@@ -993,21 +1054,44 @@ function dailyOutlookHTML(o){
   const mTitleEn = moonFriction ? "Primary Challenge" : "Opportunity";
   const mTitleMy = moonFriction ? "အဓိက သတိပြုရန်" : "အခွင့်အလမ်း";
   const mIcon = moonFriction ? "⚠️" : "💰";
+  const moonNameMy = NAK_MY[NAK.indexOf(moonName)] || moonName;
 
-  h += `<div class="ol-sec ${moonFriction ? 'catch' : 'opp'}"><div class="ol-h">${mIcon} ${mTitleEn} — Moon in your ${mt.name} <span class="mm">(${mTitleMy} — စန်းတာရာ ${TARA_MY_MAP[mt.name] || ""})</span></div>` +
-     `<div class="ol-body">${oppEn}<br><span class="mm">တာရာကိုးပါးစက်အရ ယခုအချိန်သည် သင့်ရဲ့ စန်းတာရာသည် ${TARA_MY_MAP[mt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${oppMy}</span>` +
-     (moonDet.nature ? `<br><span class="ol-mind mm">📖 ${moonDet.nature}</span>` : "") +
-     (moonDet.feeling ? `<br><span class="ol-mind mm">🧠 ${moonDet.feeling}</span>` : "") + `</div></div>`;
+  h += `<div class="ol-sec ${moonFriction ? 'catch' : 'opp'}">`+
+    `<div class="ol-h">`+
+      `<span class="lang-en">${mIcon} ${mTitleEn} — Transit Moon in ${moonName}</span>`+
+      `<span class="lang-my mm">${mIcon} ${mTitleMy} — ဖြတ်သန်းစန်း ${moonNameMy}</span>`+
+    `</div>`+
+    `<div class="ol-body">`+
+      `<div class="lang-en">The transit Moon in <b>${moonName}</b> activates your <b>${mt.name} Tara</b>. ${oppEn}`+
+        (TARA_DETAIL_EN[mt.name]?.nature?`<br><span class="ol-mind">📖 ${TARA_DETAIL_EN[mt.name].nature}</span>`:"")+
+        (TARA_DETAIL_EN[mt.name]?.feeling?`<br><span class="ol-mind">🧠 ${TARA_DETAIL_EN[mt.name].feeling}</span>`:"")+
+      `</div>`+
+      `<div class="lang-my mm">ယခု ဖြတ်သန်းစန်း <b>${moonNameMy}</b> သည် မိမိ၏ <b>${TARA_MY_MAP[mt.name]||""}တာရာ</b>ကို လှုံ့ဆော်နေပါသည်။ ${oppMy}`+
+        (moonDet.nature?`<br><span class="ol-mind">📖 ${moonDet.nature}</span>`:"")+
+        (moonDet.feeling?`<br><span class="ol-mind">🧠 ${moonDet.feeling}</span>`:"")+
+      `</div>`+
+    `</div></div>`;
 
   if(hasLagna){
     const lagUseEn = TARA_USE[lt.name] || "";
     const lagDetEn = TARA_DETAIL_EN[lt.name] || {};
+    const lagnaNameMy = NAK_MY[NAK.indexOf(lagnaName)] || lagnaName;
     if(lagFriction){
-      h += `<div class="ol-sec catch"><div class="ol-h">⚠️ The Catch — Lagna in your ${lt.name} <span class="mm">(သတိပြုရန် — လဂ်တာရာ ${TARA_MY_MAP[lt.name] || ""})</span></div>` +
-         `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature || ""}<br><span class="mm">တာရာကိုးပါးစက်အရ ယခုအချိန်သည် သင့်ရဲ့ လဂ်တာရာသည် ${TARA_MY_MAP[lt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature || ""}${lagDet.feeling ? `<br><span style="color:var(--mut)">${lagDet.feeling}</span>` : ""}</span></div></div>`;
+      h += `<div class="ol-sec catch"><div class="ol-h">`+
+        `<span class="lang-en">⚠️ The Catch — Transit Lagna in ${lagnaName}</span>`+
+        `<span class="lang-my mm">⚠️ သတိပြုရန် — ဖြတ်သန်းလဂ် ${lagnaNameMy}</span>`+
+        `</div><div class="ol-body">`+
+        `<div class="lang-en">The transit Lagna in <b>${lagnaName}</b> activates your <b>${lt.name} Tara</b>. ${lagUseEn}<br><span class="ol-mind">📖 ${lagDetEn.nature||""}</span>${lagDetEn.feeling?`<br><span class="ol-mind">🧠 ${lagDetEn.feeling}</span>`:""}</div>`+
+        `<div class="lang-my mm">ယခု ဖြတ်သန်းလဂ် <b>${lagnaNameMy}</b> သည် မိမိ၏ <b>${TARA_MY_MAP[lt.name]||""}တာရာ</b>ကို လှုံ့ဆော်နေပါသည်။ ${TARA_USE_MY[lt.name]||""}<br><span class="ol-mind">📖 ${lagDet.nature||""}</span>${lagDet.feeling?`<br><span class="ol-mind">🧠 ${lagDet.feeling}</span>`:""}</div>`+
+        `</div></div>`;
     } else {
-      h += `<div class="ol-sec reinforce"><div class="ol-h">✅ Lagna in your - ${lt.name} supports you <span class="mm">(လဂ်တာရာ အထောက်အပံ့ — ${TARA_MY_MAP[lt.name] || ""})</span></div>` +
-         `<div class="ol-body">${lagUseEn}<br>${lagDetEn.nature || ""}<br><span class="mm">တာရာကိုးပါးစက်အရ ယခုအချိန်သည် သင့်ရဲ့ လဂ်တာရာသည် ${TARA_MY_MAP[lt.name] || ""}တာရာတွင် ယခု ရောက်ရှိနေပါသဖြင့် ${lagDet.nature || ""}</span></div></div>`;
+      h += `<div class="ol-sec reinforce"><div class="ol-h">`+
+        `<span class="lang-en">✅ Support — Transit Lagna in ${lagnaName}</span>`+
+        `<span class="lang-my mm">✅ အထောက်အပံ့ — ဖြတ်သန်းလဂ် ${lagnaNameMy}</span>`+
+        `</div><div class="ol-body">`+
+        `<div class="lang-en">The transit Lagna in <b>${lagnaName}</b> activates your <b>${lt.name} Tara</b>. ${lagUseEn}<br><span class="ol-mind">📖 ${lagDetEn.nature||""}</span>${lagDetEn.feeling?`<br><span class="ol-mind">🧠 ${lagDetEn.feeling}</span>`:""}</div>`+
+        `<div class="lang-my mm">ယခု ဖြတ်သန်းလဂ် <b>${lagnaNameMy}</b> သည် မိမိ၏ <b>${TARA_MY_MAP[lt.name]||""}တာရာ</b>ကို လှုံ့ဆော်နေပါသည်။ ${TARA_USE_MY[lt.name]||""}<br><span class="ol-mind">📖 ${lagDet.nature||""}</span>${lagDet.feeling?`<br><span class="ol-mind">🧠 ${lagDet.feeling}</span>`:""}</div>`+
+        `</div></div>`;
     }
   }
   h += `<div class="ol-sec plan"><div class="ol-h">🪷 Action Plan: Success & Shielding <span class="mm">(အောင်မြင်မှုရယူရန်နှင့် အတားအဆီးများ ကျော်လွှားရန်)</span></div><div class="ol-body">`;
@@ -1036,10 +1120,32 @@ function dailyOutlookHTML(o){
   }
 
   if(successYatras.length > 0){
-    h += `<div class="ol-act"><b>✅ To attract success <span class="mm">(အောင်မြင်မှု ရရှိစေရန်)</span>:</b><br>${successYatras.join('<br><div style="margin-top:4px;"></div>')}</div>`;
+    const successSourcesEn=[], successSourcesMy=[];
+    if(moonDet.yatra&&!moonFriction){
+      successSourcesEn.push(`${mt.name} Tara`);
+      successSourcesMy.push(`${TARA_MY_MAP[mt.name]||""}တာရာ`);
+    }
+    if(hasLagna&&!sameTara&&lagDet?.yatra&&!lagFriction){
+      successSourcesEn.push(`${lt.name} Tara`);
+      successSourcesMy.push(`${TARA_MY_MAP[lt.name]||""}တာရာ`);
+    }
+    h += `<div class="ol-act"><b class="lang-en">✅ To strengthen the supportive influence of ${successSourcesEn.join(" and ")}:</b>`+
+      `<b class="lang-my mm">✅ ${successSourcesMy.join(" နှင့် ")}၏ ကောင်းကျိုးအင်အားကို မြှင့်တင်ရန်:</b>`+
+      `<br>${successYatras.join('<br><div style="margin-top:4px;"></div>')}</div>`;
   }
   if(shieldingYatras.length > 0){
-    h += `<div class="ol-act"><b>🛡 To ease obstacles <span class="mm">(အတားအဆီးများ ကျော်လွှားရန်)</span>:</b><br>${shieldingYatras.join('<br><div style="margin-top:4px;"></div>')}</div>`;
+    const obstacleSourcesEn=[], obstacleSourcesMy=[];
+    if(moonDet.yatra&&moonFriction){
+      obstacleSourcesEn.push(`${mt.name} Tara`);
+      obstacleSourcesMy.push(`${TARA_MY_MAP[mt.name]||""}တာရာ`);
+    }
+    if(hasLagna&&!sameTara&&lagDet?.yatra&&lagFriction){
+      obstacleSourcesEn.push(`${lt.name} Tara`);
+      obstacleSourcesMy.push(`${TARA_MY_MAP[lt.name]||""}တာရာ`);
+    }
+    h += `<div class="ol-act"><b class="lang-en">🛡 To ease obstacles from ${obstacleSourcesEn.join(" and ")}:</b>`+
+      `<b class="lang-my mm">🛡 ${obstacleSourcesMy.join(" နှင့် ")}၏ အတားအဆီးများ လျော့ပါးစေရန်:</b>`+
+      `<br>${shieldingYatras.join('<br><div style="margin-top:4px;"></div>')}</div>`;
   }
 
   if(v.avoid !== "—") h += `<div class="ol-act warn"><b>❌ Avoid <span class="mm">(ရှောင်ရန်)</span>:</b> ${v.avoid}<br><span class="mm">${v.avoidMy}</span></div>`;
@@ -1121,15 +1227,78 @@ function loadLoc(){try{return JSON.parse(localStorage.getItem(LS_LOC)||"null");}
 const hasNatal=()=>{try{return !!localStorage.getItem(LS_NATAL);}catch(e){return false;}};
 loadNatal();
 
-/* ===== language tabs inside the guide ===== */
-(function(){
-  const body=document.getElementById("guideBody");
-  const en=document.getElementById("langEn"), my=document.getElementById("langMy");
-  const set=(lang)=>{body.dataset.lang=lang;
-    en.classList.toggle("active",lang==="en");
-    my.classList.toggle("active",lang==="my");};
-  en.onclick=()=>set("en"); my.onclick=()=>set("my");
-})();
+/* ===== global language switch ===== */
+const LS_LANG="tt27.lang";
+let appLang="en";
+function wrapEnglishText(root){
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+    acceptNode(node){
+      const text=node.nodeValue.trim();
+      if(!text||!/[A-Za-z]/.test(text))return NodeFilter.FILTER_REJECT;
+      const p=node.parentElement;
+      if(!p||p.closest("script,style,select,option,.mm,.lang-my,.language-toggle,.help-btn,.lang-en-auto"))return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const nodes=[]; while(walker.nextNode())nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    const span=document.createElement("span");
+    span.className="lang-en-auto";
+    node.parentNode.insertBefore(span,node);
+    span.appendChild(node);
+  });
+}
+function stripBurmeseOuterParentheses(root){
+  root.querySelectorAll(".mm").forEach(el=>{
+    const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+    const nodes=[]; while(walker.nextNode())if(walker.currentNode.nodeValue.trim())nodes.push(walker.currentNode);
+    if(!nodes.length)return;
+    const first=nodes[0], last=nodes[nodes.length-1];
+    if(first.nodeValue.trim().startsWith("(")&&last.nodeValue.trim().endsWith(")")){
+      first.nodeValue=first.nodeValue.replace(/^(\s*)\(/,"$1");
+      last.nodeValue=last.nodeValue.replace(/\)(\s*)$/,"$1");
+    }
+  });
+}
+function updateLanguageFields(lang){
+  const names=lang==="my"?NAK_MY:NAK;
+  const tableLabels=lang==="my"
+    ?{name:"နက္ခတ်",lord:"ဂြိုဟ်မင်း",moonTara:"စန်းတာရာ",lagnaTara:"လဂ်တာရာ",special:"၂၇-အထူး",score:"ရမှတ်",use:"အသုံးချရန်"}
+    :{name:"Nakshatra",lord:"Lord",moonTara:"Moon Tara",lagnaTara:"Lagna Tara",special:"27-Special",score:"Score",use:"Best Use"};
+  const buttonLabels=lang==="my"
+    ?{tourBtn:"🎯 လမ်းညွှန်ကြည့်ရန်",todayRefresh:"↻ ပြန်လည်တွက်ချက်",todayLoc:"📍 လက်ရှိနေရာ",todayCustom:"🕒 စိတ်ကြိုက်အချိန်",todayClear:"✕ အချက်အလက်ဖျက်ရန်"}
+    :{tourBtn:"🎯 Take the tour",todayRefresh:"↻ Refresh",todayLoc:"📍 My Location",todayCustom:"🕒 Custom Time",todayClear:"✕ Forget Me"};
+  [moonSel,lagnaSel].forEach(select=>{
+    Array.from(select.options).forEach((option,i)=>{option.textContent=names[i];});
+  });
+  document.querySelectorAll("#tbl th").forEach(th=>{
+    const arrow=th.dataset.k===sortKey?(sortDir<0?" ▾":" ▴"):"";
+    th.textContent=tableLabels[th.dataset.k]+arrow;
+  });
+  Object.entries(buttonLabels).forEach(([id,label])=>{document.getElementById(id).textContent=label;});
+  document.getElementById("pname").placeholder=lang==="my"?"ဥပမာ - စိုး":"e.g. Soe";
+  const help=document.getElementById("helpBtn");
+  help.title=lang==="my"?"အသုံးပြုပုံ":"How to use this app";
+  help.setAttribute("aria-label",lang==="my"?"အသုံးပြုပုံ":"Help");
+}
+function applyLanguage(lang, persist=true){
+  appLang=lang==="my"?"my":"en";
+  document.body.dataset.lang=appLang;
+  document.documentElement.lang=appLang==="my"?"my":"en";
+  document.getElementById("guideBody").dataset.lang=appLang;
+  const en=document.getElementById("globalLangEn"), my=document.getElementById("globalLangMy");
+  en.classList.toggle("active",appLang==="en");
+  my.classList.toggle("active",appLang==="my");
+  en.setAttribute("aria-pressed",appLang==="en");
+  my.setAttribute("aria-pressed",appLang==="my");
+  updateLanguageFields(appLang);
+  wrapEnglishText(document.body);
+  stripBurmeseOuterParentheses(document.body);
+  if(persist){try{localStorage.setItem(LS_LANG,appLang);}catch(e){}}
+}
+document.getElementById("globalLangEn").onclick=()=>applyLanguage("en");
+document.getElementById("globalLangMy").onclick=()=>applyLanguage("my");
+try{appLang=localStorage.getItem(LS_LANG)==="my"?"my":"en";}catch(e){}
 
 /* ===== first-time tour ===== */
 function startTour(){
@@ -1244,6 +1413,15 @@ function formatJDTime(jd) {
   const d = new Date((jd - 2440587.5) * 86400000);
   return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
 }
+function toMyanmarDigits(value){
+  return String(value).replace(/\d/g,d=>"၀၁၂၃၄၅၆၇၈၉"[d]);
+}
+function toMyanmarTime(value){
+  const match=String(value).match(/^(.+?)\s*(AM|PM)$/i);
+  if(!match)return toMyanmarDigits(value);
+  const period=match[2].toUpperCase()==="AM"?"နံနက်":"ညနေ";
+  return `${period} ${toMyanmarDigits(match[1])}`;
+}
 
 function renderToday(){
   const d=todayState.when||new Date();
@@ -1265,10 +1443,12 @@ function renderToday(){
   const mPadaEnd = findPadaEnd(JD, mIdx, mPad);
   const mTimeStr = formatJDTime(mPadaEnd);
 
-  mEl.innerHTML=`${NAK[mIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[mIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${mPad} <span style="opacity:0.7">upto ${mTimeStr}</span><br>Nakshatra Lord - ${mLord} <span class="mm">(${LORD_MY[mLord]})</span></span>`;
+  mEl.innerHTML=`<span class="lang-en">${NAK[mIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${mPad} <span style="opacity:0.7">upto ${mTimeStr}</span><br>Nakshatra Lord - ${mLord}</span></span>`+
+    `<span class="lang-my mm">${NAK_MY[mIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">ပါဒ ${toMyanmarDigits(mPad)}<br><span style="opacity:0.7">ပြီးဆုံးချိန် - ${toMyanmarTime(mTimeStr)}</span><br>နက္ခတ်သခင် - ${LORD_MY[mLord]}</span></span>`;
   lEl.innerHTML=lIdx!=null
-    ?`${NAK[lIdx]} <span class="mm" style="font-weight:400;font-size:.78rem">(${NAK_MY[lIdx]})</span><br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${lPad}<br>Nakshatra Lord - ${lLord} <span class="mm">(${LORD_MY[lLord]})</span></span>`
-    :'<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location</span>';
+    ?`<span class="lang-en">${NAK[lIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${lPad}<br>Nakshatra Lord - ${lLord}</span></span>`+
+      `<span class="lang-my mm">${NAK_MY[lIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">ပါဒ - ${toMyanmarDigits(lPad)}<br>နက္ခတ်သခင် - ${LORD_MY[lLord]}</span></span>`
+    :'<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location <span class="mm">နေရာသတ်မှတ်ရန်</span></span>';
 
   const nm = +moonSel.value, nl = +lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
@@ -1281,12 +1461,13 @@ function renderToday(){
   let score=raw+vi.pen;
   if(vi.isVedha)score=Math.min(score,0);
 
-  sEl.innerHTML=`<span class="pill ${cls(score)}" style="font-size: 1.2rem; padding: 6px 16px">${score>0?"+":""}${score}</span>`;
+  const scoreText=`${score>0?"+":""}${score}`;
+  sEl.innerHTML=`<span class="pill ${cls(score)}" style="font-size: 1.2rem; padding: 6px 16px"><span class="lang-en">${scoreText}</span><span class="lang-my mm">${toMyanmarDigits(scoreText)}</span></span>`;
 
   const hint=hasNatal()?"":`<div style="background:#2a2e4a;border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:.8rem">👋 <b>This score uses default natal values.</b> Set your own Moon &amp; Lagna in <i>Step 1</i> below for a verdict that's actually about <i>you</i>.<br><span class="mm">တိကျသော ဟောကိန်းရရှိရန် အဆင့် (၁) တွင် မိမိ၏ စန်းနှင့် လဂ်ကို အရင်ရွေးချယ်ပေးပါ။</span></div>`;
   const posInfo=NAK_POSITION_MY[mt.count];
   const setLocNote=lIdx==null?`<div class="ol-note mm">📍 လဂ်ကို ထည့်တွက်ရန် "လက်ရှိနေရာကို သုံးပါ" ကို နှိပ်ပါ။ <span style="color:var(--mut)">(Tap "Use my location" to add the Lagna layer.)</span></div>`:"";
-  vEl.innerHTML=hint+dailyOutlookHTML({mt,lt,specialName,bonus,score,isVedha:vi.isVedha,hasLagna:lIdx!=null,mLord,lLord,posInfo,moonName:NAK[mIdx],mPad,lPad})+setLocNote;
+  vEl.innerHTML=hint+dailyOutlookHTML({mt,lt,specialName,bonus,score,isVedha:vi.isVedha,hasLagna:lIdx!=null,mLord,lLord,posInfo,moonName:NAK[mIdx],lagnaName:lIdx!=null?NAK[lIdx]:"",mPad,lPad})+setLocNote;
   // Burmese facing-direction rituals (keyed by transit Moon nakshatra).
   const ds=dirSelf(mIdx), dox=dirOther(mIdx);
   document.getElementById("todayRituals").innerHTML=
@@ -1297,6 +1478,7 @@ function renderToday(){
       `<div style="color:var(--gold);font-size:0.88rem;line-height:1.45;font-weight:500">Praying and sharing loving-kindness while facing these directions at this time will greatly enhance the fulfillment of your aspirations.</div>`+
       `<div class="mm" style="color:var(--gold);font-size:0.94rem;line-height:1.6">ယခုအချိန်တွင် အထက်ပါ အရပ်မျက်နှာများကို မျက်နှာမူပြီး ဆုတောင်းခြင်း မေတ္တာပို့သခြင်းများ ပြုလုပ်ပါက ဆုတောင်းအလွန်ပြည့်စေပါသည်။</div>`+
     `</div>`;
+  applyLanguage(appLang,false);
 }
 function refreshTransit(opts){
   opts=opts||{};
@@ -1346,14 +1528,17 @@ function render(){
     if(+moonSel.value===idx) tr.classList.add("row-hl");
     if(todayState.moonIdx===idx) tr.classList.add("row-today");
     const v=getVerdict(r, false);
+    const rowVerdict=rowBestUseVerdict(r);
+    const specialScoreText=r.specialScore?` (${r.specialScore>0?"+":""}${r.specialScore})`:"";
+    const rowScoreText=`${r.score>0?"+":""}${r.score}`;
     tr.innerHTML=`
       <td class="nm">${r.name}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${NAK_MY[idx]}</span></td>
       <td title="${r.lordFull}">${r.lord}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${LORD_MY[r.lordFull]||""}</span></td>
       <td class="${taraClass(r.moonScore)}">${r.moonTara}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${TARA_MY_MAP[r.moonTara]||""}</span></td>
       <td class="${taraClass(r.lagnaScore)}">${r.lagnaTara}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${TARA_MY_MAP[r.lagnaTara]||""}</span></td>
-      <td>${r.special==="—"?"—":`${r.special}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${SPECIAL_MY_MAP[r.special]||""}</span>`}${r.specialScore?` (${r.specialScore>0?"+":""}${r.specialScore})`:""}</td>
-      <td class="score"><span class="pill ${cls(r.score)}">${r.score>0?"+":""}${r.score}</span></td>
-      <td class="use${r.isVedha?' vedha':''}"><span class="verdict ${v.cls}">${v.title}<span class="mm">${v.titleMy}</span></span>${r.use} <span class="tap-hint mm">▸ ယတြာ</span></td>`;
+      <td>${r.special==="—"?"—":`<span class="lang-en">${r.special}${specialScoreText}</span><span class="lang-my mm">${SPECIAL_MY_MAP[r.special]||""}${toMyanmarDigits(specialScoreText)}</span>`}</td>
+      <td class="score"><span class="pill ${cls(r.score)}"><span class="lang-en">${rowScoreText}</span><span class="lang-my mm">${toMyanmarDigits(rowScoreText)}</span></span></td>
+      <td class="use${r.isVedha?' vedha':''}"><span class="verdict ${v.cls}"><span class="lang-en">${rowVerdict.en}</span><span class="lang-my mm">${rowVerdict.my}</span></span><span class="tap-hint mm">▸ ယတြာ</span></td>`;
     tr.classList.add("clickable");
     tr.addEventListener("click",()=>toggleRowDetail(tr,r));
     tb.appendChild(tr);
@@ -1363,6 +1548,7 @@ function render(){
     th.textContent=th.textContent.replace(/[▾▴]/g,"").trim();
     if(th.dataset.k===sortKey) th.textContent+=" "+(sortDir<0?"▾":"▴");
   });
+  applyLanguage(appLang,false);
 }
 // Build the inline detail/remedy panel for a forecast row.
 function getOrdinalSuffix(i) {
@@ -1372,35 +1558,74 @@ function getOrdinalSuffix(i) {
   if (j == 3 && k != 13) return "rd";
   return "th";
 }
+function rowPurpose(r){
+  if(r.isVedha){
+    return {
+      en:"should be used only for repair, correction, cutting, or closure; avoid major beginnings.",
+      my:"ပြုပြင်ခြင်း၊ အမှားပြင်ဆင်ခြင်း၊ ဖြတ်တောက်ခြင်းနှင့် အဆုံးသတ်ခြင်းများအတွက်သာ အသုံးပြုသင့်ပြီး အရေးကြီးသော လုပ်ငန်းသစ်များ စတင်ခြင်းကို ရှောင်ကြဉ်သင့်ပါသည်။"
+    };
+  }
+  const specialKey=r.special!=="—"?Object.keys(SPECIAL).find(k=>SPECIAL[k].n===r.special):null;
+  return {
+    en:specialKey?(SPECIAL[specialKey]?.use||""):(TARA_USE[r.moonTara]||""),
+    my:r.special!=="—"?(SPECIAL_USE_MY[r.special]||""):(TARA_USE_MY[r.moonTara]||"")
+  };
+}
+function rowBestUseVerdict(r){
+  const purpose=rowPurpose(r);
+  const nakMy=NAK_MY[NAK.indexOf(r.name)]||r.name;
+  if(r.isVedha){
+    return {
+      en:`Based on the score, days with transit Moon in ${r.name} ${purpose.en}`,
+      my:`ရရှိသော ရမှတ်များအရ ${nakMy} စန်းယှဉ်သောနေ့များသည် သင့်အတွက် ${purpose.my}`
+    };
+  }
+  const qualityEn=r.score>=9?"excellent":r.score>=6?"supportive":r.score>=3?"usable with a clear purpose":"limited";
+  const qualityMy=r.score>=9?"အထူးကောင်းမွန်သောနေ့ဖြစ်သဖြင့် ":r.score>=6?"ကောင်းမွန်သောနေ့ဖြစ်သဖြင့် ":r.score>=3?"တိကျသော ရည်ရွယ်ချက်ဖြင့် အသုံးပြုနိုင်သောနေ့ဖြစ်သဖြင့် ":"အသုံးပြုမှု ကန့်သတ်ထားသင့်သောနေ့ဖြစ်သဖြင့် ";
+  return {
+    en:`Based on the score, days with transit Moon in ${r.name} are ${qualityEn} for: ${purpose.en}`,
+    my:`ရရှိသော ရမှတ်များအရ ${nakMy} စန်းယှဉ်သောနေ့များသည် သင့်အတွက် ${qualityMy}${purpose.my}`
+  };
+}
 function rowDetailHTML(r){
   const posMy=NAK_POSITION_MY[r.moonCount];
   const posEn=NAK_POSITION_EN[r.moonCount];
-  const td=TARA_DETAIL_MY[r.moonTara];
+  const tdMy=TARA_DETAIL_MY[r.moonTara];
+  const tdEn=TARA_DETAIL_EN[r.moonTara];
   const v=getVerdict(r, false);
+  const purpose=rowPurpose(r);
+  const rowNakMy=NAK_MY[NAK.indexOf(r.name)]||r.name;
   let h="";
+  const rowVerdict=rowBestUseVerdict(r);
+  const verdictEn=rowVerdict.en;
+  const verdictMy=rowVerdict.my;
   h+=`<div class="dsec"><span class="dlbl">⚖ Verdict <span class="mm">(စီရင်ချက်)</span></span>`+
-     `<div class="dval"><b class="verdict-txt ${v.cls}">${v.title}</b><br><span class="mm">${v.titleMy}</span></div></div>`;
+     `<div class="dval"><b class="verdict-txt ${v.cls}">${verdictEn}</b><br><span class="mm">${verdictMy}</span></div></div>`;
 
   if(r.special!=="—"){
     const sk=Object.keys(SPECIAL).find(k=>SPECIAL[k].n===r.special);
     const spEn = SPECIAL[sk] ? SPECIAL[sk].use : "";
     const spMy = SPECIAL_USE_MY[r.special] || "";
-    // Combined description for the special position
-    const combinedEn = posEn ? `${posEn.d} ${spEn}` : spEn;
-    const combinedMy = posMy ? `${posMy.d} ${spMy}` : spMy;
-
-    h+=`<div class="dsec"><span class="dlbl">✨ 27-Special — This nakshatra is ${r.moonCount}${getOrdinalSuffix(r.moonCount)} from your Moon Nakshatra (${r.special}) <span class="mm">(အထူး - ဇနမ စန်းနက္ခတ်မှ ${r.moonCount} လုံးမြောက် ${SPECIAL_MY_MAP[r.special]||""})</span></span>`+
-       `<div class="dval">${combinedEn}${combinedMy?`<br><span class="mm">${combinedMy}</span>`:""}</div></div>`;
+    h+=`<div class="dsec">`+
+       `<div class="dval lang-en"><b>📍 ${r.name} is the ${r.moonCount}${getOrdinalSuffix(r.moonCount)} position from your natal Moon nakshatra (${posEn?.t||`${r.moonCount}${getOrdinalSuffix(r.moonCount)}`}).</b> The ${r.moonCount}${getOrdinalSuffix(r.moonCount)} nakshatra from the natal Moon ${posEn?.d?posEn.d.charAt(0).toLowerCase()+posEn.d.slice(1):""}${spEn?` ${spEn}`:""}</div>`+
+       `<div class="dval lang-my mm"><b>📍 ${rowNakMy} သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${posMy?.t||`${toMyanmarDigits(r.moonCount)} လုံးမြောက်`} ဖြစ်ပါသည်။</b> စန်းနက္ခတ်မှ ${toMyanmarDigits(r.moonCount)} လုံးမြောက် နက္ခတ်သည် ${posMy?.d||""}${spMy?` ${spMy}`:""}</div>`+
+       `<div class="dval lang-en" style="margin-top:10px"><b>How to strengthen this position:</b> Practices and remedies associated with ${r.name} can help cultivate its positive qualities.</div>`+
+       `<div class="dval lang-my mm" style="margin-top:10px"><b>ဤနေရာ၏ ကောင်းကျိုးကို အားဖြည့်နည်း:</b> ${rowNakMy} နက္ခတ်နှင့် သက်ဆိုင်သော ကုသိုလ်ပြုမှု၊ ကျင့်စဉ်နှင့် ယတြာများကို ပြုလုပ်ခြင်းဖြင့် ဤနေရာ၏ ကောင်းသောအရည်အသွေးများကို ပိုမိုအားကောင်းစေနိုင်ပါသည်။</div>`+
+       `</div>`;
   } else if(posMy && posEn){
-    h+=`<div class="dsec"><span class="dlbl">📜 Count ${r.moonCount}: ${posEn.t} <span class="mm">(ဇနမ စန်းနက္ခတ်မှ ${posMy.t})</span></span>`+
-       `<div class="dval">${posEn.d}<br><span class="mm">${posMy.d}</span></div></div>`;
+    h+=`<div class="dsec">`+
+       `<div class="dval lang-en"><b>📍 ${r.name} is the ${r.moonCount}${getOrdinalSuffix(r.moonCount)} position from your natal Moon nakshatra (${posEn.t}).</b> The ${r.moonCount}${getOrdinalSuffix(r.moonCount)} nakshatra from the natal Moon ${posEn.d.charAt(0).toLowerCase()+posEn.d.slice(1)}</div>`+
+       `<div class="dval lang-my mm"><b>📍 ${rowNakMy} သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${posMy.t} ဖြစ်ပါသည်။</b> စန်းနက္ခတ်မှ ${toMyanmarDigits(r.moonCount)} လုံးမြောက် နက္ခတ်သည် ${posMy.d}</div>`+
+       `</div>`;
   }
-  const ltd=TARA_DETAIL_MY[r.lagnaTara];
+  const ltdMy=TARA_DETAIL_MY[r.lagnaTara];
+  const ltdEn=TARA_DETAIL_EN[r.lagnaTara];
   const sameTara=r.moonTara===r.lagnaTara;
 
-  if(td){
+  if(tdMy || tdEn){
     h+=`<div class="dsec"><span class="dlbl">🔄 ${sameTara?"":"Moon "}Tara nature — ${r.moonTara} <span class="mm">(${sameTara?"":"စန်း"}တာရာ ${TARA_MY_MAP[r.moonTara]||""} သဘောသဘာဝ)</span></span>`+
-       `<div class="dval mm">${td.nature}${td.feeling?`<br><span style="color:var(--mut)">${td.feeling}</span>`:""}</div>`;
+       `<div class="dval lang-en">${tdEn?.nature||""}${tdEn?.feeling?`<br><span style="color:var(--mut)">${tdEn.feeling}</span>`:""}</div>`+
+       `<div class="dval lang-my mm">${tdMy?.nature||""}${tdMy?.feeling?`<br><span style="color:var(--mut)">${tdMy.feeling}</span>`:""}</div>`;
 
     if(r.moonTara === "Pratyak") {
       h+=`<div class="dsec" style="border:1px solid #444; padding:8px; border-radius:4px; margin-top:8px;">`+
@@ -1453,19 +1678,22 @@ function rowDetailHTML(r){
     }
 
     h+=`<div class="remedy-inline" style="margin-top:10px">`+
-         `<span class="dlbl">🪷 Remedy${sameTara?"":" — Moon Tara"} <span class="mm">(${sameTara?"":"စန်း "}ယတြာ)</span></span>`+
-         `<div class="dval mm">${td.yatra}</div>`+
-         `<div class="dval" style="margin-top:4px; font-size:0.82rem; opacity:0.8;">${TARA_DETAIL_EN[r.moonTara]?.yatra || ""}</div>`+
+         `<span class="dlbl lang-en">🪷 ${r.moonTara} Tara remedy</span>`+
+         `<span class="dlbl lang-my mm">🪷 ${TARA_MY_MAP[r.moonTara]||""}တာရာ ယတြာ</span>`+
+         `<div class="dval lang-en">${tdEn?.yatra||""}</div>`+
+         `<div class="dval lang-my mm">${tdMy?.yatra||""}</div>`+
        `</div></div>`;
   }
 
-  if(ltd && !sameTara){
+  if((ltdMy || ltdEn) && !sameTara){
     h+=`<div class="dsec"><span class="dlbl">🔄 Lagna Tara nature — ${r.lagnaTara} <span class="mm">(လဂ်တာရာ ${TARA_MY_MAP[r.lagnaTara]||""} သဘောသဘာဝ)</span></span>`+
-       `<div class="dval mm">${ltd.nature}${ltd.feeling?`<br><span style="color:var(--mut)">${ltd.feeling}</span>`:""}</div>`+
+       `<div class="dval lang-en">${ltdEn?.nature||""}${ltdEn?.feeling?`<br><span style="color:var(--mut)">${ltdEn.feeling}</span>`:""}</div>`+
+       `<div class="dval lang-my mm">${ltdMy?.nature||""}${ltdMy?.feeling?`<br><span style="color:var(--mut)">${ltdMy.feeling}</span>`:""}</div>`+
        `<div class="remedy-inline" style="margin-top:10px">`+
-         `<span class="dlbl">🪷 Remedy — Lagna Tara <span class="mm">(လဂ် ယတြာ)</span></span>`+
-         `<div class="dval mm">${ltd.yatra}</div>`+
-         `<div class="dval" style="margin-top:4px; font-size:0.82rem; opacity:0.8;">${TARA_DETAIL_EN[r.lagnaTara]?.yatra || ""}</div>`+
+         `<span class="dlbl lang-en">🪷 ${r.lagnaTara} Tara remedy</span>`+
+         `<span class="dlbl lang-my mm">🪷 ${TARA_MY_MAP[r.lagnaTara]||""}တာရာ ယတြာ</span>`+
+         `<div class="dval lang-en">${ltdEn?.yatra||""}</div>`+
+         `<div class="dval lang-my mm">${ltdMy?.yatra||""}</div>`+
        `</div></div>`;
   }
   if(v.avoid!=="—" && !r.isVedha){
@@ -1494,6 +1722,7 @@ function toggleRowDetail(tr,r){
   dr.innerHTML=`<td colspan="7"><div class="detail-wrap" style="width:${w}px">${rowDetailHTML(r)}</div></td>`;
   tr.after(dr);
   tr.classList.add("expanded");
+  applyLanguage(appLang,false);
 }
 function onNatalChange(){saveNatal();renderToday();render();renderReference();}
 moonSel.onchange=onNatalChange; lagnaSel.onchange=onNatalChange;
@@ -1793,6 +2022,7 @@ function renderReference(){
     `<div class="lang-my mm">${myAccordions}</div>`;
 }
 renderReference();
+applyLanguage(appLang,false);
 
 /* ===== initial transit + opportunistic geolocation ===== */
 refreshTransit();
