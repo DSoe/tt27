@@ -1031,13 +1031,20 @@ function dailyOutlookHTML(o){
 
   if(v.avoid !== "—") h += `<div class="ol-act warn"><b>❌ Avoid <span class="mm">(ရှောင်ရန်)</span>:</b> ${v.avoid}<br><span class="mm">${v.avoidMy}</span></div>`;
 
-  // Astrological Details (merged into Outlook card)
-  h += `<div style="margin-top:12px; padding-top:8px; border-top:1px dashed #555; font-size:0.82rem; opacity:0.9;">`+
-       `<b>🔬 Technicals:</b> Moon Tara: ${mt.name} (${TARA_MY_MAP[mt.name] || ""}) ${mt.score >= 0 ? "+" : ""}${mt.score}`+
-       (hasLagna ? ` | Lagna Tara: ${lt.name} (${TARA_MY_MAP[lt.name] || ""}) ${lt.score >= 0 ? "+" : ""}${lt.score}` : "")+
-       (specialName !== "—" ? `<br>27-Special: ${specialName} (${SPECIAL_MY_MAP[specialName] || ""})` : "")+
-       `<br>Lord: ${mLord} (${LORD_MY[mLord] || ""})`+
-       (posInfo ? ` | Position: <span class="mm">ဇနမမှ ${posInfo.t}</span>` : "")+
+  // 27-Special Nakshatra Position Info
+  const posMy = NAK_POSITION_MY[mt.count];
+  const posEn = NAK_POSITION_EN[mt.count];
+  if(posMy && posEn){
+    h += `<div class="ol-act" style="border-top:1px dashed #555; margin-top:12px; padding-top:8px;">`+
+         `<b>📍 Position ${mt.count}: ${posEn.t}</b><br>`+
+         `<span class="mm">ယခုအချိန်သည် သင့်ရဲ့ဇနမမှ ${posMy.t} ရောက်ရှိနေပါသဖြင့် ${posMy.d}</span>`+
+         `</div>`;
+  }
+
+  // Lord Info
+  h += `<div class="ol-act" style="opacity:0.9; font-size:0.9rem;">`+
+       `<b>🪐 Lord <span class="mm">(နက္ခတ်အစိုးရသောဂြိုဟ်)</span>:</b> ${mLord} (${LORD_MY[mLord] || ""})`+
+       (hasLagna && lLord ? ` | Lagna Lord: ${lLord} (${LORD_MY[lLord] || ""})` : "")+
        `</div>`;
 
   h += `</div></div></div>`;
