@@ -339,6 +339,7 @@
 
   .legend { font-size: 0.75rem; color: var(--mut); margin-top: 16px; line-height: 1.6; }
   .nm { font-weight: 700; }
+  .vedha-badge { display: inline-block; margin-top: 5px; padding: 2px 6px; border-radius: 5px; border: 1px solid rgba(255,107,122,0.45); background: rgba(255,107,122,0.12); color: var(--avoid); font-size: 0.66rem; font-weight: 800; line-height: 1.35; letter-spacing: 0.02em; }
   .tara-pos { color: var(--good); }
   .tara-neg { color: var(--avoid); }
   .tara-mid { color: var(--gold); }
@@ -397,6 +398,7 @@
   .ol-sec.opp .ol-h { color: var(--good); }
   .ol-sec.catch .ol-h { color: var(--avoid); }
   .ol-sec.reinforce .ol-h { color: var(--good); }
+  .ol-sec.ravi .ol-h { color: var(--gold); }
   .ol-sec.plan .ol-h { color: var(--gold); }
   .ol-mind { color: var(--mut); }
   .ol-act { margin-top: 7px; }
@@ -1073,7 +1075,7 @@ function getVerdict(r, isToday){
 // Fully generated from live transit values so it stays correct for any natal chart.
 function dailyOutlookHTML(o){
   // 1. Destructure properties (moonName is passed here from renderToday)
-  const {mt, lt, specialName, bonus, score, isVedha, hasLagna, mLord, lLord, posInfo, moonName, lagnaName} = o;
+  const {mt, lt, specialName, bonus, score, isVedha, hasLagna, mLord, lLord, posInfo, moonName, lagnaName, raviYoga} = o;
 
   // 2. Call getVerdict.
   // We pass 'moonName' as 'name'. getVerdict will calculate its own index safely.
@@ -1143,6 +1145,20 @@ function dailyOutlookHTML(o){
 
   h += posHtml;
 
+  if(raviYoga?.active){
+    const sunNameMy=NAK_MY[raviYoga.sunIdx]||raviYoga.sunName;
+    const moonNameMy=NAK_MY[raviYoga.moonIdx]||moonName;
+    h += `<div class="ol-sec ravi">`+
+      `<div class="ol-h">`+
+        `<span class="lang-en">☀️ Ravi Yoga is active</span>`+
+        `<span class="lang-my mm">☀️ ရဝိယောဂ ကျရောက်နေပါသည်</span>`+
+      `</div>`+
+      `<div class="ol-body">`+
+        `<div class="lang-en">The transit Moon in <b>${moonName}</b> is the <b>${raviYoga.count}${getOrdinalSuffix(raviYoga.count)} nakshatra</b> counted from the transit Sun in <b>${raviYoga.sunName}</b>. This forms Ravi Yoga, an auspicious alignment for commencing important tasks and ceremonies, pursuing success, and stepping into leadership or greater visibility.</div>`+
+        `<div class="lang-my mm">ယခု စန်းစီးနက္ခတ် <b>${moonNameMy}</b> သည် နေစီးနက္ခတ် <b>${sunNameMy}</b> မှ စတင်ရေတွက်လျှင် <b>${toMyanmarDigits(raviYoga.count)} လုံးမြောက်နက္ခတ်</b> ဖြစ်သောကြောင့် ရဝိယောဂ ကျရောက်နေပါသည်။ အရေးကြီးသော လုပ်ငန်းများနှင့် မင်္ဂလာအခမ်းအနားများ စတင်ခြင်း၊ အောင်မြင်မှုရယူခြင်း၊ ခေါင်းဆောင်မှုနှင့် ထင်ပေါ်ကျော်ကြားမှု တိုးတက်စေခြင်းတို့အတွက် ကောင်းမွန်သော အချိန်ဖြစ်ပါသည်။</div>`+
+      `</div></div>`;
+  }
+
   const mTitleEn = moonFriction ? "Primary Challenge" : "Opportunity";
   const mTitleMy = moonFriction ? "အဓိက သတိပြုရန်" : "အခွင့်အလမ်း";
   const mIcon = moonFriction ? "⚠️" : "💰";
@@ -1151,14 +1167,14 @@ function dailyOutlookHTML(o){
   h += `<div class="ol-sec ${moonFriction ? 'catch' : 'opp'}">`+
     `<div class="ol-h">`+
       `<span class="lang-en">${mIcon} ${mTitleEn} — Transit Moon in ${moonName}</span>`+
-      `<span class="lang-my mm">${mIcon} ${mTitleMy} — ဖြတ်သန်းစန်း ${moonNameMy}</span>`+
+      `<span class="lang-my mm">${mIcon} ${mTitleMy} — စန်းစီးနက္ခတ် ${moonNameMy}</span>`+
     `</div>`+
     `<div class="ol-body">`+
       `<div class="lang-en">The transit Moon in <b>${moonName}</b> activates your <b>${mt.name} Tara</b>. ${oppEn}`+
         (TARA_DETAIL_EN[mt.name]?.nature?`<br><span class="ol-mind">📖 ${TARA_DETAIL_EN[mt.name].nature}</span>`:"")+
         (TARA_DETAIL_EN[mt.name]?.feeling?`<br><span class="ol-mind">🧠 ${TARA_DETAIL_EN[mt.name].feeling}</span>`:"")+
       `</div>`+
-      `<div class="lang-my mm">ယခု ဖြတ်သန်းစန်း <b>${moonNameMy}</b> သည် မိမိ၏ <b>${TARA_MY_MAP[mt.name]||""}တာရာ</b>ကို လှုံ့ဆော်နေပါသည်။ ${oppMy}`+
+      `<div class="lang-my mm">ယခု စန်းစီးနက္ခတ် <b>${moonNameMy}</b> သည် မိမိ၏ <b>${TARA_MY_MAP[mt.name]||""}တာရာ</b>ကို လှုံ့ဆော်နေပါသည်။ ${oppMy}`+
         (moonDet.nature?`<br><span class="ol-mind">📖 ${moonDet.nature}</span>`:"")+
         (moonDet.feeling?`<br><span class="ol-mind">🧠 ${moonDet.feeling}</span>`:"")+
       `</div>`+
@@ -1171,18 +1187,18 @@ function dailyOutlookHTML(o){
     if(lagFriction){
       h += `<div class="ol-sec catch"><div class="ol-h">`+
         `<span class="lang-en">⚠️ The Catch — Transit Lagna in ${lagnaName}</span>`+
-        `<span class="lang-my mm">⚠️ သတိပြုရန် — ဖြတ်သန်းလဂ် ${lagnaNameMy}</span>`+
+        `<span class="lang-my mm">⚠️ သတိပြုရန် — လဂ်စီးနက္ခတ် ${lagnaNameMy}</span>`+
         `</div><div class="ol-body">`+
         `<div class="lang-en">The transit Lagna in <b>${lagnaName}</b> activates your <b>${lt.name} Tara</b>. ${lagUseEn}<br><span class="ol-mind">📖 ${lagDetEn.nature||""}</span>${lagDetEn.feeling?`<br><span class="ol-mind">🧠 ${lagDetEn.feeling}</span>`:""}</div>`+
-        `<div class="lang-my mm">ယခု ဖြတ်သန်းလဂ် <b>${lagnaNameMy}</b> သည် မိမိ၏ <b>${TARA_MY_MAP[lt.name]||""}တာရာ</b>ကို လှုံ့ဆော်နေပါသည်။ ${TARA_USE_MY[lt.name]||""}<br><span class="ol-mind">📖 ${lagDet.nature||""}</span>${lagDet.feeling?`<br><span class="ol-mind">🧠 ${lagDet.feeling}</span>`:""}</div>`+
+        `<div class="lang-my mm">ယခု လဂ်စီးနက္ခတ် <b>${lagnaNameMy}</b> သည် မိမိ၏ <b>${TARA_MY_MAP[lt.name]||""}တာရာ</b>ကို လှုံ့ဆော်နေပါသည်။ ${TARA_USE_MY[lt.name]||""}<br><span class="ol-mind">📖 ${lagDet.nature||""}</span>${lagDet.feeling?`<br><span class="ol-mind">🧠 ${lagDet.feeling}</span>`:""}</div>`+
         `</div></div>`;
     } else {
       h += `<div class="ol-sec reinforce"><div class="ol-h">`+
         `<span class="lang-en">✅ Support — Transit Lagna in ${lagnaName}</span>`+
-        `<span class="lang-my mm">✅ အထောက်အပံ့ — ဖြတ်သန်းလဂ် ${lagnaNameMy}</span>`+
+        `<span class="lang-my mm">✅ အထောက်အပံ့ — လဂ်စီးနက္ခတ် ${lagnaNameMy}</span>`+
         `</div><div class="ol-body">`+
         `<div class="lang-en">The transit Lagna in <b>${lagnaName}</b> activates your <b>${lt.name} Tara</b>. ${lagUseEn}<br><span class="ol-mind">📖 ${lagDetEn.nature||""}</span>${lagDetEn.feeling?`<br><span class="ol-mind">🧠 ${lagDetEn.feeling}</span>`:""}</div>`+
-        `<div class="lang-my mm">ယခု ဖြတ်သန်းလဂ် <b>${lagnaNameMy}</b> သည် မိမိ၏ <b>${TARA_MY_MAP[lt.name]||""}တာရာ</b>ကို လှုံ့ဆော်နေပါသည်။ ${TARA_USE_MY[lt.name]||""}<br><span class="ol-mind">📖 ${lagDet.nature||""}</span>${lagDet.feeling?`<br><span class="ol-mind">🧠 ${lagDet.feeling}</span>`:""}</div>`+
+        `<div class="lang-my mm">ယခု လဂ်စီးနက္ခတ် <b>${lagnaNameMy}</b> သည် မိမိ၏ <b>${TARA_MY_MAP[lt.name]||""}တာရာ</b>ကို လှုံ့ဆော်နေပါသည်။ ${TARA_USE_MY[lt.name]||""}<br><span class="ol-mind">📖 ${lagDet.nature||""}</span>${lagDet.feeling?`<br><span class="ol-mind">🧠 ${lagDet.feeling}</span>`:""}</div>`+
         `</div></div>`;
     }
   }
@@ -1281,6 +1297,13 @@ function vedhaInfo(dayName,moonName,lagnaName){
   if(moonCat){pen+=moonCat==="additional"?VEDHA_PEN.additional:VEDHA_PEN.moonPrimary;reasons.push("Moon");}
   if(lagnaCat){pen+=lagnaCat==="additional"?VEDHA_PEN.additional:VEDHA_PEN.lagnaPrimary;reasons.push("Lagna");}
   return {pen,reasons,isVedha:!!(moonCat||lagnaCat)};
+}
+function vedhaBadgeHTML(reasons){
+  if(!reasons?.length)return "";
+  const en=reasons.join(" + ");
+  const my=reasons.map(r=>r==="Moon"?"စန်း":"လဂ်").join(" + ");
+  return `<span class="lang-en"><br><span class="vedha-badge">⚠ VEDHA · ${en}</span></span>`+
+    `<span class="lang-my mm"><br><span class="vedha-badge">⚠ ဝေဒ · ${my}</span></span>`;
 }
 
 function taraFrom(startIdx, targetIdx){
@@ -1460,7 +1483,7 @@ document.querySelectorAll("th").forEach(th=>th.onclick=()=>{
 });
 
 /* ===== today-state: live transit Moon (+ Lagna if location known) ===== */
-const todayState={moonIdx:null,moonPada:null,lagnaIdx:null,lagnaPada:null,when:null,locLabel:null};
+const todayState={sunIdx:null,moonIdx:null,moonPada:null,lagnaIdx:null,lagnaPada:null,when:null,locLabel:null};
 function jdFromDate(d){
   const Y=d.getUTCFullYear(),Mo=d.getUTCMonth()+1,Da=d.getUTCDate();
   const h=d.getUTCHours()+d.getUTCMinutes()/60+d.getUTCSeconds()/3600;
@@ -1468,14 +1491,27 @@ function jdFromDate(d){
 }
 function computeTransit(date,lat,lon){
   const JD=jdFromDate(date), ayan=lahiri(JD);
+  const sunSid=norm360(sunTrop(JD)-ayan);
   const moonSid=norm360(moonTrop(JD)-ayan);
-  const moonIdx=nakIndex(moonSid), moonPada=padaOf(moonSid);
+  const sunIdx=nakIndex(sunSid), moonIdx=nakIndex(moonSid), moonPada=padaOf(moonSid);
   let lagnaIdx=null, lagnaPada=null;
   if(lat!=null && lon!=null && !isNaN(lat) && !isNaN(lon)){
     const ascSid=norm360(ascTrop(JD,lat,lon)-ayan);
     lagnaIdx=nakIndex(ascSid); lagnaPada=padaOf(ascSid);
   }
-  return {moonIdx,moonPada,lagnaIdx,lagnaPada};
+  return {sunIdx,moonIdx,moonPada,lagnaIdx,lagnaPada};
+}
+const RAVI_YOGA_COUNTS=new Set([4,6,9,10,13,20]);
+function raviYogaFrom(sunIdx,moonIdx){
+  const count=((moonIdx-sunIdx+27)%27)+1;
+  return {
+    active:RAVI_YOGA_COUNTS.has(count),
+    count,
+    sunIdx,
+    moonIdx,
+    sunName:NAK[sunIdx],
+    moonName:NAK[moonIdx]
+  };
 }
 function findNakshatraEnd(startJD, targetIdx) {
   let jd = startJD;
@@ -1530,25 +1566,26 @@ function renderToday(){
     vEl.textContent="Computing…";return;}
   const mPad=todayState.moonPada, lPad=todayState.lagnaPada;
   const mLord=lordOf(mIdx).f, lLord=lIdx!=null?lordOf(lIdx).f:"";
+  const nm=+moonSel.value, nl=+lagnaSel.value;
+  const vi=vedhaInfo(NAK[mIdx],NAK[nm],NAK[nl]);
+  const currentVedhaBadge=vedhaBadgeHTML(vi.reasons);
 
   const JD = jdFromDate(d);
   const mPadaEnd = findPadaEnd(JD, mIdx, mPad);
   const mTimeStr = formatJDTime(mPadaEnd);
 
-  mEl.innerHTML=`<span class="lang-en">${NAK[mIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${mPad}${padaClassHtml(mIdx,mPad,"en")} <span style="opacity:0.7">upto ${mTimeStr}</span><br>Nakshatra Lord - ${mLord}</span></span>`+
-    `<span class="lang-my mm">${NAK_MY[mIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">ပါဒ ${toMyanmarDigits(mPad)}${padaClassHtml(mIdx,mPad,"my")}<br><span style="opacity:0.7">ပြီးဆုံးချိန် - ${toMyanmarTime(mTimeStr)}</span><br>နက္ခတ်သခင် - ${LORD_MY[mLord]}</span></span>`;
+  mEl.innerHTML=`<span class="lang-en">${NAK[mIdx]}${currentVedhaBadge}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${mPad}${padaClassHtml(mIdx,mPad,"en")} <span style="opacity:0.7">upto ${mTimeStr}</span><br>Nakshatra Lord - ${mLord}</span></span>`+
+    `<span class="lang-my mm">${NAK_MY[mIdx]}${currentVedhaBadge}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">ပါဒ - ${toMyanmarDigits(mPad)}${padaClassHtml(mIdx,mPad,"my")}<br><span style="opacity:0.7">ပြီးဆုံးချိန် - ${toMyanmarTime(mTimeStr)}</span><br>နက္ခတ်သခင် - ${LORD_MY[mLord]}</span></span>`;
   lEl.innerHTML=lIdx!=null
     ?`<span class="lang-en">${NAK[lIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">Pada - ${lPad}<br>Nakshatra Lord - ${lLord}</span></span>`+
       `<span class="lang-my mm">${NAK_MY[lIdx]}<br><span style="color:var(--mut);font-weight:400;font-size:.8rem">ပါဒ - ${toMyanmarDigits(lPad)}<br>နက္ခတ်သခင် - ${LORD_MY[lLord]}</span></span>`
     :'<span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="document.getElementById(\'todayLoc\').click()">📍 set location <span class="mm">နေရာသတ်မှတ်ရန်</span></span>';
 
-  const nm = +moonSel.value, nl = +lagnaSel.value;
   const mt=taraFrom(nm,mIdx);
   const lt=lIdx!=null?taraFrom(nl,lIdx):{name:"—",score:0,count:0};
 
   const sp=SPECIAL[mt.count]; const bonus=sp?sp.b:0;
   const specialName=sp?sp.n:"—";
-  const vi=vedhaInfo(NAK[mIdx],NAK[nm],NAK[nl]);
   const raw=mt.score+lt.score+bonus;
   let score=raw+vi.pen;
   if(vi.isVedha)score=Math.min(score,0);
@@ -1558,8 +1595,9 @@ function renderToday(){
 
   const hint=hasNatal()?"":`<div style="background:#2a2e4a;border-left:3px solid var(--accent);padding:8px 10px;border-radius:6px;margin-bottom:8px;font-size:.8rem">👋 <b>This score uses default natal values.</b> Set your own Moon &amp; Lagna in <i>Step 1</i> below for a verdict that's actually about <i>you</i>.<br><span class="mm">တိကျသော ဟောကိန်းရရှိရန် အဆင့် (၁) တွင် မိမိ၏ စန်းနှင့် လဂ်ကို အရင်ရွေးချယ်ပေးပါ။</span></div>`;
   const posInfo=NAK_POSITION_MY[mt.count];
+  const raviYoga=raviYogaFrom(todayState.sunIdx,mIdx);
   const setLocNote=lIdx==null?`<div class="ol-note mm">📍 လဂ်ကို ထည့်တွက်ရန် "လက်ရှိနေရာကို သုံးပါ" ကို နှိပ်ပါ။ <span style="color:var(--mut)">(Tap "Use my location" to add the Lagna layer.)</span></div>`:"";
-  vEl.innerHTML=hint+dailyOutlookHTML({mt,lt,specialName,bonus,score,isVedha:vi.isVedha,hasLagna:lIdx!=null,mLord,lLord,posInfo,moonName:NAK[mIdx],lagnaName:lIdx!=null?NAK[lIdx]:"",mPad,lPad})+setLocNote;
+  vEl.innerHTML=hint+dailyOutlookHTML({mt,lt,specialName,bonus,score,isVedha:vi.isVedha,hasLagna:lIdx!=null,mLord,lLord,posInfo,moonName:NAK[mIdx],lagnaName:lIdx!=null?NAK[lIdx]:"",mPad,lPad,raviYoga})+setLocNote;
   // Burmese facing-direction rituals (keyed by transit Moon nakshatra).
   const ds=dirSelf(mIdx), dox=dirOther(mIdx);
   document.getElementById("todayRituals").innerHTML=
@@ -1582,6 +1620,7 @@ function refreshTransit(opts){
   if(opts.locLabel!==undefined)todayState.locLabel=opts.locLabel;
   else if(lat!=null && todayState.locLabel==null)todayState.locLabel="saved location <span class='mm'>(သိမ်းဆည်းထားသောနေရာ)</span>";
   const r=computeTransit(date,lat,lon);
+  todayState.sunIdx=r.sunIdx;
   todayState.moonIdx=r.moonIdx; todayState.lagnaIdx=r.lagnaIdx;
   todayState.moonPada=r.moonPada; todayState.lagnaPada=r.lagnaPada;
   renderToday(); render();
@@ -1624,7 +1663,7 @@ function render(){
     const specialScoreText=r.specialScore?` (${r.specialScore>0?"+":""}${r.specialScore})`:"";
     const rowScoreText=`${r.score>0?"+":""}${r.score}`;
     tr.innerHTML=`
-      <td class="nm">${r.name}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${NAK_MY[idx]}</span></td>
+      <td class="nm"><span class="lang-en">${r.name}</span><span class="lang-my mm">${NAK_MY[idx]}</span>${vedhaBadgeHTML(r.vedhaReasons)}</td>
       <td title="${r.lordFull}">${r.lord}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${LORD_MY[r.lordFull]||""}</span></td>
       <td class="${taraClass(r.moonScore)}">${r.moonTara}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${TARA_MY_MAP[r.moonTara]||""}</span></td>
       <td class="${taraClass(r.lagnaScore)}">${r.lagnaTara}<br><span class="mm" style="font-weight:400;font-size:.72rem;color:var(--mut)">${TARA_MY_MAP[r.lagnaTara]||""}</span></td>
@@ -1830,16 +1869,16 @@ document.getElementById("todayLoc").onclick=()=>{
     ()=>alert("Location permission denied or unavailable.\n\nတည်နေရာ အသုံးပြုခွင့် ငြင်းပယ်ထားပါသည် သို့မဟုတ် ရှာမတွေ့ပါ။"),
     {timeout:10000,maximumAge:600000});
 };
+function setTodayCustomInputs(d){
+  const pad=n=>String(n).padStart(2,"0");
+  document.getElementById("todayDate").value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  document.getElementById("todayTime").value=`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 document.getElementById("todayCustom").onclick=()=>{
   const box=document.getElementById("todayCustomBox");
   const showing=box.style.display!=="none";
   box.style.display=showing?"none":"flex";
-  if(!showing){
-    const d=todayState.when||new Date();
-    const pad=n=>String(n).padStart(2,"0");
-    document.getElementById("todayDate").value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-    document.getElementById("todayTime").value=`${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
+  if(!showing)setTodayCustomInputs(todayState.when||new Date());
 };
 document.getElementById("todayApply").onclick=()=>{
   const dv=document.getElementById("todayDate").value, tv=document.getElementById("todayTime").value;
@@ -1848,7 +1887,12 @@ document.getElementById("todayApply").onclick=()=>{
   let hh=12,mm=0; if(tv){[hh,mm]=tv.split(":").map(Number);}
   refreshTransit({date:new Date(Y,Mo-1,Da,hh,mm,0)});
 };
-document.getElementById("todayNow").onclick=()=>{todayState.when=null;refreshTransit();};
+document.getElementById("todayNow").onclick=()=>{
+  const now=new Date();
+  todayState.when=null;
+  setTodayCustomInputs(now);
+  refreshTransit({date:now});
+};
 document.getElementById("todayClear").onclick=()=>{
   if(!confirm("Forget your saved natal data and location on this device?\n\nသိမ်းဆည်းထားသော အချက်အလက်များကို ဖျက်လိုပါသလား?"))return;
   try{localStorage.removeItem(LS_NATAL);localStorage.removeItem(LS_LOC);}catch(e){}
@@ -1864,6 +1908,14 @@ const D2R=Math.PI/180,R2D=180/Math.PI;
 function norm360(x){x%=360;return x<0?x+360:x;}
 function jdUT(y,m,d,hourUT){if(m<=2){y-=1;m+=12;}const A=Math.floor(y/100),B=2-A+Math.floor(A/4);
   return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5+hourUT/24;}
+function sunTrop(JD){
+  const T=(JD-2451545)/36525;
+  const L0=norm360(280.46646+36000.76983*T+0.0003032*T*T);
+  const M=norm360(357.52911+35999.05029*T-0.0001537*T*T);
+  const C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(M*D2R)+
+    (0.019993-0.000101*T)*Math.sin(2*M*D2R)+0.000289*Math.sin(3*M*D2R);
+  return norm360(L0+C);
+}
 const MT=[[0,0,1,0,6288774],[2,0,-1,0,1274027],[2,0,0,0,658314],[0,0,2,0,213618],[0,1,0,0,-185116],
 [0,0,0,2,-114332],[2,0,-2,0,58793],[2,-1,-1,0,57066],[2,0,1,0,53322],[2,-1,0,0,45758],[0,1,-1,0,-40923],
 [1,0,0,0,-34720],[0,1,1,0,-30383],[2,0,0,-2,15327],[0,0,1,2,-12528],[0,0,1,-2,10980],[4,0,-1,0,10675],
@@ -1997,14 +2049,26 @@ function calcBirth(){
   const hourUT=(hh+mm/60)-off;
   const JD=jdUT(Y,Mo,Da,hourUT);
   const ayan=lahiri(JD);
+  const sunSid=norm360(sunTrop(JD)-ayan);
   const moonSid=norm360(moonTrop(JD)-ayan);
   const ascSid=norm360(ascTrop(JD,lat,lon)-ayan);
-  const mi=nakIndex(moonSid), li=nakIndex(ascSid);
+  const si=nakIndex(sunSid), mi=nakIndex(moonSid), li=nakIndex(ascSid);
   const mp=padaOf(moonSid), lp=padaOf(ascSid);
+  const natalRavi=raviYogaFrom(si,mi);
   moonSel.value=mi; lagnaSel.value=li;
   out.style.color="#9fe0b8";
   out.innerHTML=`Moon → <b>${NAK[mi]}</b> <span class="mm">(${NAK_MY[mi]})</span> pada ${mp} (${lordOf(mi).f}) &nbsp;·&nbsp; Lagna → <b>${NAK[li]}</b> <span class="mm">(${NAK_MY[li]})</span> pada ${lp} (${lordOf(li).f})`
-    +(tv?"":` <span style='color:#d8d090'>(no birth time — Lagna unreliable / <span class='mm'>မွေးချိန် မပါဝင်ပါက လဂ်နက္ခတ် မတိကျနိုင်ပါ</span>)</span>`);
+    +(tv?"":` <span style='color:#d8d090'>(no birth time — Lagna unreliable / <span class='mm'>မွေးချိန် မပါဝင်ပါက လဂ်နက္ခတ် မတိကျနိုင်ပါ</span>)</span>`)+
+    `<div style="margin-top:10px;padding:9px 11px;border:1px solid ${natalRavi.active?"rgba(255,209,102,0.45)":"var(--line)"};border-radius:8px;background:rgba(255,255,255,0.025)">`+
+      `<div class="lang-en"><b>☀️ Natal Ravi Yoga: ${natalRavi.active?"Present":"Not present"}</b><br>`+
+        `The birth Moon in <b>${NAK[mi]}</b> is the <b>${natalRavi.count}${getOrdinalSuffix(natalRavi.count)} nakshatra</b> counted from the birth Sun in <b>${NAK[si]}</b>.`+
+        (natalRavi.active?` This supports success, important undertakings, visibility, and leadership.`:"")+
+      `</div>`+
+      `<div class="lang-my mm"><b>☀️ ဇနမ ရဝိယောဂ: ${natalRavi.active?"ရှိပါသည်":"မရှိပါ"}</b><br>`+
+        `မိမိ၏ ဇနမစန်း <b>${NAK_MY[mi]}</b> နက္ခတ်သည် ဇနမနေ <b>${NAK_MY[si]}</b> နက္ခတ်မှ စတင်ရေတွက်လျှင် <b>${toMyanmarDigits(natalRavi.count)} လုံးမြောက်နက္ခတ်</b> ဖြစ်ပါသည်။`+
+        (natalRavi.active?` အောင်မြင်မှု၊ အရေးကြီးသော လုပ်ငန်းဆောင်တာများ၊ ထင်ပေါ်ကျော်ကြားမှုနှင့် ခေါင်းဆောင်မှုတို့ကို အထောက်အကူပြုပါသည်။`:"")+
+      `</div>`+
+    `</div>`;
   render();
 }
 /* ===== Navatara reference accordions (Burmese guide) ===== */
