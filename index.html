@@ -348,6 +348,10 @@
   .calc-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
   .calcnote { font-size: 0.75rem; color: var(--mut); margin-top: 8px; }
   #calcOut { font-size: 0.85rem; color: var(--good); margin: 12px 0; min-height: 1.2em; }
+  .city-search { display: flex; gap: 8px; }
+  .city-search input { min-width: 220px; }
+  #cityResults { display: none; margin-top: 8px; width: 100%; }
+  #citySearchStatus { min-height: 1.1em; }
 
   /* Navatara reference accordions */
   .ref-wrap { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
@@ -554,7 +558,15 @@
     <div class="calc-grid">
     <div class="ctl"><label for="bdate">Birth date <span class="mm">(မွေးနေ့)</span></label><input type="date" id="bdate"></div>
     <div class="ctl"><label for="btime">Birth time (local, 24h) <span class="mm">(မွေးချိန်)</span></label><input type="time" id="btime"></div>
-    <div class="ctl"><label for="bcity">Place <span class="mm">(မွေးဖွားရာဒေသ)</span></label>
+    <div class="ctl" style="min-width:min(100%,360px)"><label for="citySearch">Search worldwide <span class="mm">(ကမ္ဘာတစ်ဝန်း မြို့ရှာရန်)</span></label>
+      <div class="city-search">
+        <input type="search" id="citySearch" placeholder="City or postal code">
+        <button type="button" class="btn-sm" id="citySearchBtn">Search</button>
+      </div>
+      <select id="cityResults" aria-label="Worldwide city search results"></select>
+      <div class="calcnote" id="citySearchStatus">Online search by Open-Meteo / GeoNames.</div>
+    </div>
+    <div class="ctl"><label for="bcity">Quick places <span class="mm">(အမြန်ရွေးရန်)</span></label>
       <select id="bcity"></select>
     </div>
   </div>
@@ -1882,16 +1894,90 @@ function nakIndex(sid){return Math.floor(norm360(sid)/(40/3));}
 
 const CITIES=[
   ["Yangon",16.8409,96.1735,6.5],["Mandalay",21.9588,96.0891,6.5],
-  ["Mogok",22.9177,96.5098,6.5],
+  ["Mogok",22.9177,96.5098,6.5],["Minbu",20.1806,94.8750,6.5],
   ["Naypyidaw",19.7633,96.0785,6.5],["Mawlamyine",16.4900,97.6256,6.5],
+  ["Mudon",16.2562,97.7246,6.5],
   ["Bago",17.3350,96.4815,6.5],["Taunggyi",20.7892,97.0378,6.5],
   ["Pathein",16.7790,94.7320,6.5],["Monywa",22.1083,95.1358,6.5],
   ["Custom…",null,null,null]
 ];
 const citySel=document.getElementById("bcity");
 CITIES.forEach((c,i)=>citySel.add(new Option(c[0],i)));
-citySel.onchange=()=>{document.getElementById("customGeo").style.display=
-  (CITIES[+citySel.value][1]===null)?"flex":"none";};
+const citySearch=document.getElementById("citySearch");
+const cityResults=document.getElementById("cityResults");
+const citySearchStatus=document.getElementById("citySearchStatus");
+let selectedWorldCity=null;
+
+function cityResultLabel(c){
+  return [c.name,c.admin1,c.country].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i).join(", ");
+}
+
+async function searchWorldwideCities(){
+  const q=citySearch.value.trim();
+  selectedWorldCity=null;
+  cityResults.style.display="none";
+  cityResults.innerHTML="";
+  if(q.length<2){
+    citySearchStatus.textContent="Enter at least 2 characters. (အနည်းဆုံး စာလုံး ၂ လုံး ရိုက်ထည့်ပါ)";
+    return;
+  }
+  citySearchStatus.textContent="Searching worldwide… (ကမ္ဘာတစ်ဝန်း ရှာဖွေနေပါသည်…)";
+  try{
+    const url="https://geocoding-api.open-meteo.com/v1/search?name="+encodeURIComponent(q)+"&count=20&language=en&format=json";
+    const res=await fetch(url);
+    if(!res.ok)throw new Error("search failed");
+    const data=await res.json();
+    const matches=(data.results||[]).filter(c=>Number.isFinite(c.latitude)&&Number.isFinite(c.longitude)&&c.timezone);
+    if(!matches.length){
+      citySearchStatus.textContent="No matching city found. Try another spelling. (ကိုက်ညီသောမြို့ မတွေ့ပါ)";
+      return;
+    }
+    matches.forEach((c,i)=>cityResults.add(new Option(cityResultLabel(c),i)));
+    cityResults._matches=matches;
+    cityResults.style.display="block";
+    cityResults.value="0";
+    selectedWorldCity=matches[0];
+    citySearchStatus.textContent=`Using ${cityResultLabel(selectedWorldCity)} · ${selectedWorldCity.timezone}`;
+    document.getElementById("customGeo").style.display="none";
+  }catch(e){
+    citySearchStatus.textContent="Worldwide search needs an internet connection. Use a quick place or Custom coordinates. (အင်တာနက်လိုအပ်ပါသည်)";
+  }
+}
+
+cityResults.onchange=()=>{
+  selectedWorldCity=cityResults._matches?.[+cityResults.value]||null;
+  if(selectedWorldCity){
+    citySearchStatus.textContent=`Using ${cityResultLabel(selectedWorldCity)} · ${selectedWorldCity.timezone}`;
+    document.getElementById("customGeo").style.display="none";
+  }
+};
+document.getElementById("citySearchBtn").onclick=searchWorldwideCities;
+citySearch.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();searchWorldwideCities();}};
+citySel.onchange=()=>{
+  selectedWorldCity=null;
+  citySearch.value="";
+  cityResults.style.display="none";
+  citySearchStatus.textContent="Using quick place. Worldwide search by Open-Meteo / GeoNames.";
+  document.getElementById("customGeo").style.display=(CITIES[+citySel.value][1]===null)?"flex":"none";
+};
+
+function timeZoneOffsetHours(Y,Mo,Da,hh,mm,timeZone){
+  const localAsUTC=Date.UTC(Y,Mo-1,Da,hh,mm,0);
+  let utcGuess=localAsUTC;
+  let offset=0;
+  const fmt=new Intl.DateTimeFormat("en-US",{
+    timeZone,year:"numeric",month:"2-digit",day:"2-digit",
+    hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"
+  });
+  for(let i=0;i<3;i++){
+    const parts=Object.fromEntries(fmt.formatToParts(new Date(utcGuess))
+      .filter(p=>p.type!=="literal").map(p=>[p.type,Number(p.value)]));
+    const zonedAsUTC=Date.UTC(parts.year,parts.month-1,parts.day,parts.hour,parts.minute,parts.second);
+    offset=(zonedAsUTC-utcGuess)/3600000;
+    utcGuess=localAsUTC-offset*3600000;
+  }
+  return offset;
+}
 
 function calcBirth(){
   const out=document.getElementById("calcOut");
@@ -1900,7 +1986,11 @@ function calcBirth(){
   const [Y,Mo,Da]=dv.split("-").map(Number);
   let hh=0,mm=0; if(tv){[hh,mm]=tv.split(":").map(Number);}
   const c=CITIES[+citySel.value]; let lat,lon,off;
-  if(c[1]===null){lat=parseFloat(document.getElementById("blat").value);
+  if(selectedWorldCity){
+    lat=selectedWorldCity.latitude;lon=selectedWorldCity.longitude;
+    try{off=timeZoneOffsetHours(Y,Mo,Da,hh,mm,selectedWorldCity.timezone);}
+    catch(e){out.style.color="#f0a0a0";out.textContent="This city's time zone is unavailable in your browser. Choose Custom and enter its UTC offset.";return;}
+  }else if(c[1]===null){lat=parseFloat(document.getElementById("blat").value);
     lon=parseFloat(document.getElementById("blon").value);off=parseFloat(document.getElementById("boff").value);
     if([lat,lon,off].some(isNaN)){out.style.color="#f0a0a0";out.textContent="Fill latitude, longitude and UTC offset. (တည်နေရာနှင့် အချိန်ကွာခြားချက် ဖြည့်သွင်းပါ)";return;}}
   else{lat=c[1];lon=c[2];off=c[3];}
