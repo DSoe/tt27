@@ -69,7 +69,8 @@ const ui = {
     setupBody: 'We use them once to calculate your Moon and Lagna nakshatras. You can review the result before saving.',
     name: 'Your name', date: 'Birth date', time: 'Birth time', place: 'Birth place',
     quickPlaces: 'Quick places', worldSearch: 'Search worldwide', search: 'Search',
-    cityHint: 'City or postal code', searching: 'Searching…', noCity: 'No matching city found.',
+    cityHint: 'City name or postal code', searching: 'Searching…', noCity: 'No matching city found.',
+    citySelected: 'selected as your birth place.',
     continue: 'Calculate my profile', privacy: 'Stored only in this browser. Delete it anytime.',
     demo: 'Explore with a sample profile',
     verify: 'Review your birth profile', verifyBody: 'These two nakshatras personalize every score and recommendation.',
@@ -101,7 +102,8 @@ const ui = {
     setupBody: 'စန်းနက္ခတ်နှင့် လဂ်နက္ခတ်ကို တွက်ချက်ရန်သာ အသုံးပြုပါမည်။ မသိမ်းဆည်းမီ ရလဒ်ကို စစ်ဆေးနိုင်ပါသည်။',
     name: 'အမည်', date: 'မွေးနေ့', time: 'မွေးချိန်', place: 'မွေးဖွားရာဒေသ',
     quickPlaces: 'အမြန်ရွေးရန်', worldSearch: 'ကမ္ဘာတစ်ဝန်း မြို့ရှာရန်', search: 'ရှာမည်',
-    cityHint: 'မြို့ သို့မဟုတ် စာတိုက်သင်္ကေတ', searching: 'ရှာဖွေနေပါသည်…', noCity: 'ကိုက်ညီသောမြို့ မတွေ့ပါ။',
+    cityHint: 'မြို့အမည်ကို မြန်မာ သို့မဟုတ် အင်္ဂလိပ်လို ရိုက်ပါ', searching: 'ရှာဖွေနေပါသည်…', noCity: 'ကိုက်ညီသောမြို့ မတွေ့ပါ။',
+    citySelected: 'ကို မွေးဖွားရာဒေသအဖြစ် ရွေးချယ်ထားပါသည်။',
     continue: 'မိမိဇာတာကို တွက်ချက်မည်', privacy: 'ဤ Browser ထဲတွင်သာ သိမ်းဆည်းထားပြီး အချိန်မရွေး ဖျက်နိုင်ပါသည်။',
     demo: 'နမူနာဇာတာဖြင့် အရင်ကြည့်မည်',
     verify: 'မိမိ၏ မွေးဖွားမှုဇာတာကို စစ်ဆေးပါ', verifyBody: 'ဤနက္ခတ်နှစ်ခုကို အသုံးပြု၍ ရမှတ်နှင့် အကြံပြုချက်များကို မိမိအတွက် သီးသန့်တွက်ချက်ပါသည်။',
@@ -261,15 +263,35 @@ function Setup({ language, onLanguage, onCalculated }: {
   }
 
   async function searchWorldwide() {
-    if (cityQuery.trim().length < 2) return
+    const query = cityQuery.trim()
+    if (query.length < 2) return
+    const localCityIndex = CITIES.findIndex((city) => city.name.toLocaleLowerCase() === query.toLocaleLowerCase() || city.my === query)
+    if (localCityIndex >= 0) {
+      const localCity = CITIES[localCityIndex]
+      setCityIndex(localCityIndex)
+      setWorldCities([])
+      setWorldCity(null)
+      setSearchStatus(language === 'my'
+        ? `${localCity.my}${copy.citySelected}`
+        : `${localCity.name} ${copy.citySelected}`)
+      return
+    }
     setSearchStatus(copy.searching)
     setWorldCities([])
     setWorldCity(null)
     try {
-      const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityQuery.trim())}&count=12&language=en&format=json`)
-      if (!response.ok) throw new Error('Search failed')
-      const data = await response.json() as { results?: WorldCity[] }
-      const matches = (data.results ?? []).filter((city) =>
+      const searchLanguages = language === 'my' ? ['my', 'en'] : ['en']
+      const responses = await Promise.all(searchLanguages.map((searchLanguage) =>
+        fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=12&language=${searchLanguage}&format=json`)))
+      if (responses.every((response) => !response.ok)) throw new Error('Search failed')
+      const payloads = await Promise.all(responses.filter((response) => response.ok).map((response) => response.json() as Promise<{ results?: WorldCity[] }>))
+      const seen = new Set<string>()
+      const matches = payloads.flatMap((data) => data.results ?? []).filter((city) => {
+        const key = `${city.latitude.toFixed(4)}:${city.longitude.toFixed(4)}`
+        if (seen.has(key)) return false
+        seen.add(key)
+        return true
+      }).filter((city) =>
         Number.isFinite(city.latitude) && Number.isFinite(city.longitude) && city.timezone)
       setWorldCities(matches)
       setWorldCity(matches[0] ?? null)
@@ -318,6 +340,11 @@ function Setup({ language, onLanguage, onCalculated }: {
               <input
                 value={cityQuery}
                 onChange={(event) => setCityQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter') return
+                  event.preventDefault()
+                  void searchWorldwide()
+                }}
                 placeholder={copy.cityHint}
               />
               <button type="button" onClick={searchWorldwide}>{copy.search}</button>
@@ -722,11 +749,9 @@ function ProfileView({ profile, language, onLanguage, onReset }: {
   profile: Profile; language: Language; onLanguage: (language: Language) => void; onReset: () => void
 }) {
   const copy = ui[language]
-  const city = profile.location ?? CITIES[profile.cityIndex]
-  const cityName = 'my' in city && language === 'my' ? city.my : city.name
   const natalRavi = raviYoga(profile.natal.sunIdx, profile.natal.moonIdx)
   return <div className="page profile-page">
-    <section className="page-heading"><div><p className="eyebrow">{copy.profile}</p><h1>{profile.name}</h1><p>{cityName}</p></div></section>
+    <section className="page-heading"><div><p className="eyebrow">{copy.profile}</p><h1>{profile.name}</h1></div></section>
     <section className="settings-card">
       <h2>{copy.preferences}</h2>
       <div className="setting-row"><span>文</span><div><b>{copy.language}</b><small>{language === 'my' ? 'မြန်မာ' : 'English'}</small></div><LanguageToggle language={language} onChange={onLanguage} /></div>
@@ -747,7 +772,6 @@ function ProfileView({ profile, language, onLanguage, onReset }: {
           <p>{copy.natalRaviMeaning}</p>
         </div>
       </div>}
-      <p className="profile-meta">{profile.date} · {profile.time} · {cityName}</p>
     </section>
     <button className="danger-button" onClick={onReset}>{copy.reset}</button>
   </div>

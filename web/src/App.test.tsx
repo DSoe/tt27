@@ -18,6 +18,18 @@ describe('TT27 onboarding', () => {
     expect(screen.getByRole('heading', { name: 'မွေးဖွားမှုအချက်အလက်ဖြင့် စတင်ပါ။' })).toBeInTheDocument()
   })
 
+  it('accepts a Myanmar city name in birth place search', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'MY' }))
+    fireEvent.change(screen.getByPlaceholderText('မြို့အမည်ကို မြန်မာ သို့မဟုတ် အင်္ဂလိပ်လို ရိုက်ပါ'), {
+      target: { value: 'မိုးကုတ်' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'ရှာမည်' }))
+
+    expect(screen.getByText('မိုးကုတ်ကို မွေးဖွားရာဒေသအဖြစ် ရွေးချယ်ထားပါသည်။')).toBeInTheDocument()
+    expect(screen.getByRole('combobox', { name: 'အမြန်ရွေးရန်' })).toHaveValue('2')
+  })
+
   it('shows natal Ravi Yoga in the saved birth profile when present', () => {
     localStorage.setItem('tt27.react.profile', JSON.stringify({
       name: 'Soe',
@@ -36,6 +48,9 @@ describe('TT27 onboarding', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Profile' }))
     expect(screen.getByText('Natal Ravi Yoga: Present')).toBeInTheDocument()
     expect(screen.getByText(/The birth Moon in Rohini is the 4th nakshatra/)).toBeInTheDocument()
+    expect(screen.queryByText(/1990-03-12/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/08:24/)).not.toBeInTheDocument()
+    expect(screen.queryByText('Yangon')).not.toBeInTheDocument()
   })
 
   it('migrates an older saved profile missing its birth Sun', () => {
