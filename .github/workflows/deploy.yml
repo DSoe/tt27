@@ -21,24 +21,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Stage site
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Verify
+        working-directory: web
         run: |
-          set -euo pipefail
-          mkdir -p _site
-          cp index.html manifest.json icon.svg sw.js LICENSE README.md _site/
+          npm run lint
+          npm test
 
-          # Bump service-worker cache version to the commit SHA so installed
-          # PWAs pick up the new release without manual edits.
-          SHA="${GITHUB_SHA::7}"
-          sed -i "s/^const CACHE_VERSION = .*/const CACHE_VERSION = \"tt27-${SHA}\";/" _site/sw.js
+      - name: Build React app
+        working-directory: web
+        run: npm run build
 
-          # Disable Jekyll processing.
-          touch _site/.nojekyll
+      - name: Stage site
+        run: touch web/dist/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: web/dist
 
   deploy:
     needs: build
