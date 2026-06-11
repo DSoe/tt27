@@ -310,73 +310,70 @@ function Setup({ language, onLanguage, onCalculated }: {
         <LanguageToggle language={language} onChange={onLanguage} />
       </header>
       <section className="setup-layout">
-        <div className="setup-intro">
-          <p className="eyebrow">{copy.setupEyebrow}</p>
-          <h1>{copy.setupTitle}</h1>
-          <p>{copy.setupBody}</p>
-          <div className="trust-list">
-            <span>✓ {language === 'my' ? 'ရှင်းလင်းသော နေ့စဉ်အကြံပြုချက်' : 'Clear daily guidance'}</span>
-            <span>✓ {language === 'my' ? 'စက်ထဲတွင်သာ သိမ်းဆည်းခြင်း' : 'Private, on-device storage'}</span>
-            <span>✓ {language === 'my' ? 'အင်္ဂလိပ်နှင့် မြန်မာဘာသာ' : 'English and Myanmar'}</span>
+        <div className="welcome-card">
+          <div className="setup-intro">
+            <p className="eyebrow">{copy.setupEyebrow}</p>
+            <h1>{copy.setupTitle}</h1>
+            <p>{copy.setupBody}</p>
           </div>
+          <form className="setup-card" onSubmit={submit}>
+            <label>{copy.name}<input value={name} onChange={(event) => setName(event.target.value)} placeholder={language === 'my' ? 'ဥပမာ - စိုး' : 'e.g. Soe'} /></label>
+            <div className="form-row">
+              <label>{copy.date}<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
+              <label>{copy.time}<input type="time" value={time} onChange={(event) => setTime(event.target.value)} /></label>
+            </div>
+            <label>{copy.quickPlaces}
+              <select value={cityIndex} onChange={(event) => {
+                setCityIndex(Number(event.target.value))
+                setWorldCity(null)
+                setWorldCities([])
+              }}>
+                {CITIES.map((city, index) => <option value={index} key={city.name}>{language === 'my' ? city.my : city.name}</option>)}
+              </select>
+            </label>
+            <label>{copy.worldSearch}
+              <span className="search-control">
+                <input
+                  value={cityQuery}
+                  onChange={(event) => setCityQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key !== 'Enter') return
+                    event.preventDefault()
+                    void searchWorldwide()
+                  }}
+                  placeholder={copy.cityHint}
+                />
+                <button type="button" onClick={searchWorldwide}>{copy.search}</button>
+              </span>
+            </label>
+            {worldCities.length > 0 && <label>{copy.place}
+              <select
+                value={worldCity ? worldCities.indexOf(worldCity) : 0}
+                onChange={(event) => setWorldCity(worldCities[Number(event.target.value)])}
+              >
+                {worldCities.map((city, index) => <option value={index} key={`${city.latitude}-${city.longitude}`}>{worldCityLabel(city)}</option>)}
+              </select>
+            </label>}
+            {searchStatus && <small className="search-status">{searchStatus}</small>}
+            {error && <p className="form-error">{error}</p>}
+            <button className="primary-button" type="submit">{copy.continue}<span>→</span></button>
+            <button
+              className="demo-button"
+              type="button"
+              onClick={() => {
+                const city = CITIES[0]
+                onCalculated({
+                  name: language === 'my' ? 'စိုး' : 'Soe',
+                  date: '1990-03-12',
+                  time: '08:24',
+                  cityIndex: 0,
+                  natal: calculateBirth('1990-03-12', '08:24', city.lat, city.lon, city.offset),
+                })
+              }}
+            >{copy.demo}</button>
+            <small className="privacy">⌁ {copy.privacy}</small>
+          </form>
         </div>
-        <form className="setup-card" onSubmit={submit}>
-          <label>{copy.name}<input value={name} onChange={(event) => setName(event.target.value)} placeholder={language === 'my' ? 'ဥပမာ - စိုး' : 'e.g. Soe'} /></label>
-          <div className="form-row">
-            <label>{copy.date}<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
-            <label>{copy.time}<input type="time" value={time} onChange={(event) => setTime(event.target.value)} /></label>
-          </div>
-          <label>{copy.quickPlaces}
-            <select value={cityIndex} onChange={(event) => {
-              setCityIndex(Number(event.target.value))
-              setWorldCity(null)
-              setWorldCities([])
-            }}>
-              {CITIES.map((city, index) => <option value={index} key={city.name}>{language === 'my' ? city.my : city.name}</option>)}
-            </select>
-          </label>
-          <label>{copy.worldSearch}
-            <span className="search-control">
-              <input
-                value={cityQuery}
-                onChange={(event) => setCityQuery(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key !== 'Enter') return
-                  event.preventDefault()
-                  void searchWorldwide()
-                }}
-                placeholder={copy.cityHint}
-              />
-              <button type="button" onClick={searchWorldwide}>{copy.search}</button>
-            </span>
-          </label>
-          {worldCities.length > 0 && <label>{copy.place}
-            <select
-              value={worldCity ? worldCities.indexOf(worldCity) : 0}
-              onChange={(event) => setWorldCity(worldCities[Number(event.target.value)])}
-            >
-              {worldCities.map((city, index) => <option value={index} key={`${city.latitude}-${city.longitude}`}>{worldCityLabel(city)}</option>)}
-            </select>
-          </label>}
-          {searchStatus && <small className="search-status">{searchStatus}</small>}
-          {error && <p className="form-error">{error}</p>}
-          <button className="primary-button" type="submit">{copy.continue}<span>→</span></button>
-          <button
-            className="demo-button"
-            type="button"
-            onClick={() => {
-              const city = CITIES[0]
-              onCalculated({
-                name: language === 'my' ? 'စိုး' : 'Soe',
-                date: '1990-03-12',
-                time: '08:24',
-                cityIndex: 0,
-                natal: calculateBirth('1990-03-12', '08:24', city.lat, city.lon, city.offset),
-              })
-            }}
-          >{copy.demo}</button>
-          <small className="privacy">⌁ {copy.privacy}</small>
-        </form>
       </section>
     </div>
   )

@@ -226,6 +226,52 @@ button:focus-visible, input:focus-visible, select:focus-visible {
     radial-gradient(circle at 12% 8%, rgba(123, 153, 225, .2), transparent 34%),
     radial-gradient(circle at 88% 18%, rgba(228, 179, 84, .08), transparent 24%),
     var(--canvas);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: 24px;
+}
+.setup-header { width: min(100%, 480px); }
+.setup-layout {
+  width: min(100%, 480px);
+  max-width: 480px;
+  margin: clamp(32px, 7vh, 72px) auto 48px;
+  display: block;
+}
+.welcome-card {
+  overflow: hidden;
+  color: #f5f6f9;
+  background: var(--glass);
+  border: 1px solid var(--glass-stroke);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+.setup-intro {
+  padding: 32px 24px 24px;
+  text-align: center;
+  border-bottom: 1px solid rgba(245, 246, 249, .14);
+}
+.setup-intro h1 {
+  max-width: 390px;
+  margin: 0 auto 14px;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -.03em;
+}
+.setup-intro > p:not(.eyebrow) {
+  max-width: 390px;
+  margin: 0 auto;
+  font-size: .94rem;
+}
+.setup-intro .eyebrow { margin-bottom: 14px; }
+.welcome-card .setup-card {
+  padding: 24px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 .app-shell {
   background:
@@ -381,6 +427,18 @@ button:focus-visible, input:focus-visible, select:focus-visible {
 .danger-button { border-radius: 5px; color: #ffc2bd; border-color: rgba(255, 194, 189, .35); }
 
 @media (max-width: 760px) {
-  .setup-card, .verify-wrap { border-radius: 10px; }
+  .setup-page { padding: 18px; }
+  .setup-layout { margin-top: 32px; }
+  .welcome-card, .verify-wrap { border-radius: 10px; }
+  .welcome-card .setup-card { border-radius: 0; }
   .hero-card { border-radius: 12px; }
+}
+
+@media (max-width: 430px) {
+  .setup-page { padding: 14px; }
+  .setup-header { padding: 0 4px; }
+  .setup-layout { margin-top: 24px; }
+  .setup-intro { padding: 28px 20px 22px; }
+  .setup-intro h1 { font-size: 1.8rem; }
+  .welcome-card .setup-card { padding: 22px 20px 24px; }
 }
