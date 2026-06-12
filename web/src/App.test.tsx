@@ -1,10 +1,13 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 
 describe('TT27 onboarding', () => {
   beforeEach(() => localStorage.clear())
-  afterEach(cleanup)
+  afterEach(() => {
+    cleanup()
+    vi.useRealTimers()
+  })
 
   it('starts with birth details instead of astrology selectors', () => {
     render(<App />)
@@ -154,6 +157,8 @@ describe('TT27 onboarding', () => {
   })
 
   it('uses the complete Burmese narrative pattern in Today details', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-06-11T22:40:00Z'))
     localStorage.setItem('tt27.lang', 'my')
     localStorage.setItem('tt27.react.profile', JSON.stringify({
       name: 'Soe',
