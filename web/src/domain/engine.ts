@@ -239,6 +239,18 @@ export function raviYoga(sunIdx: number, moonIdx: number) {
   return { active: [4,6,9,10,13,20].includes(count), count }
 }
 
+const JEWELRY_COUNTS_FROM_SUN = [9,10,11,14,15,16,17,18,19,20,23,24,25,26]
+const PROSPERITY_MOON_NAKSHATRAS = [2,7,8,9,10,19,24]
+
+export function jewelryTiming(sunIdx: number, moonIdx: number) {
+  const count = ((moonIdx - sunIdx + 27) % 27) + 1
+  return { active: JEWELRY_COUNTS_FROM_SUN.includes(count), count }
+}
+
+export function prosperityTiming(moonIdx: number) {
+  return { active: PROSPERITY_MOON_NAKSHATRAS.includes(moonIdx) }
+}
+
 export function padaClass(nakIdx: number, pada: number) {
   const cycle = Math.floor(nakIdx / 9)
   const offset = nakIdx % 9

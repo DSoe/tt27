@@ -5,7 +5,8 @@ import {
 } from './domain/data'
 import {
   allScores, bestUse, calculateBirth, calculateTransit, directionsFor,
-  findMoonPadaEnd, lordOf, padaClass, raviYoga, scoreBand, scoreNakshatra, verdict,
+  findMoonPadaEnd, jewelryTiming, lordOf, padaClass, prosperityTiming, raviYoga,
+  scoreBand, scoreNakshatra, verdict,
   type AstroPosition, type ScoreRow,
 } from './domain/engine'
 
@@ -443,6 +444,8 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
   const status = verdict(row)
   const use = bestUse(row)
   const ravi = raviYoga(transit.sunIdx, transit.moonIdx)
+  const jewelry = jewelryTiming(transit.sunIdx, transit.moonIdx)
+  const prosperity = prosperityTiming(transit.moonIdx)
   const pada = padaClass(transit.moonIdx, transit.moonPada)
   const directions = directionsFor(transit.moonIdx)
   const moonCopy = TARA_COPY[row.moonTara.name]
@@ -559,6 +562,29 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
           {row.vedha.length > 0 && <span className="warning">⚠ {copy.vedha} · {row.vedha.join(' + ')}</span>}
         </div>
       </section>
+
+      {(jewelry.active || prosperity.active) && <section className="timing-guidance" aria-label={language === 'my' ? 'ယနေ့ အထူးအခွင့်အလမ်းများ' : 'Special opportunities today'}>
+        {jewelry.active && <article className="timing-guidance-card jewelry">
+          <span aria-hidden="true">◆</span>
+          <div>
+            <p className="eyebrow">{language === 'my' ? 'ရတနာဆိုင်ရာ အချိန်ကောင်း' : 'Auspicious jewelry timing'}</p>
+            <h2>{language === 'my' ? 'ရတနာ ဝယ်ယူရန် သို့မဟုတ် စတင်ဝတ်ဆင်ရန် ကောင်းသောအချိန်' : 'A favorable time to buy or begin wearing jewelry'}</h2>
+            <p>{language === 'my'
+              ? `ယခု စန်းစီးနက္ခတ် ${moonName}နက္ခတ်သည် နေစီးနက္ခတ် ${nameOf(transit.sunIdx, language)}နက္ခတ်မှ စတင်ရေတွက်လျှင် ${myDigits(jewelry.count)} လုံးမြောက်နက္ခတ် ဖြစ်ပါသည်။ ခတ်ပြီးသား ရတနာ သို့မဟုတ် ရွှေထည်ကို ဝယ်ယူခြင်း၊ စတင်ဝတ်ဆင်ခြင်းနှင့် ပန်းထိမ်အပ်ခြင်းတို့အတွက် ကောင်းမွန်ပါသည်။ ရွှေအတုံးအခဲ ဝယ်ယူခြင်းကို မဆိုလိုပါ။ ကျောက်မပါသော ရွှေထည်လည်း အကျုံးဝင်ပါသည်။`
+              : `The transit Moon in ${moonName} is the ${jewelry.count}${ordinal(jewelry.count)} nakshatra counted from the transit Sun in ${nameOf(transit.sunIdx, language)}. This favors buying finished jewelry, beginning to wear it, or commissioning a jeweler. It refers to crafted pieces, including plain gold jewelry without gemstones, rather than gold bullion.`}</p>
+          </div>
+        </article>}
+        {prosperity.active && <article className="timing-guidance-card prosperity">
+          <span aria-hidden="true">✦</span>
+          <div>
+            <p className="eyebrow">{language === 'my' ? 'အကြံအစည်နှင့် စီးပွားရေး အချိန်ကောင်း' : 'Plans and prosperity'}</p>
+            <h2>{language === 'my' ? 'အကြံအစည် အောင်မြင်ခြင်းနှင့် စီးပွားဥစ္စာ တိုးတက်ခြင်းအတွက် ကောင်းသောအချိန်' : 'A favorable time for successful plans and growing prosperity'}</h2>
+            <p>{language === 'my'
+              ? `ယခု စန်းသည် ${moonName}နက္ခတ်နှင့် ယှဉ်နေပါသည်။ အကြံအစည်များကို အကောင်အထည်ဖော်ခြင်းနှင့် စီးပွားဥစ္စာ တိုးတက်စေမည့် လုပ်ငန်းများကို ဆောင်ရွက်ရန် အလွန်ကောင်းမွန်ပါသည်။`
+              : `The transit Moon is now in ${moonName}, one of the seven nakshatras favorable for carrying plans through successfully and undertaking work intended to increase prosperity.`}</p>
+          </div>
+        </article>}
+      </section>}
 
       <section className="section-block">
         <div className="section-heading"><div><p className="eyebrow">{copy.overview}</p><h2>{copy.position}</h2></div>

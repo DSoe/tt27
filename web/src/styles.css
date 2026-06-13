@@ -103,6 +103,28 @@ main { max-width: 1180px; margin: auto; }
 .transit-line small { opacity: .7; }.transit-line b { font-size: 1.08rem; }.transit-line em { opacity: .76; font-size: .82rem; font-style: normal; }
 .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .hero-tags span.active { color: #ffe2a6; }.hero-tags span.warning { color: #ffe1de; }
+.timing-guidance { display: grid; gap: 12px; margin-top: 16px; }
+.timing-guidance-card {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 16px;
+  padding: 22px;
+  color: var(--ink);
+  background: linear-gradient(135deg, #fff8e7, #edf2fb);
+  border: 1px solid #d7c28e;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(3, 15, 53, .12);
+}
+.timing-guidance-card > span { color: #9b711f; font-size: 1.45rem; line-height: 1.2; }
+.timing-guidance-card .eyebrow { color: #80652f; margin-bottom: 7px; }
+.timing-guidance-card h2 { margin: 0 0 9px; font-size: 1.08rem; line-height: 1.45; }
+.timing-guidance-card p:last-child { margin: 0; color: var(--reading-muted); font-size: .91rem; line-height: 1.75; }
+.timing-guidance-card.prosperity {
+  background: linear-gradient(135deg, #edf4ff, #f8f5e9);
+  border-color: #bdcbe7;
+}
+.timing-guidance-card.prosperity > span { color: #486da9; }
+.timing-guidance-card.prosperity .eyebrow { color: #486da9; }
 
 .section-block { margin-top: 50px; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin-bottom: 15px; }
@@ -177,6 +199,7 @@ main { max-width: 1180px; margin: auto; }
   .form-row, .result-grid, .profile-natal { grid-template-columns: 1fr; }
   .setup-intro h1 { font-size: 2.45rem; }.verify-wrap { margin-top: 35px; }
   .hero-top { align-items: center; }.score-ring { width: 66px; height: 66px; }
+  .timing-guidance-card { grid-template-columns: 1fr; gap: 8px; padding: 19px; }
   .section-heading { display: grid; }.direction-card { grid-template-columns: 1fr; }.compass { margin: auto; }
 }
 

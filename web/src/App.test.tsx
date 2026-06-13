@@ -182,4 +182,29 @@ describe('TT27 onboarding', () => {
     expect(screen.getByText(/အခွင့်အလမ်း — စန်းစီးနက္ခတ် အဿဝဏီ/)).toBeInTheDocument()
     expect(screen.getByText(/ခေမတာရာ နှင့် သာဓကတာရာ၏ ကောင်းကျိုးအင်အားကို မြှင့်တင်ရန်/)).toBeInTheDocument()
   })
+
+  it('shows jewelry and prosperity guidance when both transit rules qualify', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-06-13T01:00:00Z'))
+    localStorage.setItem('tt27.lang', 'my')
+    localStorage.setItem('tt27.react.profile', JSON.stringify({
+      name: 'Soe',
+      date: '1990-03-12',
+      time: '08:24',
+      cityIndex: 0,
+      natal: {
+        sunIdx: 0,
+        moonIdx: 3,
+        moonPada: 1,
+        lagnaIdx: 5,
+        lagnaPada: 2,
+      },
+    }))
+
+    render(<App />)
+
+    expect(screen.getByText('ရတနာဆိုင်ရာ အချိန်ကောင်း')).toBeInTheDocument()
+    expect(screen.getByText('အကြံအစည်နှင့် စီးပွားရေး အချိန်ကောင်း')).toBeInTheDocument()
+    expect(screen.getByText(/ကြတ္တိကာနက္ခတ်သည် နေစီးနက္ခတ် မိဂသီနက္ခတ်မှ/)).toBeInTheDocument()
+  })
 })

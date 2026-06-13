@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { calculateBirth, calculateTransit, findMoonPadaEnd, padaClass, raviYoga, scoreNakshatra, taraFrom } from './engine'
+import {
+  calculateBirth, calculateTransit, findMoonPadaEnd, jewelryTiming, padaClass,
+  prosperityTiming, raviYoga, scoreNakshatra, taraFrom,
+} from './engine'
 
 describe('TT27 engine', () => {
   it('keeps Navatara counting inclusive', () => {
@@ -17,6 +20,19 @@ describe('TT27 engine', () => {
   it('detects Ravi Yoga counts', () => {
     expect(raviYoga(0, 3)).toEqual({ active: true, count: 4 })
     expect(raviYoga(0, 4)).toEqual({ active: false, count: 5 })
+  })
+
+  it('detects jewelry timing counted inclusively from the transit Sun', () => {
+    expect(jewelryTiming(0, 8)).toEqual({ active: true, count: 9 })
+    expect(jewelryTiming(26, 21)).toEqual({ active: true, count: 23 })
+    expect(jewelryTiming(0, 11)).toEqual({ active: false, count: 12 })
+  })
+
+  it('detects the seven prosperity Moon nakshatras', () => {
+    expect(prosperityTiming(2).active).toBe(true)
+    expect(prosperityTiming(19).active).toBe(true)
+    expect(prosperityTiming(24).active).toBe(true)
+    expect(prosperityTiming(0).active).toBe(false)
   })
 
   it('preserves the current pada classification rules', () => {
