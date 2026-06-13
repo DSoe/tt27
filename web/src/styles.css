@@ -193,7 +193,6 @@ main { max-width: 1180px; margin: auto; }
 .best-row.excellent { border-left-color: #43806e; }.best-row.good { border-left-color: #6b8d72; }.best-row.usable { border-left-color: #b68a45; }.best-row.avoid { border-left-color: var(--danger); }
 .best-summary { width: 100%; display: grid; grid-template-columns: minmax(150px, .75fr) 1.7fr 64px 20px; align-items: center; gap: 20px; padding: 18px 20px; background: transparent; border: 0; color: inherit; text-align: left; }
 .rank-name, .best-use { display: grid; gap: 4px; }.rank-name small, .best-use small, .best-detail small { color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
-.rank-name .venus-wealth-inline { width: fit-content; color: #8a567f; text-transform: none; letter-spacing: 0; }
 .best-use { color: #43504c; font-size: .9rem; }.row-score { font-weight: 700; font-size: 1.05rem; text-align: right; }.chevron { color: var(--muted); }
 .best-detail { border-top: 1px solid var(--line); padding: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f7f8f5; }
 .best-detail b { display: block; margin: 5px 0; }.best-detail p { margin: 0; color: var(--muted); font-size: .88rem; }
@@ -208,20 +207,6 @@ main { max-width: 1180px; margin: auto; }
 .tara-remedy small { color: var(--sage-dark); font-weight: 700; }.tara-remedy p { margin-top: 6px; }
 .remedy-guidance { grid-column: 1 / -1; padding: 16px; border: 1px solid #d9caa9; border-radius: 15px; background: #fbf7ec; }
 .remedy-guidance small { color: #80652f; font-weight: 700; }
-.venus-wealth-detail {
-  grid-column: 1 / -1;
-  padding: 18px;
-  color: var(--ink);
-  background: linear-gradient(135deg, #fff7e4, #f3eaf5);
-  border: 1px solid #d9bc7c;
-  border-radius: 8px;
-}
-.venus-wealth-detail.restricted { background: #f3f0eb; border-color: #cec5b5; }
-.venus-wealth-detail small { color: #8a567f; font-weight: 700; }
-.venus-wealth-detail b { margin-top: 7px; }
-.venus-wealth-detail p + p { margin-top: 9px; }
-.venus-wealth-detail .venus-wealth-rule { padding-top: 10px; border-top: 1px solid rgba(138, 86, 127, .18); }
-
 .settings-card { border: 1px solid var(--line); border-radius: 22px; background: var(--paper); padding: 22px; margin-bottom: 14px; }
 .settings-card h2 { font-size: 1rem; margin-bottom: 16px; }
 .setting-row { display: flex; align-items: center; gap: 14px; }.setting-row > span { font-size: 1.4rem; }.setting-row > div:nth-child(2) { display: grid; flex: 1; }.setting-row small { color: var(--muted); }

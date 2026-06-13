@@ -159,7 +159,7 @@ describe('TT27 onboarding', () => {
     expect(screen.getByText(/ဤနေရာ၏ ကောင်းကျိုးကို အားဖြည့်နည်း/)).toBeInTheDocument()
     expect(screen.getByText('မိတ္တ သဘောသဘာဝ')).toBeInTheDocument()
     expect(screen.getByText('မိတ္တတာရာ ယတြာ')).toBeInTheDocument()
-    expect(screen.getByText(/ဓနစည်းချက်၊ အဆင့်အတန်း၊ ပိုင်ဆိုင်မှုနှင့် သြဇာအာဏာ/)).toBeInTheDocument()
+    expect(screen.queryByText('သောကြာ ဓနနက္ခတ်')).not.toBeInTheDocument()
   })
 
   it('uses the complete Burmese narrative pattern in Today details', () => {

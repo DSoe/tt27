@@ -808,7 +808,6 @@ function BestRow({ row, language, open, onOpen }: {
   const positionCopy = POSITION_COPY[row.moonTara.count]
   const langValue = <T,>(en: T, my: T) => language === 'my' ? my : en
   const nakshatra = nameOf(row.index, language)
-  const venusWealthMeta = venusWealthMetaFor(row.index)
   const positionNarrative = language === 'my'
     ? `${nakshatra}နက္ခတ်သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${positionCopy.titleMy} ဖြစ်ပါသည်။ စန်းနက္ခတ်မှ ${myDigits(row.moonTara.count)} လုံးမြောက် နက္ခတ်သည် ${positionCopy.meaningMy}${row.special ? ` ${row.special.useMy}` : ''}`
     : `${nakshatra} is the ${positionCopy.title} position from your natal Moon nakshatra. The ${row.moonTara.count}${ordinal(row.moonTara.count)} nakshatra from the natal Moon ${positionCopy.meaning.charAt(0).toLowerCase()}${positionCopy.meaning.slice(1)}${row.special ? ` ${row.special.use}` : ''}`
@@ -817,9 +816,7 @@ function BestRow({ row, language, open, onOpen }: {
     : `Practices and remedies associated with ${nakshatra} can help cultivate the positive qualities of this position.`
   return <article className={`best-row ${scoreBand(row.score)} ${open ? 'open' : ''}`}>
     <button className="best-summary" onClick={onOpen}>
-      <span className="rank-name"><b>{nameOf(row.index, language)}</b><small>{langValue(lordOf(row.index)[1], lordOf(row.index)[2])}</small>
-        {row.venusWealth.active && <small className="venus-wealth-inline">♀ {language === 'my' ? 'သောကြာ ဓနနက္ခတ်' : 'Venus Wealth Star'}</small>}
-      </span>
+      <span className="rank-name"><b>{nameOf(row.index, language)}</b><small>{langValue(lordOf(row.index)[1], lordOf(row.index)[2])}</small></span>
       <span className="best-use"><small>{copy.use}</small>{langValue(use.en, use.my)}</span>
       <span className="row-score">{language === 'my' ? myDigits(`${row.score > 0 ? '+' : ''}${row.score}`) : `${row.score > 0 ? '+' : ''}${row.score}`}</span>
       <span className="chevron">{open ? '↑' : '↓'}</span>
@@ -830,17 +827,6 @@ function BestRow({ row, language, open, onOpen }: {
         <p>{positionNarrative}</p>
         <p><b>{language === 'my' ? 'ဤနေရာ၏ ကောင်းကျိုးကို အားဖြည့်နည်း:' : 'How to strengthen this position:'}</b> {strengthening}</p>
       </div>
-      {row.venusWealth.active && venusWealthMeta && <div className={`venus-wealth-detail ${row.venusWealth.blocked || row.venusWealth.remedyOnly ? 'restricted' : ''}`}>
-        <small>♀ {language === 'my' ? 'သောကြာ ဓနနက္ခတ်' : 'Venus Wealth Star'}</small>
-        <b>{language === 'my' ? venusWealthMeta.themeMy : venusWealthMeta.theme}</b>
-        <p>{language === 'my' ? venusWealthMeta.bestUseMy : venusWealthMeta.bestUse}</p>
-        <p><b>{language === 'my' ? 'သတိပြုရန်:' : 'Caution:'}</b> {language === 'my' ? venusWealthMeta.cautionMy : venusWealthMeta.caution}</p>
-        <p className="venus-wealth-rule">{row.venusWealth.blocked
-          ? (language === 'my' ? 'Vedha ကြောင့် အပိုရမှတ်မပေးပါ။ ယတြာပြုနိုင်သော်လည်း အရေးကြီးသော လုပ်ငန်းသစ်များ မစတင်ပါနှင့်။' : 'Vedha blocks the bonus. Use for remedies, not major starts.')
-          : row.venusWealth.remedyOnly
-            ? (language === 'my' ? 'ယတြာနှင့် ငွေကြေးသန့်ရှင်းရေးအတွက်သာ အသုံးပြုပါ။ လုပ်ငန်းသစ်စတင်ရန် မသင့်ပါ။' : 'Remedy-only: suitable for financial purification, not launches.')
-            : (language === 'my' ? `ဓနအထောက်အပံ့ အပိုရမှတ် +${myDigits(row.venusWealth.bonus)}` : `Prosperity-support bonus +${row.venusWealth.bonus}`)}</p>
-      </div>}
       <div className="tara-detail">
         <small>{copy.tara}</small>
         <b>{langValue(`${row.moonTara.name} nature`, `${row.moonTara.my} သဘောသဘာဝ`)}</b>

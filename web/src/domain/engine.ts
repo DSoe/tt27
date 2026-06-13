@@ -246,32 +246,24 @@ export function scoreNakshatra(
   const natalVenusActive = Number.isFinite(options.natalVenusIdx)
     && isVenusWealthStar(options.natalVenusIdx as number)
   const fridayMoonActive = Boolean(options.isFriday && moonActive)
-  const active = options.transitContext
-    ? transitVenusActive || fridayMoonActive
-    : moonActive
+  const active = Boolean(options.transitContext && (transitVenusActive || fridayMoonActive))
   const remedyOnly = moonTara.name === 'Naidhana'
     || ['Naidhana', 'Vainashika I', 'Vainashika II', 'Vinashaka / Secondary Manasa'].includes(special?.name ?? '')
   const caution = ['Vipat', 'Pratyak'].includes(moonTara.name)
   const blocked = vedha.length > 0
   let venusBonus = 0
   if (active && !blocked && !remedyOnly) {
-    if (options.transitContext) {
-      if (fridayMoonActive) venusBonus = 2
-      if (transitVenusActive) venusBonus = Math.max(venusBonus, 2)
-      if (fridayMoonActive && transitVenusActive) venusBonus = 3
-    } else {
-      venusBonus = 1
-    }
+    if (fridayMoonActive) venusBonus = 2
+    if (transitVenusActive) venusBonus = Math.max(venusBonus, 2)
+    if (fridayMoonActive && transitVenusActive) venusBonus = 3
   }
-  const starIndex = options.transitContext
+  const starIndex = active
     ? fridayMoonActive
       ? index
       : transitVenusActive
         ? options.transitVenusIdx
         : undefined
-    : moonActive
-      ? index
-      : undefined
+    : undefined
   return {
     index, moonTara, lagnaTara, special, rawScore,
     score: blocked ? Math.min(computed, 0) : computed + venusBonus,

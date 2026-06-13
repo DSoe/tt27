@@ -40,8 +40,8 @@ describe('TT27 engine', () => {
     expect(isVenusWealthStar(20)).toBe(false)
 
     const normal = scoreNakshatra(0, 1, 1)
-    expect(normal.venusWealth).toMatchObject({ active: true, bonus: 1, blocked: false })
-    expect(normal.score).toBe(normal.rawScore + 1)
+    expect(normal.venusWealth).toMatchObject({ active: false, bonus: 0, blocked: false })
+    expect(normal.score).toBe(normal.rawScore)
 
     const ordinaryTransitDay = scoreNakshatra(0, 1, 1, { transitContext: true })
     expect(ordinaryTransitDay.venusWealth).toMatchObject({ active: false, bonus: 0 })
