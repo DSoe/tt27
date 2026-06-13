@@ -17,6 +17,77 @@ export const NAKSHATRAS_MY = [
   'သတ္တဘိသျှ', 'ပြုဗ္ဗဘဒြပိုဒ်', 'ဥတ္တရဘဒြပိုဒ်', 'ရေဝတီ',
 ] as const
 
+export const VENUS_WEALTH_STAR_META = {
+  0: {
+    name: 'Ashwini', burmese: 'အဿဝဏီ',
+    theme: 'Healing, restart, quick recovery, and new beginnings',
+    themeMy: 'ကုသခြင်း၊ ပြန်လည်စတင်ခြင်း၊ အမြန်ပြန်လည်ကောင်းမွန်ခြင်းနှင့် အစအသစ်များ',
+    bestUse: 'Healing rituals, debt reset, health restart, and simple financial reset',
+    bestUseMy: 'ကျန်းမာရေးပြန်လည်စတင်ခြင်း၊ အကြွေးလျှော့ချခြင်းနှင့် ရိုးရှင်းသော ငွေကြေးပြန်လည်စီမံမှု',
+    caution: 'Avoid impulsive spending or rushing into deals',
+    cautionMy: 'စိတ်လိုက်မာန်ပါ သုံးစွဲခြင်းနှင့် အလျင်စလို သဘောတူညီမှုများကို ရှောင်ပါ',
+  },
+  21: {
+    name: 'Shravana', burmese: 'သရဝဏ်',
+    theme: 'Listening, learning, reputation, and structured prosperity',
+    themeMy: 'နားထောင်သင်ယူခြင်း၊ ဂုဏ်သတင်းနှင့် စနစ်ကျသော ကြွယ်ဝမှု',
+    bestUse: 'Study, planning, reputation-building, wealth discipline, and property thought',
+    bestUseMy: 'လေ့လာခြင်း၊ စီမံကိန်းချခြင်း၊ ဂုဏ်သတင်းတည်ဆောက်ခြင်းနှင့် စည်းကမ်းရှိသော ဓနစီမံမှု',
+    caution: 'Avoid overthinking, emotional heaviness, and passive waiting',
+    cautionMy: 'အတွေးလွန်ခြင်း၊ စိတ်လေးလံခြင်းနှင့် မလှုပ်မရှား စောင့်ဆိုင်းခြင်းကို ရှောင်ပါ',
+  },
+  22: {
+    name: 'Dhanishta', burmese: 'ဓနသိဒ္ဓိ',
+    theme: 'Wealth rhythm, status, assets, and authority',
+    themeMy: 'ဓနစည်းချက်၊ အဆင့်အတန်း၊ ပိုင်ဆိုင်မှုနှင့် သြဇာအာဏာ',
+    bestUse: 'Asset planning, career authority, business structure, and institutional work',
+    bestUseMy: 'ပိုင်ဆိုင်မှုစီမံခြင်း၊ အသက်မွေးဝမ်းကျောင်း သြဇာတည်ဆောက်ခြင်းနှင့် လုပ်ငန်းစနစ်ချခြင်း',
+    caution: 'Avoid greed, status obsession, or aggressive pride',
+    cautionMy: 'လောဘ၊ အဆင့်အတန်းစွဲလမ်းမှုနှင့် မာနပြင်းထန်မှုကို ရှောင်ပါ',
+  },
+  23: {
+    name: 'Shatabhisha', burmese: 'သတ္တဘိသျှ',
+    theme: 'Healing, technology, secrecy, systems, and protection',
+    themeMy: 'ကုသခြင်း၊ နည်းပညာ၊ လျှို့ဝှက်မှု၊ စနစ်များနှင့် အကာအကွယ်',
+    bestUse: 'Technology prosperity, healing work, AI/apps, research, systems, and digital wealth',
+    bestUseMy: 'နည်းပညာဓန၊ ကုသရေးလုပ်ငန်း၊ AI/app၊ သုတေသန၊ စနစ်နှင့် ဒစ်ဂျစ်တယ်စီးပွားရေး',
+    caution: 'Avoid isolation, secrecy, or detached coldness',
+    cautionMy: 'အထီးကျန်ခြင်း၊ လျှို့ဝှက်လွန်းခြင်းနှင့် အေးစက်ကင်းကွာခြင်းကို ရှောင်ပါ',
+  },
+  24: {
+    name: 'Purva Bhadrapada', burmese: 'ပြုဗ္ဗဘဒြပိုဒ်',
+    theme: 'Spiritual wealth, sacrifice, inner fire, and deep merit',
+    themeMy: 'ဓမ္မဓန၊ စွန့်လွှတ်မှု၊ အတွင်းစိတ်အင်အားနှင့် နက်ရှိုင်းသော ကုသိုလ်',
+    bestUse: 'Wealth intention, spiritual donation, inner reset, Venus activation, and creative vision',
+    bestUseMy: 'ဓနရည်မှန်းချက်၊ ဓမ္မဒါန၊ အတွင်းစိတ်ပြန်လည်ညှိခြင်းနှင့် ဖန်တီးမှုအမြင်',
+    caution: 'Avoid emotional extremes, obsession, or unwise self-sacrifice',
+    cautionMy: 'စိတ်ခံစားမှုလွန်ကဲခြင်း၊ စွဲလမ်းခြင်းနှင့် ပညာမပါသော ကိုယ်ကျိုးစွန့်မှုကို ရှောင်ပါ',
+  },
+  25: {
+    name: 'Uttara Bhadrapada', burmese: 'ဥတ္တရဘဒြပိုဒ်',
+    theme: 'Stability, depth, savings, and long-term support',
+    themeMy: 'တည်ငြိမ်မှု၊ နက်ရှိုင်းမှု၊ စုဆောင်းမှုနှင့် ရေရှည်အထောက်အပံ့',
+    bestUse: 'Savings, long-term planning, quiet finance, donation, and emotional grounding',
+    bestUseMy: 'စုဆောင်းခြင်း၊ ရေရှည်စီမံခြင်း၊ တိတ်ဆိတ်စွာ ငွေကြေးစီမံခြင်းနှင့် ဒါန',
+    caution: 'Avoid laziness, delay, or remaining stuck in old sadness',
+    cautionMy: 'ပျင်းရိခြင်း၊ အချိန်ဆွဲခြင်းနှင့် ဝမ်းနည်းမှုဟောင်းတွင် ပိတ်မိခြင်းကို ရှောင်ပါ',
+  },
+  26: {
+    name: 'Revati', burmese: 'ရေဝတီ',
+    theme: 'Completion, travel, compassion, and safe closure',
+    themeMy: 'ပြီးမြောက်မှု၊ ခရီးသွားမှု၊ ကရုဏာနှင့် ဘေးကင်းသော အဆုံးသတ်မှု',
+    bestUse: 'Closure, donation, safe travel, compassionate wealth work, and finalizing accounts',
+    bestUseMy: 'စာရင်းပိတ်ခြင်း၊ ဒါန၊ ဘေးကင်းသောခရီးနှင့် ကရုဏာပါသော ဓနလုပ်ငန်း',
+    caution: 'Avoid escapism, over-giving, or vague financial decisions',
+    cautionMy: 'လက်တွေ့ဘဝမှ ရှောင်ပြေးခြင်း၊ အလွန်အကျွံပေးကမ်းခြင်းနှင့် မရှင်းလင်းသော ငွေကြေးဆုံးဖြတ်ချက်ကို ရှောင်ပါ',
+  },
+} as const
+
+export type VenusWealthStarIndex = keyof typeof VENUS_WEALTH_STAR_META
+
+export const venusWealthMetaFor = (index: number) =>
+  VENUS_WEALTH_STAR_META[index as VenusWealthStarIndex]
+
 export const LORDS = [
   ['Ke', 'Ketu', 'ကိတ်'], ['Ve', 'Venus', 'သောကြာ'],
   ['Su', 'Sun', 'တနင်္ဂနွေ'], ['Mo', 'Moon', 'တနင်္လာ'],

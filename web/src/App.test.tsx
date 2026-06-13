@@ -50,6 +50,8 @@ describe('TT27 onboarding', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: 'Profile' }))
     expect(screen.getByText('Natal Ravi Yoga: Present')).toBeInTheDocument()
+    expect(screen.getByText('Natal Venus Wealth Star: Present')).toBeInTheDocument()
+    expect(screen.getByText('Venus nakshatra')).toBeInTheDocument()
     expect(screen.getByText(/The birth Moon in Rohini is the 4th nakshatra/)).toBeInTheDocument()
     expect(screen.queryByText(/1990-03-12/)).not.toBeInTheDocument()
     expect(screen.queryByText(/08:24/)).not.toBeInTheDocument()
@@ -73,7 +75,10 @@ describe('TT27 onboarding', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Profile' }))
     expect(screen.getByText('Natal Ravi Yoga: Present')).toBeInTheDocument()
     expect(screen.getByText(/The birth Moon in Purva Bhadrapada is the 4th nakshatra counted from the birth Sun in Shravana/)).toBeInTheDocument()
-    expect(JSON.parse(localStorage.getItem('tt27.react.profile')!).natal.sunIdx).toBe(21)
+    const migratedNatal = JSON.parse(localStorage.getItem('tt27.react.profile')!).natal
+    expect(migratedNatal.sunIdx).toBe(21)
+    expect(migratedNatal.venusIdx).toBeTypeOf('number')
+    expect(migratedNatal.venusPada).toBeGreaterThanOrEqual(1)
   })
 
   it('applies a custom moment and Now resets it', () => {
@@ -84,9 +89,9 @@ describe('TT27 onboarding', () => {
       cityIndex: 0,
       natal: {
         sunIdx: 0,
-        moonIdx: 3,
+        moonIdx: 24,
         moonPada: 1,
-        lagnaIdx: 5,
+        lagnaIdx: 24,
         lagnaPada: 2,
       },
     }))
@@ -154,6 +159,7 @@ describe('TT27 onboarding', () => {
     expect(screen.getByText(/ဤနေရာ၏ ကောင်းကျိုးကို အားဖြည့်နည်း/)).toBeInTheDocument()
     expect(screen.getByText('မိတ္တ သဘောသဘာဝ')).toBeInTheDocument()
     expect(screen.getByText('မိတ္တတာရာ ယတြာ')).toBeInTheDocument()
+    expect(screen.getByText(/ဓနစည်းချက်၊ အဆင့်အတန်း၊ ပိုင်ဆိုင်မှုနှင့် သြဇာအာဏာ/)).toBeInTheDocument()
   })
 
   it('uses the complete Burmese narrative pattern in Today details', () => {
@@ -178,6 +184,8 @@ describe('TT27 onboarding', () => {
 
     expect(screen.getByText(/ရရှိသော ရမှတ်များအရ ယခုအချိန်သည်/)).toBeInTheDocument()
     expect(screen.getByText(/ယခုအချိန်တွင် စန်းသည် အဿဝဏီ နက္ခတ်၌ ရောက်ရှိနေပါသည်/)).toBeInTheDocument()
+    expect(screen.getByText('သောကြာ ဓနနက္ခတ် အထူးအလွှာ')).toBeInTheDocument()
+    expect(screen.getByText(/ကုသခြင်း၊ ပြန်လည်စတင်ခြင်း/)).toBeInTheDocument()
     expect(screen.getByText('၄ လုံးမြောက်နေရာ၏ အဓိပ္ပာယ်')).toBeInTheDocument()
     expect(screen.getByText(/အခွင့်အလမ်း — စန်းစီးနက္ခတ် အဿဝဏီ/)).toBeInTheDocument()
     expect(screen.getByText(/ခေမတာရာ နှင့် သာဓကတာရာ၏ ကောင်းကျိုးအင်အားကို မြှင့်တင်ရန်/)).toBeInTheDocument()
@@ -206,5 +214,58 @@ describe('TT27 onboarding', () => {
     expect(screen.getByText('ရတနာဆိုင်ရာ အချိန်ကောင်း')).toBeInTheDocument()
     expect(screen.getByText('အကြံအစည်နှင့် စီးပွားရေး အချိန်ကောင်း')).toBeInTheDocument()
     expect(screen.getByText(/ကြတ္တိကာနက္ခတ်သည် နေစီးနက္ခတ် မိဂသီနက္ခတ်မှ/)).toBeInTheDocument()
+  })
+
+  it('strengthens the Venus Wealth layer on a visible local Friday', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-07-03T19:00:00Z'))
+    localStorage.setItem('tt27.lang', 'my')
+    localStorage.setItem('tt27.react.profile', JSON.stringify({
+      name: 'Soe',
+      date: '1990-03-12',
+      time: '08:24',
+      cityIndex: 0,
+      natal: {
+        sunIdx: 0,
+        moonIdx: 3,
+        moonPada: 1,
+        lagnaIdx: 5,
+        lagnaPada: 2,
+      },
+    }))
+
+    render(<App />)
+
+    expect(screen.getByText('ဓနသိဒ္ဓိနက္ခတ်၏ ဓနအထောက်အပံ့')).toBeInTheDocument()
+    expect(screen.getByText(/သောကြာနေ့ အထူးကျင့်စဉ်/)).toBeInTheDocument()
+    expect(screen.getByText(/သောကြာ ဓနနက္ခတ် \+၂/)).toBeInTheDocument()
+  })
+
+  it('combines transit Venus, Moon, and Friday for the capped +3 support', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-01-23T12:00:00Z'))
+    localStorage.setItem('tt27.lang', 'my')
+    localStorage.setItem('tt27.react.profile', JSON.stringify({
+      name: 'Soe',
+      date: '1990-03-12',
+      time: '08:24',
+      cityIndex: 0,
+      natal: {
+        sunIdx: 0,
+        venusIdx: 21,
+        venusPada: 1,
+        moonIdx: 24,
+        moonPada: 1,
+        lagnaIdx: 24,
+        lagnaPada: 2,
+      },
+    }))
+
+    render(<App />)
+
+    expect(screen.getByText(/ကောဇာသောကြာ၊ စန်းနှင့် သောကြာနေ့တို့ ပေါင်းဆုံသဖြင့်/)).toBeInTheDocument()
+    expect(screen.getByText(/သောကြာ ဓနနက္ခတ် \+၃/)).toBeInTheDocument()
+    expect(screen.getByText('ကောဇာသောကြာ — သရဝဏ်')).toBeInTheDocument()
+    expect(screen.getByText('စန်းစီးနက္ခတ် — ဥတ္တရဘဒြပိုဒ်')).toBeInTheDocument()
   })
 })

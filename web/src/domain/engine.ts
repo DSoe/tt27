@@ -1,5 +1,6 @@
+import * as Astronomy from 'astronomy-engine'
 import {
-  DIRECTIONS, LORDS, NAKSHATRAS, SPECIALS, TARAS, TARA_COPY,
+  DIRECTIONS, LORDS, NAKSHATRAS, SPECIALS, TARAS, TARA_COPY, VENUS_WEALTH_STAR_META,
   type TaraName,
 } from './data'
 
@@ -61,6 +62,11 @@ function moonTrop(jd: number) {
   return norm360(lp + sum / 1e6)
 }
 
+function venusTrop(date: Date) {
+  const vector = Astronomy.GeoVector(Astronomy.Body.Venus, date, true)
+  return Astronomy.Ecliptic(vector).elon
+}
+
 const lahiri = (jd: number) => 23.853 + ((jd - 2451545) / 365.25) * (50.2388475 / 3600)
 
 function ascTrop(jd: number, lat: number, lon: number) {
@@ -78,6 +84,8 @@ export const lordOf = (index: number) => LORDS[index % 9]
 
 export interface AstroPosition {
   sunIdx: number
+  venusIdx: number
+  venusPada: number
   moonIdx: number
   moonPada: number
   lagnaIdx: number
@@ -92,10 +100,13 @@ export function calculateBirth(
   const jd = jdUT(year, month, day, hour + minute / 60 - offset)
   const ayan = lahiri(jd)
   const sun = norm360(sunTrop(jd) - ayan)
+  const utcDate = new Date(Date.UTC(year, month - 1, day, hour, minute) - offset * 60 * 60 * 1000)
+  const venus = norm360(venusTrop(utcDate) - ayan)
   const moon = norm360(moonTrop(jd) - ayan)
   const lagna = norm360(ascTrop(jd, lat, lon) - ayan)
   return {
-    sunIdx: nakIndex(sun), moonIdx: nakIndex(moon), moonPada: padaOf(moon),
+    sunIdx: nakIndex(sun), venusIdx: nakIndex(venus), venusPada: padaOf(venus),
+    moonIdx: nakIndex(moon), moonPada: padaOf(moon),
     lagnaIdx: nakIndex(lagna), lagnaPada: padaOf(lagna),
   }
 }
@@ -107,10 +118,12 @@ export function calculateTransit(date: Date, lat: number, lon: number): AstroPos
   )
   const ayan = lahiri(jd)
   const sun = norm360(sunTrop(jd) - ayan)
+  const venus = norm360(venusTrop(date) - ayan)
   const moon = norm360(moonTrop(jd) - ayan)
   const lagna = norm360(ascTrop(jd, lat, lon) - ayan)
   return {
-    sunIdx: nakIndex(sun), moonIdx: nakIndex(moon), moonPada: padaOf(moon),
+    sunIdx: nakIndex(sun), venusIdx: nakIndex(venus), venusPada: padaOf(venus),
+    moonIdx: nakIndex(moon), moonPada: padaOf(moon),
     lagnaIdx: nakIndex(lagna), lagnaPada: padaOf(lagna),
   }
 }
@@ -182,9 +195,29 @@ export interface ScoreRow {
   rawScore: number
   score: number
   vedha: string[]
+  venusWealth: {
+    active: boolean
+    bonus: number
+    blocked: boolean
+    remedyOnly: boolean
+    caution: boolean
+    moonActive: boolean
+    transitVenusActive: boolean
+    natalVenusActive: boolean
+    starIndex?: number
+  }
 }
 
-export function scoreNakshatra(index: number, natalMoon: number, natalLagna: number): ScoreRow {
+export function isVenusWealthStar(index: number) {
+  return index in VENUS_WEALTH_STAR_META
+}
+
+export function scoreNakshatra(
+  index: number,
+  natalMoon: number,
+  natalLagna: number,
+  options: { isFriday?: boolean; transitVenusIdx?: number; natalVenusIdx?: number } = {},
+): ScoreRow {
   const moonTara = taraFrom(natalMoon, index)
   const lagnaTara = taraFrom(natalLagna, index)
   const special = SPECIALS[moonTara.count]
@@ -202,10 +235,38 @@ export function scoreNakshatra(index: number, natalMoon: number, natalLagna: num
     penalty += lagnaVedha === 'additional' ? -3 : -4
   }
   const computed = rawScore + penalty
+  const moonActive = isVenusWealthStar(index)
+  const transitVenusActive = Number.isFinite(options.transitVenusIdx)
+    && isVenusWealthStar(options.transitVenusIdx as number)
+  const natalVenusActive = Number.isFinite(options.natalVenusIdx)
+    && isVenusWealthStar(options.natalVenusIdx as number)
+  const active = moonActive || transitVenusActive || natalVenusActive
+  const remedyOnly = moonTara.name === 'Naidhana'
+    || ['Naidhana', 'Vainashika I', 'Vainashika II', 'Vinashaka / Secondary Manasa'].includes(special?.name ?? '')
+  const caution = ['Vipat', 'Pratyak'].includes(moonTara.name)
+  const blocked = vedha.length > 0
+  let venusBonus = 0
+  if (active && !blocked && !remedyOnly) {
+    if (moonActive) venusBonus = 1
+    if (moonActive && options.isFriday) venusBonus = 2
+    if (transitVenusActive) venusBonus = Math.max(venusBonus, 2)
+    if (moonActive && options.isFriday && transitVenusActive) venusBonus = 3
+  }
+  const starIndex = moonActive
+    ? index
+    : transitVenusActive
+      ? options.transitVenusIdx
+      : natalVenusActive
+        ? options.natalVenusIdx
+        : undefined
   return {
     index, moonTara, lagnaTara, special, rawScore,
-    score: vedha.length ? Math.min(computed, 0) : computed,
+    score: blocked ? Math.min(computed, 0) : computed + venusBonus,
     vedha,
+    venusWealth: {
+      active, bonus: venusBonus, blocked, remedyOnly, caution,
+      moonActive, transitVenusActive, natalVenusActive, starIndex,
+    },
   }
 }
 

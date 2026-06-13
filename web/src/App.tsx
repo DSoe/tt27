@@ -1,11 +1,11 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react'
 import {
   CITIES, NAKSHATRAS, NAKSHATRAS_MY, POSITION_COPY, SPECIALS, TARA_COPY,
-  myDigits, nameOf, type Language,
+  myDigits, nameOf, venusWealthMetaFor, type Language,
 } from './domain/data'
 import {
   allScores, bestUse, calculateBirth, calculateTransit, directionsFor,
-  findMoonPadaEnd, jewelryTiming, lordOf, padaClass, prosperityTiming, raviYoga,
+  findMoonPadaEnd, isVenusWealthStar, jewelryTiming, lordOf, padaClass, prosperityTiming, raviYoga,
   scoreBand, scoreNakshatra, verdict,
   type AstroPosition, type ScoreRow,
 } from './domain/engine'
@@ -37,7 +37,11 @@ function loadSavedProfile(): Profile | null {
   try {
     const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null') as Profile | null
     if (!saved) return null
-    if (Number.isFinite(saved.natal?.sunIdx)) return saved
+    if (
+      Number.isFinite(saved.natal?.sunIdx)
+      && Number.isFinite(saved.natal?.venusIdx)
+      && Number.isFinite(saved.natal?.venusPada)
+    ) return saved
 
     const quickCity = CITIES[saved.cityIndex] ?? CITIES[0]
     const location = saved.location ?? quickCity
@@ -52,7 +56,9 @@ function loadSavedProfile(): Profile | null {
       ...saved,
       natal: {
         ...saved.natal,
-        sunIdx: calculated.sunIdx,
+        sunIdx: Number.isFinite(saved.natal.sunIdx) ? saved.natal.sunIdx : calculated.sunIdx,
+        venusIdx: Number.isFinite(saved.natal.venusIdx) ? saved.natal.venusIdx : calculated.venusIdx,
+        venusPada: Number.isFinite(saved.natal.venusPada) ? saved.natal.venusPada : calculated.venusPada,
       },
     }
     localStorage.setItem(PROFILE_KEY, JSON.stringify(migrated))
@@ -74,8 +80,8 @@ const ui = {
     citySelected: 'selected as your birth place.',
     continue: 'Calculate my profile', privacy: 'Stored only in this browser. Delete it anytime.',
     demo: 'Explore with a sample profile',
-    verify: 'Review your birth profile', verifyBody: 'These two nakshatras personalize every score and recommendation.',
-    moon: 'Moon nakshatra', lagna: 'Lagna nakshatra', pada: 'Pada',
+    verify: 'Review your birth profile', verifyBody: 'Your Moon and Lagna personalize every score; Venus adds personal prosperity context.',
+    moon: 'Moon nakshatra', lagna: 'Lagna nakshatra', venus: 'Venus nakshatra', pada: 'Pada',
     padaEnds: 'Pada ends',
     back: 'Back', save: 'Save and show today', change: 'Edit birth details',
     greeting: 'Your timing for today', current: 'Current moment', score: 'Your score',
@@ -107,8 +113,8 @@ const ui = {
     citySelected: 'ကို မွေးဖွားရာဒေသအဖြစ် ရွေးချယ်ထားပါသည်။',
     continue: 'မိမိဇာတာကို တွက်ချက်မည်', privacy: 'ဤ Browser ထဲတွင်သာ သိမ်းဆည်းထားပြီး အချိန်မရွေး ဖျက်နိုင်ပါသည်။',
     demo: 'နမူနာဇာတာဖြင့် အရင်ကြည့်မည်',
-    verify: 'မိမိ၏ မွေးဖွားမှုဇာတာကို စစ်ဆေးပါ', verifyBody: 'ဤနက္ခတ်နှစ်ခုကို အသုံးပြု၍ ရမှတ်နှင့် အကြံပြုချက်များကို မိမိအတွက် သီးသန့်တွက်ချက်ပါသည်။',
-    moon: 'စန်းနက္ခတ်', lagna: 'လဂ်နက္ခတ်', pada: 'ပါဒ',
+    verify: 'မိမိ၏ မွေးဖွားမှုဇာတာကို စစ်ဆေးပါ', verifyBody: 'စန်းနှင့် လဂ်နက္ခတ်တို့ဖြင့် ရမှတ်တွက်ချက်ပြီး သောကြာနက္ခတ်ဖြင့် မိမိ၏ ဓနအထောက်အပံ့ကို ဖြည့်စွက်ဖော်ပြပါသည်။',
+    moon: 'စန်းနက္ခတ်', lagna: 'လဂ်နက္ခတ်', venus: 'သောကြာနက္ခတ်', pada: 'ပါဒ',
     padaEnds: 'ပြီးဆုံးချိန်',
     back: 'နောက်သို့', save: 'သိမ်းဆည်း၍ ယနေ့အခြေအနေကြည့်မည်', change: 'မွေးဖွားမှုအချက်အလက် ပြင်ဆင်ရန်',
     greeting: 'ယနေ့ မိမိအတွက် အချိန်ကောင်း', current: 'လက်ရှိအချိန်', score: 'ရမှတ်',
@@ -401,6 +407,7 @@ function VerifyProfile({ profile, language, onLanguage, onBack, onSave }: {
         <div className="result-grid">
           <ResultCard icon="☾" label={copy.moon} name={nameOf(natal.moonIdx, language)} pada={natal.moonPada} language={language} />
           <ResultCard icon="⌁" label={copy.lagna} name={nameOf(natal.lagnaIdx, language)} pada={natal.lagnaPada} language={language} />
+          <ResultCard icon="♀" label={copy.venus} name={nameOf(natal.venusIdx, language)} pada={natal.venusPada} language={language} />
         </div>
         <div className={`ravi-note ${natalRavi.active ? 'active' : ''}`}>
           <span>☀</span>
@@ -433,11 +440,21 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
   const [showMomentPicker, setShowMomentPicker] = useState(false)
   const [draftMoment, setDraftMoment] = useState(() => toLocalDateTimeValue(new Date()))
   const [showDetails, setShowDetails] = useState(false)
+  const isFriday = moment.getDay() === 5
   const transit = useMemo(() => calculateTransit(moment, city.lat, city.lon), [moment, city])
   const moonPadaEnd = useMemo(() => findMoonPadaEnd(moment), [moment])
   const row = useMemo(
-    () => scoreNakshatra(transit.moonIdx, profile.natal.moonIdx, profile.natal.lagnaIdx),
-    [transit.moonIdx, profile],
+    () => scoreNakshatra(
+      transit.moonIdx,
+      profile.natal.moonIdx,
+      profile.natal.lagnaIdx,
+      {
+        isFriday,
+        transitVenusIdx: transit.venusIdx,
+        natalVenusIdx: profile.natal.venusIdx,
+      },
+    ),
+    [transit.moonIdx, transit.venusIdx, profile, isFriday],
   )
   const lagnaTara = scoreNakshatra(transit.lagnaIdx, profile.natal.moonIdx, profile.natal.lagnaIdx).lagnaTara
   const band = scoreBand(row.score)
@@ -455,6 +472,12 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
   const score = language === 'my' ? myDigits(`${row.score > 0 ? '+' : ''}${row.score}`) : `${row.score > 0 ? '+' : ''}${row.score}`
   const moonName = nameOf(transit.moonIdx, language)
   const lagnaName = nameOf(transit.lagnaIdx, language)
+  const venusWealthMeta = row.venusWealth.starIndex === undefined
+    ? undefined
+    : venusWealthMetaFor(row.venusWealth.starIndex)
+  const venusWealthStarName = row.venusWealth.starIndex === undefined
+    ? ''
+    : nameOf(row.venusWealth.starIndex, language)
   const negativeTaras = ['Vipat', 'Pratyak', 'Naidhana']
   const moonFriction = negativeTaras.includes(row.moonTara.name)
     || ['Naidhana', 'Sanghatika', 'Vainashika I', 'Vainashika II', 'Vinashaka / Secondary Manasa'].includes(row.special?.name ?? '')
@@ -556,12 +579,85 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
             <em>{langValue(lagnaTara.name, lagnaTara.my)}</em>
             <em>{copy.pada} - {language === 'my' ? myDigits(transit.lagnaPada) : transit.lagnaPada}</em>
           </span>
+          <span>
+            <small>{language === 'my' ? 'ကောဇာ သောကြာနက္ခတ်' : 'Transit Venus'}</small>
+            <b>{nameOf(transit.venusIdx, language)}</b>
+            <em>{copy.pada} - {language === 'my' ? myDigits(transit.venusPada) : transit.venusPada}</em>
+          </span>
         </div>
         <div className="hero-tags">
           <span className={ravi.active ? 'active' : ''}>☀ {ravi.active ? copy.ravi : copy.raviInactive}</span>
+          {row.venusWealth.active && <span className={`venus-wealth-tag ${row.venusWealth.blocked || row.venusWealth.remedyOnly ? 'warning' : 'active'}`}>
+            ♀ {language === 'my' ? 'သောကြာ ဓနနက္ခတ်' : 'Venus Wealth Star'}
+            {row.venusWealth.bonus > 0 && ` +${language === 'my' ? myDigits(row.venusWealth.bonus) : row.venusWealth.bonus}`}
+          </span>}
           {row.vedha.length > 0 && <span className="warning">⚠ {copy.vedha} · {row.vedha.join(' + ')}</span>}
         </div>
       </section>
+
+      {row.venusWealth.active && venusWealthMeta && <section className={`venus-wealth-card ${row.venusWealth.blocked || row.venusWealth.remedyOnly ? 'restricted' : ''}`}>
+        <div className="venus-wealth-heading">
+          <span aria-hidden="true">♀</span>
+          <div>
+            <p className="eyebrow">{language === 'my' ? 'သောကြာ ဓနနက္ခတ် အထူးအလွှာ' : 'Venus Wealth Star Layer'}</p>
+            <h2>{language === 'my' ? `${venusWealthStarName}နက္ခတ်၏ ဓနအထောက်အပံ့` : `${venusWealthStarName} prosperity support`}</h2>
+          </div>
+        </div>
+        <div className="venus-wealth-sources">
+          {row.venusWealth.moonActive && <span>{language === 'my' ? `စန်းစီးနက္ခတ် — ${moonName}` : `Transit Moon — ${moonName}`}</span>}
+          {row.venusWealth.transitVenusActive && <span>{language === 'my'
+            ? `ကောဇာသောကြာ — ${nameOf(transit.venusIdx, language)}`
+            : `Transit Venus — ${nameOf(transit.venusIdx, language)}`}</span>}
+          {row.venusWealth.natalVenusActive && <span>{language === 'my'
+            ? `ဇနမသောကြာ — ${nameOf(profile.natal.venusIdx, language)}`
+            : `Natal Venus — ${nameOf(profile.natal.venusIdx, language)}`}</span>}
+          {isFriday && row.venusWealth.moonActive && <span>{language === 'my' ? 'သောကြာနေ့ + စန်း' : 'Friday + Moon'}</span>}
+        </div>
+        <p>{language === 'my' ? venusWealthMeta.themeMy : venusWealthMeta.theme}</p>
+        <p><b>{language === 'my' ? 'ကောင်းမွန်သော အသုံးပြုမှု: ' : 'Best use: '}</b>
+          {language === 'my' ? venusWealthMeta.bestUseMy : venusWealthMeta.bestUse}</p>
+        <p><b>{language === 'my' ? 'သတိပြုရန်: ' : 'Caution: '}</b>
+          {language === 'my' ? venusWealthMeta.cautionMy : venusWealthMeta.caution}</p>
+        <div className="venus-wealth-status">
+          {row.venusWealth.blocked
+            ? (language === 'my'
+              ? 'Vedha ကြောင့် ဓနအပိုရမှတ် မပေးပါ။ ချမ်းသာကြွယ်ဝရေး ယတြာပြုနိုင်သော်လည်း အရေးကြီးသော လုပ်ငန်းသစ်များ မစတင်ပါနှင့်။'
+              : 'Blocked by Vedha: no wealth bonus. Prosperity remedies are suitable, but avoid major starts.')
+            : row.venusWealth.remedyOnly
+              ? (language === 'my'
+                ? 'မကောင်းသော Tara သို့မဟုတ် Vainashika အခြေအနေကြောင့် ယတြာနှင့် သန့်ရှင်းရေးအတွက်သာ အသုံးပြုပါ။'
+                : 'A difficult Tara or Vainashika condition makes this remedy-only, not launch-friendly.')
+              : row.venusWealth.caution
+                ? (language === 'my'
+                  ? 'ဓနအထောက်အပံ့ရှိသော်လည်း Vipat သို့မဟုတ် Pratyak သဘောကြောင့် သတိဖြင့် အသုံးပြုပါ။'
+                  : 'Prosperity support is present, but Vipat or Pratyak requires careful use.')
+                : row.venusWealth.transitVenusActive && row.venusWealth.moonActive && isFriday
+                  ? (language === 'my'
+                    ? 'ကောဇာသောကြာ၊ စန်းနှင့် သောကြာနေ့တို့ ပေါင်းဆုံသဖြင့် ဓနအထောက်အပံ့ အမြင့်ဆုံး +၃ ရရှိပါသည်။'
+                    : 'Transit Venus, the Moon, and Friday combine for the maximum +3 prosperity support.')
+                  : row.venusWealth.transitVenusActive && row.venusWealth.moonActive
+                    ? (language === 'my'
+                      ? 'ကောဇာသောကြာနှင့် စန်းတို့သည် သောကြာ ဓနနက္ခတ်များကို လှုံ့ဆော်နေပါသည်။'
+                      : 'Transit Venus and the Moon are both activating Venus Wealth Stars.')
+                    : row.venusWealth.transitVenusActive
+                      ? (language === 'my'
+                        ? 'ကောဇာသောကြာဂြိုဟ်သည် သောကြာ ဓနနက္ခတ်တွင် စီးနင်းနေသဖြင့် ဓနယတြာများအတွက် ကောင်းမွန်ပါသည်။'
+                        : 'Transit Venus occupies a Venus Wealth Star, supporting prosperity remedies.')
+                      : isFriday && row.venusWealth.moonActive
+                  ? (language === 'my'
+                    ? 'သောကြာနေ့နှင့် တိုက်ဆိုင်သောကြောင့် ဓနအထောက်အပံ့ ပိုမိုအားကောင်းပါသည်။'
+                    : 'Friday strengthens this prosperity-support layer.')
+                  : (language === 'my'
+                    ? 'ချမ်းသာကြွယ်ဝရေး ယတြာ၊ စုဆောင်းမှု၊ ဒါနနှင့် သန့်ရှင်းသော ငွေကြေးစီမံမှုများအတွက် ကောင်းသည်။'
+                    : 'Good for prosperity remedies, savings, donation, and clean financial planning.')}
+        </div>
+        <p className="venus-wealth-remedy">{language === 'my'
+          ? `${isFriday ? 'သောကြာနေ့ အထူးကျင့်စဉ်: မိမိကိုယ်ကို သန့်ရှင်းစွာ ပြင်ဆင်ပြီး သန့်ရှင်းနှစ်သက်ဖွယ် အဝတ်အစား ဝတ်ပါ။ ' : ''}အစားအစာ၊ ဆန်၊ နို့၊ အချိုပွဲ သို့မဟုတ် အသီးအနှံ လှူဒါန်းပါ။ ပန်း၊ အမွှေးနံ့ သို့မဟုတ် သန့်ရှင်းသောရေ ပူဇော်ပါ။ ပိုက်ဆံအိတ်နှင့် ငွေစာရင်းများကို ရှင်းလင်းပြီး ငွေကြေးရည်မှန်းချက်တစ်ခု ချမှတ်ကာ ငွေအနည်းငယ်ကို အသိရှိစွာ စုဆောင်းပါ။ အငြင်းပွားမှု၊ မနာလိုမှုနှင့် အလဟဿ ဇိမ်ခံသုံးစွဲမှုကို ရှောင်ပါ။`
+          : `${isFriday ? 'Friday practice: Clean yourself properly and wear clean, pleasant clothing. ' : ''}Donate food, rice, milk, sweets, or fruit. Offer flowers, fragrance, or clean water. Clean your wallet and financial records, set one clear financial intention, and consciously save a small amount. Avoid arguments, envy, and impulsive luxury spending.`}</p>
+        <small className="venus-wealth-principle">{language === 'my'
+          ? 'ဤအလွှာသည် လောင်းကစား၊ စိတ်လိုက်မာန်ပါ သုံးစွဲမှု၊ မလုံခြုံသော ရင်းနှီးမြှုပ်နှံမှု သို့မဟုတ် ဥပဒေစစ်ဆေးမှုမရှိသော စာချုပ်ကြီးများအတွက် အလိုအလျောက် မီးစိမ်းမဟုတ်ပါ။'
+          : 'This layer is not a green light for gambling, emotional spending, unsafe investment, or major contracts without practical and legal review.'}</small>
+      </section>}
 
       {(jewelry.active || prosperity.active) && <section className="timing-guidance" aria-label={language === 'my' ? 'ယနေ့ အထူးအခွင့်အလမ်းများ' : 'Special opportunities today'}>
         {jewelry.active && <article className="timing-guidance-card jewelry">
@@ -711,6 +807,7 @@ function BestRow({ row, language, open, onOpen }: {
   const positionCopy = POSITION_COPY[row.moonTara.count]
   const langValue = <T,>(en: T, my: T) => language === 'my' ? my : en
   const nakshatra = nameOf(row.index, language)
+  const venusWealthMeta = venusWealthMetaFor(row.index)
   const positionNarrative = language === 'my'
     ? `${nakshatra}နက္ခတ်သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${positionCopy.titleMy} ဖြစ်ပါသည်။ စန်းနက္ခတ်မှ ${myDigits(row.moonTara.count)} လုံးမြောက် နက္ခတ်သည် ${positionCopy.meaningMy}${row.special ? ` ${row.special.useMy}` : ''}`
     : `${nakshatra} is the ${positionCopy.title} position from your natal Moon nakshatra. The ${row.moonTara.count}${ordinal(row.moonTara.count)} nakshatra from the natal Moon ${positionCopy.meaning.charAt(0).toLowerCase()}${positionCopy.meaning.slice(1)}${row.special ? ` ${row.special.use}` : ''}`
@@ -719,7 +816,9 @@ function BestRow({ row, language, open, onOpen }: {
     : `Practices and remedies associated with ${nakshatra} can help cultivate the positive qualities of this position.`
   return <article className={`best-row ${scoreBand(row.score)} ${open ? 'open' : ''}`}>
     <button className="best-summary" onClick={onOpen}>
-      <span className="rank-name"><b>{nameOf(row.index, language)}</b><small>{langValue(lordOf(row.index)[1], lordOf(row.index)[2])}</small></span>
+      <span className="rank-name"><b>{nameOf(row.index, language)}</b><small>{langValue(lordOf(row.index)[1], lordOf(row.index)[2])}</small>
+        {row.venusWealth.active && <small className="venus-wealth-inline">♀ {language === 'my' ? 'သောကြာ ဓနနက္ခတ်' : 'Venus Wealth Star'}</small>}
+      </span>
       <span className="best-use"><small>{copy.use}</small>{langValue(use.en, use.my)}</span>
       <span className="row-score">{language === 'my' ? myDigits(`${row.score > 0 ? '+' : ''}${row.score}`) : `${row.score > 0 ? '+' : ''}${row.score}`}</span>
       <span className="chevron">{open ? '↑' : '↓'}</span>
@@ -730,6 +829,17 @@ function BestRow({ row, language, open, onOpen }: {
         <p>{positionNarrative}</p>
         <p><b>{language === 'my' ? 'ဤနေရာ၏ ကောင်းကျိုးကို အားဖြည့်နည်း:' : 'How to strengthen this position:'}</b> {strengthening}</p>
       </div>
+      {row.venusWealth.active && venusWealthMeta && <div className={`venus-wealth-detail ${row.venusWealth.blocked || row.venusWealth.remedyOnly ? 'restricted' : ''}`}>
+        <small>♀ {language === 'my' ? 'သောကြာ ဓနနက္ခတ်' : 'Venus Wealth Star'}</small>
+        <b>{language === 'my' ? venusWealthMeta.themeMy : venusWealthMeta.theme}</b>
+        <p>{language === 'my' ? venusWealthMeta.bestUseMy : venusWealthMeta.bestUse}</p>
+        <p><b>{language === 'my' ? 'သတိပြုရန်:' : 'Caution:'}</b> {language === 'my' ? venusWealthMeta.cautionMy : venusWealthMeta.caution}</p>
+        <p className="venus-wealth-rule">{row.venusWealth.blocked
+          ? (language === 'my' ? 'Vedha ကြောင့် အပိုရမှတ်မပေးပါ။ ယတြာပြုနိုင်သော်လည်း အရေးကြီးသော လုပ်ငန်းသစ်များ မစတင်ပါနှင့်။' : 'Vedha blocks the bonus. Use for remedies, not major starts.')
+          : row.venusWealth.remedyOnly
+            ? (language === 'my' ? 'ယတြာနှင့် ငွေကြေးသန့်ရှင်းရေးအတွက်သာ အသုံးပြုပါ။ လုပ်ငန်းသစ်စတင်ရန် မသင့်ပါ။' : 'Remedy-only: suitable for financial purification, not launches.')
+            : (language === 'my' ? `ဓနအထောက်အပံ့ အပိုရမှတ် +${myDigits(row.venusWealth.bonus)}` : `Prosperity-support bonus +${row.venusWealth.bonus}`)}</p>
+      </div>}
       <div className="tara-detail">
         <small>{copy.tara}</small>
         <b>{langValue(`${row.moonTara.name} nature`, `${row.moonTara.my} သဘောသဘာဝ`)}</b>
@@ -784,7 +894,17 @@ function ProfileView({ profile, language, onLanguage, onReset }: {
       <div className="profile-natal">
         <ResultCard icon="☾" label={copy.moon} name={nameOf(profile.natal.moonIdx, language)} pada={profile.natal.moonPada} language={language} />
         <ResultCard icon="⌁" label={copy.lagna} name={nameOf(profile.natal.lagnaIdx, language)} pada={profile.natal.lagnaPada} language={language} />
+        <ResultCard icon="♀" label={copy.venus} name={nameOf(profile.natal.venusIdx, language)} pada={profile.natal.venusPada} language={language} />
       </div>
+      {isVenusWealthStar(profile.natal.venusIdx) && <div className="ravi-note active profile-ravi">
+        <span>♀</span>
+        <div>
+          <b>{language === 'my' ? 'ဇနမ သောကြာ ဓနနက္ခတ်: ရှိပါသည်' : 'Natal Venus Wealth Star: Present'}</b>
+          <p>{language === 'my'
+            ? `မွေးဖွားချိန် သောကြာဂြိုဟ်သည် ${nameOf(profile.natal.venusIdx, language)}နက္ခတ်တွင် စီးနင်းနေသဖြင့် ဓနယတြာ၊ စုဆောင်းမှု၊ ဒါနနှင့် သန့်ရှင်းသော ငွေကြေးစီမံမှုတို့သည် မိမိအတွက် ပိုမိုသက်ဆိုင်ပါသည်။`
+            : `Your natal Venus occupies ${nameOf(profile.natal.venusIdx, language)}, making prosperity remedies, saving, donation, and clean financial planning especially personal.`}</p>
+        </div>
+      </div>}
       {natalRavi.active && <div className="ravi-note active profile-ravi">
         <span>☀</span>
         <div>

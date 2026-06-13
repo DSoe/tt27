@@ -62,7 +62,7 @@ html[lang="my"] h1, html[lang="my"] h2, html[lang="my"] h3 { letter-spacing: 0; 
 .verify-wrap > p:not(.eyebrow) { color: var(--muted); }
 .text-button { border: 0; padding: 0; background: transparent; color: var(--sage); font-weight: 700; }
 .verify-wrap > .text-button { margin-bottom: 30px; }
-.result-grid, .profile-natal { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.result-grid, .profile-natal { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .result-card { padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: white; }
 .result-card small { display: block; color: var(--muted); margin-top: 14px; }
 .result-card h2 { margin: 5px 0; font-size: 1.25rem; }
@@ -98,11 +98,48 @@ main { max-width: 1180px; margin: auto; }
 .score-ring { width: 76px; height: 76px; border: 2px solid rgba(255,255,255,.45); border-radius: 50%; display: grid; place-content: center; text-align: center; flex: 0 0 auto; }
 .score-ring small { font-size: .62rem; opacity: .75; }
 .score-ring b { font-size: 1.45rem; }
-.transit-line { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.transit-line { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .transit-line span { padding: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: 17px; display: grid; gap: 3px; }
 .transit-line small { opacity: .7; }.transit-line b { font-size: 1.08rem; }.transit-line em { opacity: .76; font-size: .82rem; font-style: normal; }
 .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .hero-tags span.active { color: #ffe2a6; }.hero-tags span.warning { color: #ffe1de; }
+.hero-tags .venus-wealth-tag { border-color: rgba(255, 222, 156, .34); }
+.venus-wealth-card {
+  margin-top: 16px;
+  padding: 22px;
+  color: var(--ink);
+  background: linear-gradient(135deg, #fff5dc, #f4e8f5 58%, #edf2fb);
+  border: 1px solid #d9bc7c;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(3, 15, 53, .12);
+}
+.venus-wealth-card.restricted { background: linear-gradient(135deg, #f6f0e5, #edf0f6); border-color: #cbbfa8; }
+.venus-wealth-heading { display: flex; align-items: flex-start; gap: 13px; }
+.venus-wealth-heading > span { color: #9c6a91; font-size: 1.55rem; line-height: 1.2; }
+.venus-wealth-heading .eyebrow { color: #8a567f; margin-bottom: 5px; }
+.venus-wealth-heading h2 { margin: 0; font-size: 1.15rem; }
+.venus-wealth-sources { display: flex; flex-wrap: wrap; gap: 7px; margin: 14px 0; }
+.venus-wealth-sources span {
+  padding: 6px 9px;
+  color: #714767;
+  background: rgba(255, 255, 255, .66);
+  border: 1px solid rgba(138, 86, 127, .2);
+  border-radius: 5px;
+  font-size: .75rem;
+  font-weight: 700;
+}
+.venus-wealth-card > p { color: var(--reading-muted); font-size: .91rem; line-height: 1.72; }
+.venus-wealth-status, .venus-wealth-remedy {
+  margin-top: 13px;
+  padding: 14px;
+  color: #3d4964;
+  background: rgba(255, 255, 255, .66);
+  border: 1px solid rgba(162, 125, 151, .25);
+  border-radius: 7px;
+  line-height: 1.7;
+}
+.venus-wealth-card .venus-wealth-remedy { margin-bottom: 0; }
+.venus-wealth-principle { display: block; margin-top: 13px; color: #70677a; line-height: 1.65; }
 .timing-guidance { display: grid; gap: 12px; margin-top: 16px; }
 .timing-guidance-card {
   display: grid;
@@ -156,6 +193,7 @@ main { max-width: 1180px; margin: auto; }
 .best-row.excellent { border-left-color: #43806e; }.best-row.good { border-left-color: #6b8d72; }.best-row.usable { border-left-color: #b68a45; }.best-row.avoid { border-left-color: var(--danger); }
 .best-summary { width: 100%; display: grid; grid-template-columns: minmax(150px, .75fr) 1.7fr 64px 20px; align-items: center; gap: 20px; padding: 18px 20px; background: transparent; border: 0; color: inherit; text-align: left; }
 .rank-name, .best-use { display: grid; gap: 4px; }.rank-name small, .best-use small, .best-detail small { color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
+.rank-name .venus-wealth-inline { width: fit-content; color: #8a567f; text-transform: none; letter-spacing: 0; }
 .best-use { color: #43504c; font-size: .9rem; }.row-score { font-weight: 700; font-size: 1.05rem; text-align: right; }.chevron { color: var(--muted); }
 .best-detail { border-top: 1px solid var(--line); padding: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f7f8f5; }
 .best-detail b { display: block; margin: 5px 0; }.best-detail p { margin: 0; color: var(--muted); font-size: .88rem; }
@@ -170,6 +208,19 @@ main { max-width: 1180px; margin: auto; }
 .tara-remedy small { color: var(--sage-dark); font-weight: 700; }.tara-remedy p { margin-top: 6px; }
 .remedy-guidance { grid-column: 1 / -1; padding: 16px; border: 1px solid #d9caa9; border-radius: 15px; background: #fbf7ec; }
 .remedy-guidance small { color: #80652f; font-weight: 700; }
+.venus-wealth-detail {
+  grid-column: 1 / -1;
+  padding: 18px;
+  color: var(--ink);
+  background: linear-gradient(135deg, #fff7e4, #f3eaf5);
+  border: 1px solid #d9bc7c;
+  border-radius: 8px;
+}
+.venus-wealth-detail.restricted { background: #f3f0eb; border-color: #cec5b5; }
+.venus-wealth-detail small { color: #8a567f; font-weight: 700; }
+.venus-wealth-detail b { margin-top: 7px; }
+.venus-wealth-detail p + p { margin-top: 9px; }
+.venus-wealth-detail .venus-wealth-rule { padding-top: 10px; border-top: 1px solid rgba(138, 86, 127, .18); }
 
 .settings-card { border: 1px solid var(--line); border-radius: 22px; background: var(--paper); padding: 22px; margin-bottom: 14px; }
 .settings-card h2 { font-size: 1rem; margin-bottom: 16px; }
@@ -199,6 +250,7 @@ main { max-width: 1180px; margin: auto; }
   .form-row, .result-grid, .profile-natal { grid-template-columns: 1fr; }
   .setup-intro h1 { font-size: 2.45rem; }.verify-wrap { margin-top: 35px; }
   .hero-top { align-items: center; }.score-ring { width: 66px; height: 66px; }
+  .venus-wealth-card { padding: 19px; }
   .timing-guidance-card { grid-template-columns: 1fr; gap: 8px; padding: 19px; }
   .section-heading { display: grid; }.direction-card { grid-template-columns: 1fr; }.compass { margin: auto; }
 }
