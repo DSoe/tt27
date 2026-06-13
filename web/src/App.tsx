@@ -568,7 +568,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
           <span className="position-number">{language === 'my' ? myDigits(row.moonTara.count) : row.moonTara.count}</span>
           <div>
             <h3>{language === 'my'
-              ? `${nameOf(transit.moonIdx, language)} သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${myDigits(row.moonTara.count)} လုံးမြောက် ဖြစ်ပါသည်။`
+              ? `${nameOf(transit.moonIdx, language)}နက္ခတ်သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${myDigits(row.moonTara.count)} လုံးမြောက် ဖြစ်ပါသည်။`
               : `${nameOf(transit.moonIdx, language)} is the ${row.moonTara.count}${ordinal(row.moonTara.count)} position from your natal Moon.`}</h3>
             <p>{row.special ? langValue(row.special.use, row.special.useMy) : langValue(moonCopy.use, moonCopy.useMy)}</p>
           </div>
@@ -686,7 +686,7 @@ function BestRow({ row, language, open, onOpen }: {
   const langValue = <T,>(en: T, my: T) => language === 'my' ? my : en
   const nakshatra = nameOf(row.index, language)
   const positionNarrative = language === 'my'
-    ? `${nakshatra} သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${positionCopy.titleMy} ဖြစ်ပါသည်။ စန်းနက္ခတ်မှ ${myDigits(row.moonTara.count)} လုံးမြောက် နက္ခတ်သည် ${positionCopy.meaningMy}${row.special ? ` ${row.special.useMy}` : ''}`
+    ? `${nakshatra}နက္ခတ်သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${positionCopy.titleMy} ဖြစ်ပါသည်။ စန်းနက္ခတ်မှ ${myDigits(row.moonTara.count)} လုံးမြောက် နက္ခတ်သည် ${positionCopy.meaningMy}${row.special ? ` ${row.special.useMy}` : ''}`
     : `${nakshatra} is the ${positionCopy.title} position from your natal Moon nakshatra. The ${row.moonTara.count}${ordinal(row.moonTara.count)} nakshatra from the natal Moon ${positionCopy.meaning.charAt(0).toLowerCase()}${positionCopy.meaning.slice(1)}${row.special ? ` ${row.special.use}` : ''}`
   const strengthening = language === 'my'
     ? `${nakshatra} နက္ခတ်နှင့် သက်ဆိုင်သော ကုသိုလ်ပြုမှု၊ ကျင့်စဉ်နှင့် ယတြာများကို ပြုလုပ်ခြင်းဖြင့် ဤနေရာ၏ ကောင်းသောအရည်အသွေးများကို ပိုမိုအားကောင်းစေနိုင်ပါသည်။`

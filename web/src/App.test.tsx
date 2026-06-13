@@ -150,7 +150,7 @@ describe('TT27 onboarding', () => {
     fireEvent.click(screen.getByRole('button', { name: /ဓနသိဒ္ဓိ/ }))
 
     expect(screen.getByText(/ရရှိသော ရမှတ်များအရ ဓနသိဒ္ဓိ စန်းယှဉ်သောနေ့များသည်/)).toBeInTheDocument()
-    expect(screen.getByText(/ဓနသိဒ္ဓိ သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ၂၆ လုံးမြောက်/)).toBeInTheDocument()
+    expect(screen.getByText(/ဓနသိဒ္ဓိနက္ခတ်သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ၂၆ လုံးမြောက်/)).toBeInTheDocument()
     expect(screen.getByText(/ဤနေရာ၏ ကောင်းကျိုးကို အားဖြည့်နည်း/)).toBeInTheDocument()
     expect(screen.getByText('မိတ္တ သဘောသဘာဝ')).toBeInTheDocument()
     expect(screen.getByText('မိတ္တတာရာ ယတြာ')).toBeInTheDocument()
