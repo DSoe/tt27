@@ -452,6 +452,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
         isFriday,
         transitVenusIdx: transit.venusIdx,
         natalVenusIdx: profile.natal.venusIdx,
+        transitContext: true,
       },
     ),
     [transit.moonIdx, transit.venusIdx, profile, isFriday],

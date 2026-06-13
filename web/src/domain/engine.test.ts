@@ -43,30 +43,34 @@ describe('TT27 engine', () => {
     expect(normal.venusWealth).toMatchObject({ active: true, bonus: 1, blocked: false })
     expect(normal.score).toBe(normal.rawScore + 1)
 
-    const friday = scoreNakshatra(0, 1, 1, { isFriday: true })
+    const ordinaryTransitDay = scoreNakshatra(0, 1, 1, { transitContext: true })
+    expect(ordinaryTransitDay.venusWealth).toMatchObject({ active: false, bonus: 0 })
+
+    const friday = scoreNakshatra(0, 1, 1, { isFriday: true, transitContext: true })
     expect(friday.venusWealth.bonus).toBe(2)
     expect(friday.score).toBe(friday.rawScore + 2)
 
-    const vedha = scoreNakshatra(23, 12, 0, { isFriday: true })
+    const vedha = scoreNakshatra(23, 12, 0, { isFriday: true, transitContext: true })
     expect(vedha.venusWealth).toMatchObject({ active: true, bonus: 0, blocked: true })
 
-    const destructive = scoreNakshatra(22, 0, 0, { isFriday: true })
+    const destructive = scoreNakshatra(22, 0, 0, { isFriday: true, transitContext: true })
     expect(destructive.venusWealth).toMatchObject({ active: true, bonus: 0, remedyOnly: true })
 
-    const transitOnly = scoreNakshatra(3, 3, 3, { transitVenusIdx: 23 })
+    const transitOnly = scoreNakshatra(3, 3, 3, { transitVenusIdx: 23, transitContext: true })
     expect(transitOnly.venusWealth).toMatchObject({
       active: true, bonus: 2, moonActive: false, transitVenusActive: true,
     })
 
-    const natalOnly = scoreNakshatra(3, 3, 3, { natalVenusIdx: 21 })
+    const natalOnly = scoreNakshatra(3, 3, 3, { natalVenusIdx: 21, transitContext: true })
     expect(natalOnly.venusWealth).toMatchObject({
-      active: true, bonus: 0, moonActive: false, natalVenusActive: true,
+      active: false, bonus: 0, moonActive: false, natalVenusActive: true,
     })
 
     const combined = scoreNakshatra(0, 1, 1, {
       isFriday: true,
       transitVenusIdx: 23,
       natalVenusIdx: 21,
+      transitContext: true,
     })
     expect(combined.venusWealth).toMatchObject({
       bonus: 3, moonActive: true, transitVenusActive: true, natalVenusActive: true,

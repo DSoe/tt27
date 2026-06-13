@@ -184,8 +184,7 @@ describe('TT27 onboarding', () => {
 
     expect(screen.getByText(/ရရှိသော ရမှတ်များအရ ယခုအချိန်သည်/)).toBeInTheDocument()
     expect(screen.getByText(/ယခုအချိန်တွင် စန်းသည် အဿဝဏီ နက္ခတ်၌ ရောက်ရှိနေပါသည်/)).toBeInTheDocument()
-    expect(screen.getByText('သောကြာ ဓနနက္ခတ် အထူးအလွှာ')).toBeInTheDocument()
-    expect(screen.getByText(/ကုသခြင်း၊ ပြန်လည်စတင်ခြင်း/)).toBeInTheDocument()
+    expect(screen.queryByText('သောကြာ ဓနနက္ခတ် အထူးအလွှာ')).not.toBeInTheDocument()
     expect(screen.getByText('၄ လုံးမြောက်နေရာ၏ အဓိပ္ပာယ်')).toBeInTheDocument()
     expect(screen.getByText(/အခွင့်အလမ်း — စန်းစီးနက္ခတ် အဿဝဏီ/)).toBeInTheDocument()
     expect(screen.getByText(/ခေမတာရာ နှင့် သာဓကတာရာ၏ ကောင်းကျိုးအင်အားကို မြှင့်တင်ရန်/)).toBeInTheDocument()

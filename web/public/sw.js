@@ -2,7 +2,7 @@
  * Retires the legacy TT27 cache-first service worker. Existing installations
  * update to this worker, which clears the old app shell and returns control to
  * the network. The React app then unregisters this worker.
- * Release: 2026-06-13.3
+ * Release: 2026-06-13.4
  */
 self.addEventListener('install', () => {
   self.skipWaiting()

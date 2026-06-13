@@ -216,7 +216,12 @@ export function scoreNakshatra(
   index: number,
   natalMoon: number,
   natalLagna: number,
-  options: { isFriday?: boolean; transitVenusIdx?: number; natalVenusIdx?: number } = {},
+  options: {
+    isFriday?: boolean
+    transitVenusIdx?: number
+    natalVenusIdx?: number
+    transitContext?: boolean
+  } = {},
 ): ScoreRow {
   const moonTara = taraFrom(natalMoon, index)
   const lagnaTara = taraFrom(natalLagna, index)
@@ -240,25 +245,33 @@ export function scoreNakshatra(
     && isVenusWealthStar(options.transitVenusIdx as number)
   const natalVenusActive = Number.isFinite(options.natalVenusIdx)
     && isVenusWealthStar(options.natalVenusIdx as number)
-  const active = moonActive || transitVenusActive || natalVenusActive
+  const fridayMoonActive = Boolean(options.isFriday && moonActive)
+  const active = options.transitContext
+    ? transitVenusActive || fridayMoonActive
+    : moonActive
   const remedyOnly = moonTara.name === 'Naidhana'
     || ['Naidhana', 'Vainashika I', 'Vainashika II', 'Vinashaka / Secondary Manasa'].includes(special?.name ?? '')
   const caution = ['Vipat', 'Pratyak'].includes(moonTara.name)
   const blocked = vedha.length > 0
   let venusBonus = 0
   if (active && !blocked && !remedyOnly) {
-    if (moonActive) venusBonus = 1
-    if (moonActive && options.isFriday) venusBonus = 2
-    if (transitVenusActive) venusBonus = Math.max(venusBonus, 2)
-    if (moonActive && options.isFriday && transitVenusActive) venusBonus = 3
+    if (options.transitContext) {
+      if (fridayMoonActive) venusBonus = 2
+      if (transitVenusActive) venusBonus = Math.max(venusBonus, 2)
+      if (fridayMoonActive && transitVenusActive) venusBonus = 3
+    } else {
+      venusBonus = 1
+    }
   }
-  const starIndex = moonActive
-    ? index
-    : transitVenusActive
-      ? options.transitVenusIdx
-      : natalVenusActive
-        ? options.natalVenusIdx
+  const starIndex = options.transitContext
+    ? fridayMoonActive
+      ? index
+      : transitVenusActive
+        ? options.transitVenusIdx
         : undefined
+    : moonActive
+      ? index
+      : undefined
   return {
     index, moonTara, lagnaTara, special, rawScore,
     score: blocked ? Math.min(computed, 0) : computed + venusBonus,
