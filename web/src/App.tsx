@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react'
 import {
   CITIES, NAKSHATRAS, NAKSHATRAS_MY, POSITION_COPY, SPECIALS, TARA_COPY,
-  myDigits, nameOf, venusWealthMetaFor, type Language,
+  myDigits, nakshatraOfferingFor, nameOf, venusWealthMetaFor, type Language,
 } from './domain/data'
 import {
   allScores, bestUse, calculateBirth, calculateTransit, directionsFor,
@@ -473,6 +473,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
   const score = language === 'my' ? myDigits(`${row.score > 0 ? '+' : ''}${row.score}`) : `${row.score > 0 ? '+' : ''}${row.score}`
   const moonName = nameOf(transit.moonIdx, language)
   const lagnaName = nameOf(transit.lagnaIdx, language)
+  const moonOffering = nakshatraOfferingFor(transit.moonIdx)
   const venusWealthMeta = row.venusWealth.starIndex === undefined
     ? undefined
     : venusWealthMetaFor(row.venusWealth.starIndex)
@@ -745,6 +746,13 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
           <p>{language === 'my'
             ? `${moonName} သည် ယခု မိမိ၏ ${myDigits(row.moonTara.count)} လုံးမြောက်နေရာအဖြစ် ကျရောက်နေသောကြောင့် ${moonName} နက္ခတ်နှင့် သက်ဆိုင်သော ကုသိုလ်ပြုမှု၊ ကျင့်စဉ်နှင့် ယတြာများကို ပြုလုပ်ခြင်းဖြင့် ဤနေရာ၏ ကောင်းသောအရည်အသွေးများကို ပိုမိုအားကောင်းစေနိုင်ပါသည်။`
             : `Because ${moonName} currently carries your ${row.moonTara.count}${ordinal(row.moonTara.count)}-position influence, practices and remedies associated with ${moonName} can help cultivate the positive qualities of this position.`}</p>
+          <div className="nakshatra-offering">
+            <b>{language === 'my' ? `${moonName}နက္ခတ် ကောင်းကျိုးရစေသော ဒါနယတြာ` : `${moonName} offering`}</b>
+            <p>{language === 'my' ? moonOffering.my : moonOffering.en}</p>
+            <small>{language === 'my'
+              ? 'ဤယတြာကို သက်ဆိုင်ရာနက္ခတ် စန်းယှဉ်ချိန်တွင် ပြုလုပ်နိုင်ပါသည်။'
+              : 'This offering may be performed while the transit Moon occupies this nakshatra.'}</small>
+          </div>
         </div>
         <div className={`today-tara ${moonFriction ? 'friction' : ''}`}>
           <h3>{language === 'my'
@@ -837,6 +845,7 @@ function BestRow({ row, language, open, onOpen }: {
   const positionCopy = POSITION_COPY[row.moonTara.count]
   const langValue = <T,>(en: T, my: T) => language === 'my' ? my : en
   const nakshatra = nameOf(row.index, language)
+  const nakshatraOffering = nakshatraOfferingFor(row.index)
   const vedhaSources = row.vedha.map((source) => language === 'my'
     ? source === 'Moon' ? 'စန်း' : source === 'Lagna' ? 'လဂ်' : source
     : source)
@@ -862,6 +871,13 @@ function BestRow({ row, language, open, onOpen }: {
       <div className="position-narrative">
         <p>{positionNarrative}</p>
         <p><b>{language === 'my' ? 'ဤနေရာ၏ ကောင်းကျိုးကို အားဖြည့်နည်း:' : 'How to strengthen this position:'}</b> {strengthening}</p>
+        <div className="nakshatra-offering">
+          <b>{language === 'my' ? `${nakshatra}နက္ခတ် ကောင်းကျိုးရစေသော ဒါနယတြာ` : `${nakshatra} offering`}</b>
+          <p>{language === 'my' ? nakshatraOffering.my : nakshatraOffering.en}</p>
+          <small>{language === 'my'
+            ? `${nakshatra}နက္ခတ် စန်းယှဉ်သောနေ့များတွင် ပြုလုပ်နိုင်ပါသည်။`
+            : `This offering may be performed on days when the transit Moon occupies ${nakshatra}.`}</small>
+        </div>
       </div>
       <div className="tara-detail">
         <small>{copy.tara}</small>

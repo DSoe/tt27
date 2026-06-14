@@ -102,6 +102,119 @@ export type VenusWealthStarIndex = keyof typeof VENUS_WEALTH_STAR_META
 export const venusWealthMetaFor = (index: number) =>
   VENUS_WEALTH_STAR_META[index as VenusWealthStarIndex]
 
+export const NAKSHATRA_OFFERINGS = [
+  {
+    en: 'Donate medicine, provide transportation support, or donate a bronze bowl filled with butter.',
+    my: 'ဆေးလှူခြင်း၊ ယာနဒါန ပြုလုပ်ခြင်း (သို့မဟုတ်) ကြေးခွက်ထဲတွင် ထောပတ်အပြည့်ထည့်၍ လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Offer blue flowers, or light camphor tablets and donate sesame.',
+    my: 'အပြာရောင်ပန်း လှူခြင်း (သို့မဟုတ်) ပရုပ်ပြား မီးထွန်းပူဇော်ခြင်းနှင့် နှမ်းလှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Offer red flowers or a flower garland. Donate and serve milk rice, butter, yogurt, and foods made with dairy products.',
+    my: 'အနီရောင်ပန်း (သို့မဟုတ်) ပန်းကုံး ချိတ်ဆွဲလှူခြင်း၊ နို့ထမင်း၊ ထောပတ်၊ ဒိန်ချဉ်၊ နို့ထွက်ပစ္စည်းများနှင့် လုပ်ထားသော အစားအသောက်များကို လှူဒါန်းကျွေးမွေးရပါမည်။',
+  },
+  {
+    en: 'Donate butter and serve meals cooked with butter.',
+    my: 'ထောပတ်လှူခြင်း၊ ထောပတ်နှင့်ချက်သော ထမင်းဟင်းများကို ကျွေးမွေးခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate cow’s milk, nourishing drinks, and sweet beverages.',
+    my: 'နွားနို့လှူခြင်း၊ ခွန်အားဖြစ်စေသော ဖျော်ရည်များနှင့် အချိုရည်များကို လှူဒါန်းရပါမည်။',
+  },
+  {
+    en: 'Offer fragrant flowers, especially lotus flowers. Donate bean rice and sesame.',
+    my: 'အနံ့မွှေးသောပန်း (အထူးသဖြင့် ကြာပွင့်) လှူခြင်း၊ ပဲထမင်းနှင့် နှမ်း လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate butter and serve meals cooked with butter.',
+    my: 'ထောပတ်လှူခြင်း၊ ထောပတ်နှင့်ချက်သော ထမင်းဟင်းများကို ကျွေးမွေးခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate honey or gold.',
+    my: 'ပျားရည် လှူခြင်း၊ ရွှေလှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate silver items. Those with a traditional connection to naga practices may also offer naga food.',
+    my: 'ငွေထည်ပစ္စည်းများ လှူရပါမည်။ နဂါးနှင့် အဆက်အစပ်ရှိသူများ နဂါးစာကျွေးပါက ပိုကောင်းပါသည်။',
+  },
+  {
+    en: 'Fill an earthen pot with sesame and donate it.',
+    my: 'မြေအိုးထဲတွင် နှမ်းအပြည့်ထည့်၍ လှူရပါမည်။',
+  },
+  {
+    en: 'Provide transportation support or donate a Shiva lingam.',
+    my: 'ယာနဒါနပြုလုပ်ခြင်း၊ သျှီဝလိင် လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate gold, a golden lotus, or a lotus decorated with gold.',
+    my: 'ရွှေလှူခြင်း၊ ရွှေကြာပန်း (သို့မဟုတ်) ကြာပန်းကို ရွှေချ၍ လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Offer fragrant flowers or red sandalwood powder mixed with water. Donate gold, money, or water.',
+    my: 'ရနံ့မွှေးသောပန်း လှူခြင်း၊ နံ့သာနီအမှုန့်ကို ရေဖျော်၍ ကပ်လှူခြင်း၊ ရွှေ၊ ပိုက်ဆံ သို့မဟုတ် ရေ လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Help another person’s livelihood through transportation support. Donate a bronze bowl, bronze items, or butter.',
+    my: 'သူတစ်ပါး စီးပွားဖြစ်ထွန်းစေရန် ယာနဒါနပြုခြင်း၊ ကြေးခွက် သို့မဟုတ် ကြေးထည် လှူခြင်း၊ ထောပတ်လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate the thing you value most, and abstain from using or consuming it yourself on the day of donation.',
+    my: 'မိမိအနှစ်သက်ဆုံးအရာကို လှူပြီး လှူသောနေ့တွင် ထိုအရာကို ကိုယ်တိုင်မသုံးဆောင်ဘဲ ရှောင်ကြဉ်ရပါမည်။',
+  },
+  {
+    en: 'Donate grains such as rice and beans, or donate clothes and money. Offer red flowers.',
+    my: 'ဆန်၊ ပဲ စသည့် အစေ့အဆံများ (သို့မဟုတ်) အဝတ်အထည်နှင့် ပိုက်ဆံ လှူခြင်း၊ အနီရောင်ပန်း လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate shawls, blankets, or clothing. Traditionally, giving to an influential woman in the community is considered especially supportive.',
+    my: 'ခြုံထည်၊ စောင်၊ အဝတ်အစားများ လှူဒါန်းရပါမည်။ အသိုင်းအဝိုင်းထဲမှ လွှမ်းမိုးမှုအရှိဆုံး အမျိုးသမီးကို ရှာဖွေလှူဒါန်းလျှင် ပိုကောင်းပါသည်။',
+  },
+  {
+    en: 'Donate an assortment of fruits and root foods such as peanuts or sweet potatoes. Traditionally, offering them to a respected man in authority is considered especially effective.',
+    my: 'မတူညီသော အသီးအနှံများ စုပေါင်းလှူခြင်း၊ အမြစ်မှဖြစ်သော မြေပဲ၊ ကန်စွန်းဥ စသည်တို့ကို လှူခြင်းများ ပြုလုပ်ရပါမည်။ အာဏာရှိသော အမျိုးသားတစ်ဦးထံ ပေးပို့လှူဒါန်းပါက အကျိုးပေး ပိုမြန်ပါသည်။',
+  },
+  {
+    en: 'Use the same offerings as Jyeshtha: assorted fruits and root foods such as peanuts or sweet potatoes.',
+    my: 'ဒါနများမှာ ဇေဋ္ဌနက္ခတ်နှင့် တူညီသဖြင့် ဇေဋ္ဌနက္ခတ်ကဲ့သို့ လှူဒါန်းနိုင်ပါသည်။',
+  },
+  {
+    en: 'Fill an earthen pot with yogurt and donate it.',
+    my: 'မြေအိုးထဲတွင် ဒိန်ချဉ်အပြည့်ထည့်၍ လှူရပါမည်။',
+  },
+  {
+    en: 'Donate jaggery, cane sugar, honey, or butter, and offer fragrant flowers.',
+    my: 'ထန်းလျက်၊ ကြံသကာ၊ ပျားရည်၊ ထောပတ် အဆင်ပြေရာ တစ်မျိုးမျိုး လှူခြင်း၊ ရနံ့မွှေးသော ပန်းများ လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate stationery, books, and Dhamma literature. Offer white, yellow, or blue flowers.',
+    my: 'စာရေးကိရိယာ၊ စာအုပ်နှင့် ဓမ္မစာပေများ လှူခြင်း၊ အဖြူ၊ အဝါ၊ အပြာရောင် ပန်းများ လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Offer fragrant flowers or red sandalwood powder mixed with water. Host a married couple for a meal or give them a gift.',
+    my: 'ရနံ့မွှေးသောပန်း သို့မဟုတ် နံ့သာနီအမှုန့် ရေဖျော်ကပ်လှူခြင်း၊ လင်မယားစုံတွဲကို ဧည့်ခံကျွေးမွေးခြင်း သို့မဟုတ် လက်ဆောင်ပေးခြင်း ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate red or white sandalwood, whichever is available.',
+    my: 'နံ့သာနီ၊ နံ့သာဖြူ အဆင်ပြေရာ လှူရပါမည်။',
+  },
+  {
+    en: 'Donate pigeon peas and a flawless quartz crystal.',
+    my: 'ပဲစင်းငုံ လှူခြင်း၊ အနာအဆာကင်းသော သလင်းကျောက် လှူခြင်းတို့ကို ပြုလုပ်ရပါမည်။',
+  },
+  {
+    en: 'Donate beautiful, valuable clothing.',
+    my: 'လှပပြီး တန်ဖိုးရှိသည့် အဝတ်အထည်များ လှူဒါန်းရပါမည်။',
+  },
+  {
+    en: 'Donate a bronze bowl or other bronze items.',
+    my: 'ကြေးခွက်၊ ကြေးထည် လှူရပါမည်။',
+  },
+] as const
+
+export const nakshatraOfferingFor = (index: number) => NAKSHATRA_OFFERINGS[index]
+
 export const LORDS = [
   ['Ke', 'Ketu', 'ကိတ်'], ['Ve', 'Venus', 'သောကြာ'],
   ['Su', 'Sun', 'တနင်္ဂနွေ'], ['Mo', 'Moon', 'တနင်္လာ'],

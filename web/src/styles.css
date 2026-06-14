@@ -82,10 +82,10 @@ main { max-width: 1180px; margin: auto; }
 .page-heading p:last-child { max-width: 650px; color: var(--muted); }
 .moment-actions { display: flex; gap: 8px; }
 .soft-button { border: 1px solid var(--line); background: var(--paper); color: var(--sage-dark); border-radius: 12px; padding: 10px 14px; font-weight: 700; font-size: .82rem; white-space: nowrap; }
-.moment-picker { margin: -12px 0 22px auto; width: min(100%, 520px); padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper); box-shadow: var(--shadow); display: grid; gap: 14px; }
-.moment-picker label { display: grid; gap: 7px; color: var(--muted); font-size: .76rem; font-weight: 700; }
-.moment-picker input { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: white; color: var(--ink); }
-.moment-picker > div { display: flex; justify-content: flex-end; align-items: center; gap: 18px; }
+.moment-picker { box-sizing: border-box; margin: -12px 0 22px auto; width: min(100%, 520px); padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper); box-shadow: var(--shadow); display: grid; gap: 14px; overflow: hidden; }
+.moment-picker label { min-width: 0; display: grid; gap: 7px; color: var(--muted); font-size: .76rem; font-weight: 700; }
+.moment-picker input { box-sizing: border-box; display: block; min-width: 0; max-width: 100%; width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: white; color: var(--ink); font: inherit; }
+.moment-picker > div { min-width: 0; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 12px 18px; }
 .moment-picker .primary-button { padding: 11px 14px; gap: 18px; }
 
 .hero-card { border-radius: 30px; padding: clamp(24px, 5vw, 46px); color: white; box-shadow: var(--shadow); background: linear-gradient(140deg, #486a63, #29443f); }
@@ -240,6 +240,18 @@ main { max-width: 1180px; margin: auto; }
 .best-verdict p { color: white; font-weight: 700; line-height: 1.7; }
 .position-narrative { padding: 18px; border: 1px solid var(--line); border-radius: 15px; background: white; }
 .position-narrative p { line-height: 1.75; }.position-narrative p + p { margin-top: 12px; }
+.nakshatra-offering {
+  margin-top: 16px;
+  padding: 15px;
+  color: #4c4637;
+  background: #fbf6e8;
+  border: 1px solid #ddcda7;
+  border-left: 4px solid #c79a42;
+  border-radius: 10px;
+}
+.nakshatra-offering b { display: block; margin: 0 0 7px; color: #76591e; }
+.nakshatra-offering p { margin: 0; color: #5f594c; line-height: 1.75; }
+.nakshatra-offering small { display: block; margin-top: 8px; color: #81755e; line-height: 1.6; text-transform: none; letter-spacing: 0; }
 .best-detail .tara-feeling { margin-top: 8px; color: #7a8581; }
 .tara-detail { padding: 18px; border-radius: 15px; background: white; border: 1px solid var(--line); }
 .tara-remedy { margin-top: 16px; padding: 14px; border-radius: 13px; background: var(--sage-soft); }
