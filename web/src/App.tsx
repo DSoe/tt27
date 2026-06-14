@@ -479,6 +479,17 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
   const venusWealthStarName = row.venusWealth.starIndex === undefined
     ? ''
     : nameOf(row.venusWealth.starIndex, language)
+  const vedhaSources = row.vedha.map((source) => language === 'my'
+    ? source === 'Moon' ? 'စန်း' : source === 'Lagna' ? 'လဂ်' : source
+    : source)
+  const activeVenusWealthStars = [...new Set([
+    ...(isFriday && row.venusWealth.moonActive ? [transit.moonIdx] : []),
+    ...(row.venusWealth.transitVenusActive ? [transit.venusIdx] : []),
+  ])].map((index) => ({
+    index,
+    name: nameOf(index, language),
+    meta: venusWealthMetaFor(index),
+  })).filter((star) => star.meta)
   const negativeTaras = ['Vipat', 'Pratyak', 'Naidhana']
   const moonFriction = negativeTaras.includes(row.moonTara.name)
     || ['Naidhana', 'Sanghatika', 'Vainashika I', 'Vainashika II', 'Vinashaka / Secondary Manasa'].includes(row.special?.name ?? '')
@@ -592,7 +603,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
             ♀ {language === 'my' ? 'သောကြာ ဓနနက္ခတ်' : 'Venus Wealth Star'}
             {row.venusWealth.bonus > 0 && ` +${language === 'my' ? myDigits(row.venusWealth.bonus) : row.venusWealth.bonus}`}
           </span>}
-          {row.vedha.length > 0 && <span className="warning">⚠ {copy.vedha} · {row.vedha.join(' + ')}</span>}
+          {row.vedha.length > 0 && <span className="warning">⚠ {copy.vedha} · {vedhaSources.join(' + ')}</span>}
         </div>
       </section>
 
@@ -605,7 +616,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
           </div>
         </div>
         <div className="venus-wealth-sources">
-          {row.venusWealth.moonActive && <span>{language === 'my' ? `စန်းစီးနက္ခတ် — ${moonName}` : `Transit Moon — ${moonName}`}</span>}
+          {isFriday && row.venusWealth.moonActive && <span>{language === 'my' ? `စန်းစီးနက္ခတ် — ${moonName}` : `Transit Moon — ${moonName}`}</span>}
           {row.venusWealth.transitVenusActive && <span>{language === 'my'
             ? `ကောဇာသောကြာ — ${nameOf(transit.venusIdx, language)}`
             : `Transit Venus — ${nameOf(transit.venusIdx, language)}`}</span>}
@@ -636,11 +647,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
                   ? (language === 'my'
                     ? 'ကောဇာသောကြာ၊ စန်းနှင့် သောကြာနေ့တို့ ပေါင်းဆုံသဖြင့် ဓနအထောက်အပံ့ အမြင့်ဆုံး +၃ ရရှိပါသည်။'
                     : 'Transit Venus, the Moon, and Friday combine for the maximum +3 prosperity support.')
-                  : row.venusWealth.transitVenusActive && row.venusWealth.moonActive
-                    ? (language === 'my'
-                      ? 'ကောဇာသောကြာနှင့် စန်းတို့သည် သောကြာ ဓနနက္ခတ်များကို လှုံ့ဆော်နေပါသည်။'
-                      : 'Transit Venus and the Moon are both activating Venus Wealth Stars.')
-                    : row.venusWealth.transitVenusActive
+                  : row.venusWealth.transitVenusActive
                       ? (language === 'my'
                         ? 'ကောဇာသောကြာဂြိုဟ်သည် သောကြာ ဓနနက္ခတ်တွင် စီးနင်းနေသဖြင့် ဓနယတြာများအတွက် ကောင်းမွန်ပါသည်။'
                         : 'Transit Venus occupies a Venus Wealth Star, supporting prosperity remedies.')
@@ -655,6 +662,28 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
         <p className="venus-wealth-remedy">{language === 'my'
           ? `${isFriday ? 'သောကြာနေ့ အထူးကျင့်စဉ်: မိမိကိုယ်ကို သန့်ရှင်းစွာ ပြင်ဆင်ပြီး သန့်ရှင်းနှစ်သက်ဖွယ် အဝတ်အစား ဝတ်ပါ။ ' : ''}အစားအစာ၊ ဆန်၊ နို့၊ အချိုပွဲ သို့မဟုတ် အသီးအနှံ လှူဒါန်းပါ။ ပန်း၊ အမွှေးနံ့ သို့မဟုတ် သန့်ရှင်းသောရေ ပူဇော်ပါ။ ပိုက်ဆံအိတ်နှင့် ငွေစာရင်းများကို ရှင်းလင်းပြီး ငွေကြေးရည်မှန်းချက်တစ်ခု ချမှတ်ကာ ငွေအနည်းငယ်ကို အသိရှိစွာ စုဆောင်းပါ။ အငြင်းပွားမှု၊ မနာလိုမှုနှင့် အလဟဿ ဇိမ်ခံသုံးစွဲမှုကို ရှောင်ပါ။`
           : `${isFriday ? 'Friday practice: Clean yourself properly and wear clean, pleasant clothing. ' : ''}Donate food, rice, milk, sweets, or fruit. Offer flowers, fragrance, or clean water. Clean your wallet and financial records, set one clear financial intention, and consciously save a small amount. Avoid arguments, envy, and impulsive luxury spending.`}</p>
+        <div className="venus-wealth-practices">
+          <h3>{language === 'my' ? 'ယေဘုယျပြုလုပ်နိုင်သော သောကြာဂြိုဟ် အစီအရင်များ' : 'General Venus practices'}</h3>
+          <p><b>{language === 'my' ? 'မေတ္တာနှင့် မုဒိတာပွားခြင်း — ' : 'Loving-kindness and appreciative joy — '}</b>
+            {language === 'my'
+              ? 'မိမိနှင့် ဆက်ဆံနေရသော လူများကို မေတ္တာစကား၊ မုဒိတာစကား ပြောကြားပေးခြင်းဖြင့် သောကြာဂြိုဟ်၏ ကောင်းကျိုးဖြစ်သော ပီယ၊ အိမ်ထောင်ရေးသာယာမှုနှင့် စည်းစိမ်သုခ ပြည့်ဝမှု၊ ချမ်းသာကြွယ်ဝမှုများကို အပြည့်အဝ ရရှိစေနိုင်ပါသည်။'
+              : 'Speak with loving-kindness and sincere appreciation to the people around you. This supports harmony, affection, comfort, and prosperity associated with Venus.'}</p>
+          <p><b>{language === 'my' ? 'လှူဖွယ်ပစ္စည်း — ' : 'Offering — '}</b>
+            {language === 'my'
+              ? 'သောကြာဂြိုဟ် (အာပေါဓာတ်) ကို ကိုယ်စားပြုသော “ပဲလွန်းဖြူ” ကို ယတြာအဖြစ် အသုံးပြု လှူဒါန်းနိုင်ပါသည်။'
+              : 'White butter beans, traditionally associated with Venus and the water element, may be donated as a remedy.'}</p>
+          <p><b>{language === 'my' ? 'ကိုးကွယ်ပူဇော်ရန် — ' : 'Devotional practice — '}</b>
+            {language === 'my'
+              ? 'ဟိန္ဒူအယူအဆအရ သောကြာဂြိုဟ်အတွက် လက်ချမီးမယ်တော်ကြီး (Lakshmi) ကို ပူဇော်ခြင်းသည် အကောင်းမြတ်ဆုံးဖြစ်ပြီး၊ သင့်လျော်ရာ မယ်တော်တစ်ဆူကို အထူးပြုကိုးကွယ်ပါက ချမ်းသာကြွယ်ဝခြင်းနှင့် စည်းစိမ်ကြီးမားခြင်းတို့ကို ရရှိစေပါသည်။'
+              : 'In Hindu tradition, Lakshmi is worshipped for Venus. A sincere devotional practice toward an appropriate mother goddess is traditionally associated with prosperity and abundance.'}</p>
+        </div>
+        <div className="venus-wealth-specific">
+          <h3>{language === 'my' ? 'သက်ဆိုင်ရာ နက္ခတ်အလိုက် အထူးယတြာများ' : 'Nakshatra-specific remedies'}</h3>
+          {activeVenusWealthStars.map(({ index, name, meta }) => <article key={index}>
+            <b>{name}{language === 'my' ? 'နက္ခတ်' : ''}</b>
+            <p>{language === 'my' ? meta.remedyMy : meta.remedy}</p>
+          </article>)}
+        </div>
         <small className="venus-wealth-principle">{language === 'my'
           ? 'ဤအလွှာသည် လောင်းကစား၊ စိတ်လိုက်မာန်ပါ သုံးစွဲမှု၊ မလုံခြုံသော ရင်းနှီးမြှုပ်နှံမှု သို့မဟုတ် ဥပဒေစစ်ဆေးမှုမရှိသော စာချုပ်ကြီးများအတွက် အလိုအလျောက် မီးစိမ်းမဟုတ်ပါ။'
           : 'This layer is not a green light for gambling, emotional spending, unsafe investment, or major contracts without practical and legal review.'}</small>
@@ -808,6 +837,9 @@ function BestRow({ row, language, open, onOpen }: {
   const positionCopy = POSITION_COPY[row.moonTara.count]
   const langValue = <T,>(en: T, my: T) => language === 'my' ? my : en
   const nakshatra = nameOf(row.index, language)
+  const vedhaSources = row.vedha.map((source) => language === 'my'
+    ? source === 'Moon' ? 'စန်း' : source === 'Lagna' ? 'လဂ်' : source
+    : source)
   const positionNarrative = language === 'my'
     ? `${nakshatra}နက္ခတ်သည် သင်ရဲ့ ဇနမ စန်းနက္ခတ်မှ ${positionCopy.titleMy} ဖြစ်ပါသည်။ စန်းနက္ခတ်မှ ${myDigits(row.moonTara.count)} လုံးမြောက် နက္ခတ်သည် ${positionCopy.meaningMy}${row.special ? ` ${row.special.useMy}` : ''}`
     : `${nakshatra} is the ${positionCopy.title} position from your natal Moon nakshatra. The ${row.moonTara.count}${ordinal(row.moonTara.count)} nakshatra from the natal Moon ${positionCopy.meaning.charAt(0).toLowerCase()}${positionCopy.meaning.slice(1)}${row.special ? ` ${row.special.use}` : ''}`
@@ -816,7 +848,11 @@ function BestRow({ row, language, open, onOpen }: {
     : `Practices and remedies associated with ${nakshatra} can help cultivate the positive qualities of this position.`
   return <article className={`best-row ${scoreBand(row.score)} ${open ? 'open' : ''}`}>
     <button className="best-summary" onClick={onOpen}>
-      <span className="rank-name"><b>{nameOf(row.index, language)}</b><small>{langValue(lordOf(row.index)[1], lordOf(row.index)[2])}</small></span>
+      <span className="rank-name">
+        <b>{nameOf(row.index, language)}</b>
+        <small>{langValue(lordOf(row.index)[1], lordOf(row.index)[2])}</small>
+        {row.vedha.length > 0 && <small className="best-vedha">⚠ {copy.vedha} · {vedhaSources.join(' + ')}</small>}
+      </span>
       <span className="best-use"><small>{copy.use}</small>{langValue(use.en, use.my)}</span>
       <span className="row-score">{language === 'my' ? myDigits(`${row.score > 0 ? '+' : ''}${row.score}`) : `${row.score > 0 ? '+' : ''}${row.score}`}</span>
       <span className="chevron">{open ? '↑' : '↓'}</span>

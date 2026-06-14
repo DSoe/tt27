@@ -135,6 +135,30 @@ describe('TT27 onboarding', () => {
     expect(screen.getByText(/Donate sea salt/)).toBeInTheDocument()
   })
 
+  it('shows localized Vedha badges in Best Days', () => {
+    localStorage.setItem('tt27.lang', 'my')
+    localStorage.setItem('tt27.react.profile', JSON.stringify({
+      name: 'Soe',
+      date: '1990-03-12',
+      time: '08:24',
+      cityIndex: 0,
+      natal: {
+        sunIdx: 0,
+        moonIdx: 3,
+        moonPada: 1,
+        lagnaIdx: 5,
+        lagnaPada: 2,
+      },
+    }))
+
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'အကောင်းဆုံးနေ့များ' }))
+
+    expect(screen.getAllByText('⚠ ဝေဒ · စန်း').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('⚠ ဝေဒ · လဂ်').length).toBeGreaterThan(0)
+    expect(screen.queryByText(/ဝေဒ · (Moon|Lagna)/)).not.toBeInTheDocument()
+  })
+
   it('uses the complete Burmese verdict and position narrative in Best Days', () => {
     localStorage.setItem('tt27.lang', 'my')
     localStorage.setItem('tt27.react.profile', JSON.stringify({
@@ -190,6 +214,30 @@ describe('TT27 onboarding', () => {
     expect(screen.getByText(/ခေမတာရာ နှင့် သာဓကတာရာ၏ ကောင်းကျိုးအင်အားကို မြှင့်တင်ရန်/)).toBeInTheDocument()
   })
 
+  it('localizes the Today Vedha source labels in Myanmar', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-06-11T22:40:00Z'))
+    localStorage.setItem('tt27.lang', 'my')
+    localStorage.setItem('tt27.react.profile', JSON.stringify({
+      name: 'Soe',
+      date: '1977-01-24',
+      time: '00:12',
+      cityIndex: 0,
+      natal: {
+        sunIdx: 21,
+        moonIdx: 24,
+        moonPada: 4,
+        lagnaIdx: 17,
+        lagnaPada: 1,
+      },
+    }))
+
+    render(<App />)
+
+    expect(screen.queryByText(/ဝေဒ · Lagna/)).not.toBeInTheDocument()
+    expect(screen.getByText('⚠ ဝေဒ · လဂ်')).toBeInTheDocument()
+  })
+
   it('shows jewelry and prosperity guidance when both transit rules qualify', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-06-13T01:00:00Z'))
@@ -238,6 +286,8 @@ describe('TT27 onboarding', () => {
     expect(screen.getByText('ဓနသိဒ္ဓိနက္ခတ်၏ ဓနအထောက်အပံ့')).toBeInTheDocument()
     expect(screen.getByText(/သောကြာနေ့ အထူးကျင့်စဉ်/)).toBeInTheDocument()
     expect(screen.getByText(/သောကြာ ဓနနက္ခတ် \+၂/)).toBeInTheDocument()
+    expect(screen.getByText(/မေတ္တာနှင့် မုဒိတာပွားခြင်း/)).toBeInTheDocument()
+    expect(screen.getByText(/ပဲ အနည်းဆုံး သုံးမျိုးနှင့် ဆန်အကောင်းစား/)).toBeInTheDocument()
   })
 
   it('combines transit Venus, Moon, and Friday for the capped +3 support', () => {
@@ -266,5 +316,7 @@ describe('TT27 onboarding', () => {
     expect(screen.getByText(/သောကြာ ဓနနက္ခတ် \+၃/)).toBeInTheDocument()
     expect(screen.getByText('ကောဇာသောကြာ — သရဝဏ်')).toBeInTheDocument()
     expect(screen.getByText('စန်းစီးနက္ခတ် — ဥတ္တရဘဒြပိုဒ်')).toBeInTheDocument()
+    expect(screen.getByText(/စံပယ်ပင်.*စကားဝါပင်/)).toBeInTheDocument()
+    expect(screen.getByText(/နို့ထမင်းကို လှူဒါန်းပြီး မိမိကိုယ်တိုင်လည်း စားသုံးပါ/)).toBeInTheDocument()
   })
 })

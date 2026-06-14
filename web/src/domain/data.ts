@@ -26,6 +26,8 @@ export const VENUS_WEALTH_STAR_META = {
     bestUseMy: 'ကျန်းမာရေးပြန်လည်စတင်ခြင်း၊ အကြွေးလျှော့ချခြင်းနှင့် ရိုးရှင်းသော ငွေကြေးပြန်လည်စီမံမှု',
     caution: 'Avoid impulsive spending or rushing into deals',
     cautionMy: 'စိတ်လိုက်မာန်ပါ သုံးစွဲခြင်းနှင့် အလျင်စလို သဘောတူညီမှုများကို ရှောင်ပါ',
+    remedy: 'Offer marigold flowers. At four local guardian shrines, make an offering and ask for only one wish. If marigolds are unavailable, offer quality incense and vegetarian fruit.',
+    remedyMy: 'မရိုးပန်း လှူဒါန်းပါ။ မိမိဇာတိ/နေထိုင်ရာ ဒေသရှိ အရပ်လေးမျက်နှာမှ နယ်တော်ရှင်၊ မြို့တော်ရှင် နတ်နန်းလေးခုတွင် သွားရောက်လှူဒါန်းပြီး လိုရာဆု “တစ်ခုတည်းကိုသာ” တောင်းပါက အင်မတန်စွမ်းပါသည်။ မရိုးပန်း မရပါက အမွှေးတိုင်အကောင်းစားနှင့် သက်သတ်လွတ် အသီးအနှံများကို ပူဇော်ပါ။',
   },
   21: {
     name: 'Shravana', burmese: 'သရဝဏ်',
@@ -35,6 +37,8 @@ export const VENUS_WEALTH_STAR_META = {
     bestUseMy: 'လေ့လာခြင်း၊ စီမံကိန်းချခြင်း၊ ဂုဏ်သတင်းတည်ဆောက်ခြင်းနှင့် စည်းကမ်းရှိသော ဓနစီမံမှု',
     caution: 'Avoid overthinking, emotional heaviness, and passive waiting',
     cautionMy: 'အတွေးလွန်ခြင်း၊ စိတ်လေးလံခြင်းနှင့် မလှုပ်မရှား စောင့်ဆိုင်းခြင်းကို ရှောင်ပါ',
+    remedy: 'Plant and donate jasmine or champaca at a religious place. Eat at least one vegetarian meal daily, and sincerely praise one good quality in another person each day.',
+    remedyMy: 'သာသနာ့ဌာနများတွင် စံပယ်ပင် (သို့မဟုတ်) စကားဝါပင် စိုက်ပျိုးလှူဒါန်းပါ။ တစ်ရက်လျှင် အနည်းဆုံး တစ်နပ်ကို သက်သတ်လွတ်စားပါ။ အနည်းဆုံး တစ်ရက်တစ်ကြိမ် သူတစ်ပါး၏ ကောင်းသော အရည်အသွေးကို နှုတ်မှဖွင့်ဟ၍ ချီးကျူးစကား ပြောကြားပါ။',
   },
   22: {
     name: 'Dhanishta', burmese: 'ဓနသိဒ္ဓိ',
@@ -44,6 +48,8 @@ export const VENUS_WEALTH_STAR_META = {
     bestUseMy: 'ပိုင်ဆိုင်မှုစီမံခြင်း၊ အသက်မွေးဝမ်းကျောင်း သြဇာတည်ဆောက်ခြင်းနှင့် လုပ်ငန်းစနစ်ချခြင်း',
     caution: 'Avoid greed, status obsession, or aggressive pride',
     cautionMy: 'လောဘ၊ အဆင့်အတန်းစွဲလမ်းမှုနှင့် မာနပြင်းထန်မှုကို ရှောင်ပါ',
+    remedy: 'Donate at least three kinds of beans together with high-quality rice, or donate at least two of these: cow’s milk, yogurt, honey, and sugar.',
+    remedyMy: 'ပဲ အနည်းဆုံး သုံးမျိုးနှင့် ဆန်အကောင်းစားကို တွဲဖက်၍ လှူဒါန်းပါ။ (သို့မဟုတ်) နွားနို့၊ ဒိန်ချဉ်၊ ပျားရည်၊ သကြား ဟူသော လေးမျိုးထဲမှ အနည်းဆုံး နှစ်မျိုးကို လှူဒါန်းပါ။',
   },
   23: {
     name: 'Shatabhisha', burmese: 'သတ္တဘိသျှ',
@@ -53,6 +59,8 @@ export const VENUS_WEALTH_STAR_META = {
     bestUseMy: 'နည်းပညာဓန၊ ကုသရေးလုပ်ငန်း၊ AI/app၊ သုတေသန၊ စနစ်နှင့် ဒစ်ဂျစ်တယ်စီးပွားရေး',
     caution: 'Avoid isolation, secrecy, or detached coldness',
     cautionMy: 'အထီးကျန်ခြင်း၊ လျှို့ဝှက်လွန်းခြင်းနှင့် အေးစက်ကင်းကွာခြင်းကို ရှောင်ပါ',
+    remedy: 'Support someone recovering from alcohol dependence through food, treatment, transport, or recovery services; do not provide alcohol. Wear clean daytime and sleep clothing, changing into at least two clean outfits daily.',
+    remedyMy: 'အရက်စွဲနေသူကို အရက်မတိုက်ဘဲ အစားအသောက်၊ ဆေးကုသမှု၊ သွားလာရေး သို့မဟုတ် ပြန်လည်ထူထောင်ရေးအတွက် ကူညီပါ။ ထို့ပြင် တစ်ရက်လျှင် နေ့ခင်းဝတ် တစ်စုံ၊ ညအိပ်ဝတ် တစ်စုံ အနည်းဆုံး ဝတ်စုံ နှစ်စုံ လဲလှယ်ဝတ်ဆင်ပြီး အဝတ်အစားကို သန့်ရှင်းသပ်ရပ်စွာ ဝတ်ဆင်ပါ။',
   },
   24: {
     name: 'Purva Bhadrapada', burmese: 'ပြုဗ္ဗဘဒြပိုဒ်',
@@ -62,6 +70,8 @@ export const VENUS_WEALTH_STAR_META = {
     bestUseMy: 'ဓနရည်မှန်းချက်၊ ဓမ္မဒါန၊ အတွင်းစိတ်ပြန်လည်ညှိခြင်းနှင့် ဖန်တီးမှုအမြင်',
     caution: 'Avoid emotional extremes, obsession, or unwise self-sacrifice',
     cautionMy: 'စိတ်ခံစားမှုလွန်ကဲခြင်း၊ စွဲလမ်းခြင်းနှင့် ပညာမပါသော ကိုယ်ကျိုးစွန့်မှုကို ရှောင်ပါ',
+    remedy: 'Donate shoes, or donate oil to solitary spiritual practitioners. Cover your pillow with a convenient cloth such as a face towel for three to five nights; then wash it yourself and donate it to a monk or spiritual practitioner.',
+    remedyMy: 'ဖိနပ် လှူဒါန်းပါ။ (သို့မဟုတ်) တစ်ကိုယ်တည်း တရားကျင့်နေသူများကို ဆီ လှူဒါန်းပါ။ မျက်နှာသုတ်ပုဝါကဲ့သို့ အဆင်ပြေရာ အဝတ်တစ်ခုကို မိမိခေါင်းအုံးပေါ်တွင် ၃ ရက်မှ ၅ ရက်ခန့် လွှမ်းထားပြီး အိပ်ပါ။ ထို့နောက် ၎င်းအဝတ်ကို ကိုယ်တိုင်လျှော်ဖွပ်၍ သံဃာတော် (သို့) တရားကျင့်သူကို လှူဒါန်းပါ။',
   },
   25: {
     name: 'Uttara Bhadrapada', burmese: 'ဥတ္တရဘဒြပိုဒ်',
@@ -71,6 +81,8 @@ export const VENUS_WEALTH_STAR_META = {
     bestUseMy: 'စုဆောင်းခြင်း၊ ရေရှည်စီမံခြင်း၊ တိတ်ဆိတ်စွာ ငွေကြေးစီမံခြင်းနှင့် ဒါန',
     caution: 'Avoid laziness, delay, or remaining stuck in old sadness',
     cautionMy: 'ပျင်းရိခြင်း၊ အချိန်ဆွဲခြင်းနှင့် ဝမ်းနည်းမှုဟောင်းတွင် ပိတ်မိခြင်းကို ရှောင်ပါ',
+    remedy: 'Donate milk rice and eat some yourself. Perform at least one act of charity every day; do not eat dinner before completing that day’s donation.',
+    remedyMy: 'နို့ထမင်းကို လှူဒါန်းပြီး မိမိကိုယ်တိုင်လည်း စားသုံးပါ။ နေ့စဉ်နေ့တိုင်း ဒါနတစ်ခုခုကို အမြဲပြုလုပ်ပါ (ဒါနမပြုရသေးဘဲ ညစာ မစားပါနှင့်)။',
   },
   26: {
     name: 'Revati', burmese: 'ရေဝတီ',
@@ -80,6 +92,8 @@ export const VENUS_WEALTH_STAR_META = {
     bestUseMy: 'စာရင်းပိတ်ခြင်း၊ ဒါန၊ ဘေးကင်းသောခရီးနှင့် ကရုဏာပါသော ဓနလုပ်ငန်း',
     caution: 'Avoid escapism, over-giving, or vague financial decisions',
     cautionMy: 'လက်တွေ့ဘဝမှ ရှောင်ပြေးခြင်း၊ အလွန်အကျွံပေးကမ်းခြင်းနှင့် မရှင်းလင်းသော ငွေကြေးဆုံးဖြတ်ချက်ကို ရှောင်ပါ',
+    remedy: 'Donate a generous quantity of green items or sweet foods. You may also donate a large amount of salt, traditionally about one viss.',
+    remedyMy: 'အစိမ်းရောင်ရှိသော ပစ္စည်းများ (သို့မဟုတ်) ချိုသော အရသာရှိသည့် စားသောက်ဖွယ်ရာများကို ပမာဏများများ လှူဒါန်းပါ။ ထို့ပြင် ဆား အများကြီး (အနည်းဆုံး တစ်ပိဿာခန့်) ကိုလည်း လှူဒါန်းနိုင်ပါသည်။',
   },
 } as const
 

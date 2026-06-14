@@ -139,6 +139,34 @@ main { max-width: 1180px; margin: auto; }
   line-height: 1.7;
 }
 .venus-wealth-card .venus-wealth-remedy { margin-bottom: 0; }
+.venus-wealth-practices, .venus-wealth-specific {
+  margin-top: 13px;
+  padding: 16px;
+  color: #3d4964;
+  background: rgba(255, 255, 255, .72);
+  border: 1px solid rgba(162, 125, 151, .25);
+  border-radius: 7px;
+}
+.venus-wealth-practices h3, .venus-wealth-specific h3 {
+  margin: 0 0 11px;
+  color: #714767;
+  font-size: .96rem;
+}
+.venus-wealth-practices p, .venus-wealth-specific p {
+  margin: 0;
+  color: var(--reading-muted);
+  font-size: .9rem;
+  line-height: 1.75;
+}
+.venus-wealth-practices p + p { margin-top: 10px; }
+.venus-wealth-specific { display: grid; gap: 10px; }
+.venus-wealth-specific article {
+  padding: 13px;
+  background: rgba(244, 232, 245, .55);
+  border-left: 3px solid #b58aaa;
+  border-radius: 5px;
+}
+.venus-wealth-specific article b { display: block; margin-bottom: 5px; color: #714767; }
 .venus-wealth-principle { display: block; margin-top: 13px; color: #70677a; line-height: 1.65; }
 .timing-guidance { display: grid; gap: 12px; margin-top: 16px; }
 .timing-guidance-card {
@@ -193,6 +221,17 @@ main { max-width: 1180px; margin: auto; }
 .best-row.excellent { border-left-color: #43806e; }.best-row.good { border-left-color: #6b8d72; }.best-row.usable { border-left-color: #b68a45; }.best-row.avoid { border-left-color: var(--danger); }
 .best-summary { width: 100%; display: grid; grid-template-columns: minmax(150px, .75fr) 1.7fr 64px 20px; align-items: center; gap: 20px; padding: 18px 20px; background: transparent; border: 0; color: inherit; text-align: left; }
 .rank-name, .best-use { display: grid; gap: 4px; }.rank-name small, .best-use small, .best-detail small { color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
+.rank-name .best-vedha {
+  width: fit-content;
+  padding: 4px 7px;
+  color: #9d433e;
+  background: #fae9e7;
+  border: 1px solid #e8bbb7;
+  border-radius: 5px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 700;
+}
 .best-use { color: #43504c; font-size: .9rem; }.row-score { font-weight: 700; font-size: 1.05rem; text-align: right; }.chevron { color: var(--muted); }
 .best-detail { border-top: 1px solid var(--line); padding: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f7f8f5; }
 .best-detail b { display: block; margin: 5px 0; }.best-detail p { margin: 0; color: var(--muted); font-size: .88rem; }
