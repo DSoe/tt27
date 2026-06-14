@@ -37,11 +37,20 @@ function loadSavedProfile(): Profile | null {
   try {
     const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null') as Profile | null
     if (!saved) return null
+
+    const natal = (saved.natal ?? {}) as Partial<AstroPosition>
     if (
-      Number.isFinite(saved.natal?.sunIdx)
-      && Number.isFinite(saved.natal?.venusIdx)
-      && Number.isFinite(saved.natal?.venusPada)
+      Number.isFinite(natal.sunIdx)
+      && Number.isFinite(natal.venusIdx)
+      && Number.isFinite(natal.venusPada)
+      && Number.isFinite(natal.moonIdx)
+      && Number.isFinite(natal.moonPada)
+      && Number.isFinite(natal.lagnaIdx)
+      && Number.isFinite(natal.lagnaPada)
     ) return saved
+
+    // Older or partial profiles are recomputed from the stored birth details.
+    if (typeof saved.date !== 'string' || typeof saved.time !== 'string') return null
 
     const quickCity = CITIES[saved.cityIndex] ?? CITIES[0]
     const location = saved.location ?? quickCity
@@ -52,13 +61,18 @@ function loadSavedProfile(): Profile | null {
       location.lon,
       location.offset,
     )
-    const migrated = {
+    const keep = (value: number | undefined, fallback: number) =>
+      Number.isFinite(value) ? (value as number) : fallback
+    const migrated: Profile = {
       ...saved,
       natal: {
-        ...saved.natal,
-        sunIdx: Number.isFinite(saved.natal.sunIdx) ? saved.natal.sunIdx : calculated.sunIdx,
-        venusIdx: Number.isFinite(saved.natal.venusIdx) ? saved.natal.venusIdx : calculated.venusIdx,
-        venusPada: Number.isFinite(saved.natal.venusPada) ? saved.natal.venusPada : calculated.venusPada,
+        sunIdx: keep(natal.sunIdx, calculated.sunIdx),
+        venusIdx: keep(natal.venusIdx, calculated.venusIdx),
+        venusPada: keep(natal.venusPada, calculated.venusPada),
+        moonIdx: keep(natal.moonIdx, calculated.moonIdx),
+        moonPada: keep(natal.moonPada, calculated.moonPada),
+        lagnaIdx: keep(natal.lagnaIdx, calculated.lagnaIdx),
+        lagnaPada: keep(natal.lagnaPada, calculated.lagnaPada),
       },
     }
     localStorage.setItem(PROFILE_KEY, JSON.stringify(migrated))
@@ -435,13 +449,38 @@ function ResultCard({ icon, label, name, pada, language }: {
 
 function Today({ profile, language }: { profile: Profile; language: Language }) {
   const copy = ui[language]
-  const city = profile.location ?? CITIES[profile.cityIndex]
   const [moment, setMoment] = useState(() => new Date())
   const [showMomentPicker, setShowMomentPicker] = useState(false)
   const [draftMoment, setDraftMoment] = useState(() => toLocalDateTimeValue(new Date()))
   const [showDetails, setShowDetails] = useState(false)
+  const [deviceCoords, setDeviceCoords] = useState<{ lat: number; lon: number } | null>(null)
+  const [locationStatus, setLocationStatus] = useState<'locating' | 'ready' | 'unavailable'>('locating')
+  const [locationRequest, setLocationRequest] = useState(0)
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setLocationStatus('unavailable')
+      return
+    }
+    setLocationStatus('locating')
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setDeviceCoords({ lat: position.coords.latitude, lon: position.coords.longitude })
+        setLocationStatus('ready')
+      },
+      () => {
+        setDeviceCoords(null)
+        setLocationStatus('unavailable')
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 5 * 60 * 1000 },
+    )
+  }, [locationRequest])
+
   const isFriday = moment.getDay() === 5
-  const transit = useMemo(() => calculateTransit(moment, city.lat, city.lon), [moment, city])
+  const transit = useMemo(
+    () => calculateTransit(moment, deviceCoords?.lat ?? 0, deviceCoords?.lon ?? 0),
+    [moment, deviceCoords],
+  )
   const moonPadaEnd = useMemo(() => findMoonPadaEnd(moment), [moment])
   const row = useMemo(
     () => scoreNakshatra(
@@ -457,7 +496,9 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
     ),
     [transit.moonIdx, transit.venusIdx, profile, isFriday],
   )
-  const lagnaTara = scoreNakshatra(transit.lagnaIdx, profile.natal.moonIdx, profile.natal.lagnaIdx).lagnaTara
+  const lagnaTara = deviceCoords
+    ? scoreNakshatra(transit.lagnaIdx, profile.natal.moonIdx, profile.natal.lagnaIdx).lagnaTara
+    : null
   const band = scoreBand(row.score)
   const status = verdict(row)
   const use = bestUse(row)
@@ -467,12 +508,12 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
   const pada = padaClass(transit.moonIdx, transit.moonPada)
   const directions = directionsFor(transit.moonIdx)
   const moonCopy = TARA_COPY[row.moonTara.name]
-  const lagnaCopy = TARA_COPY[lagnaTara.name]
+  const lagnaCopy = lagnaTara ? TARA_COPY[lagnaTara.name] : null
   const positionCopy = POSITION_COPY[row.moonTara.count]
   const langValue = <T,>(en: T, my: T) => language === 'my' ? my : en
   const score = language === 'my' ? myDigits(`${row.score > 0 ? '+' : ''}${row.score}`) : `${row.score > 0 ? '+' : ''}${row.score}`
   const moonName = nameOf(transit.moonIdx, language)
-  const lagnaName = nameOf(transit.lagnaIdx, language)
+  const lagnaName = deviceCoords ? nameOf(transit.lagnaIdx, language) : ''
   const moonOffering = nakshatraOfferingFor(transit.moonIdx)
   const venusWealthMeta = row.venusWealth.starIndex === undefined
     ? undefined
@@ -494,15 +535,15 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
   const negativeTaras = ['Vipat', 'Pratyak', 'Naidhana']
   const moonFriction = negativeTaras.includes(row.moonTara.name)
     || ['Naidhana', 'Sanghatika', 'Vainashika I', 'Vainashika II', 'Vinashaka / Secondary Manasa'].includes(row.special?.name ?? '')
-  const lagnaFriction = negativeTaras.includes(lagnaTara.name)
-  const sameTara = row.moonTara.name === lagnaTara.name
+  const lagnaFriction = lagnaTara ? negativeTaras.includes(lagnaTara.name) : false
+  const sameTara = lagnaTara ? row.moonTara.name === lagnaTara.name : false
   const supportiveTaras = [
     ...(!moonFriction ? [{ tara: row.moonTara, copy: moonCopy }] : []),
-    ...(!sameTara && !lagnaFriction ? [{ tara: lagnaTara, copy: lagnaCopy }] : []),
+    ...(lagnaTara && lagnaCopy && !sameTara && !lagnaFriction ? [{ tara: lagnaTara, copy: lagnaCopy }] : []),
   ]
   const obstacleTaras = [
     ...(moonFriction ? [{ tara: row.moonTara, copy: moonCopy }] : []),
-    ...(!sameTara && lagnaFriction ? [{ tara: lagnaTara, copy: lagnaCopy }] : []),
+    ...(lagnaTara && lagnaCopy && !sameTara && lagnaFriction ? [{ tara: lagnaTara, copy: lagnaCopy }] : []),
   ]
   const todayVerdict = language === 'my'
     ? row.score >= 9
@@ -535,6 +576,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
               setMoment(now)
               setDraftMoment(toLocalDateTimeValue(now))
               setShowMomentPicker(false)
+              setLocationRequest((request) => request + 1)
             }}
           >↻ {copy.refresh}</button>
           <button
@@ -588,9 +630,25 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
           </span>
           <span>
             <small>{copy.lagnaTransit}</small>
-            <b>{nameOf(transit.lagnaIdx, language)}</b>
-            <em>{langValue(lagnaTara.name, lagnaTara.my)}</em>
-            <em>{copy.pada} - {language === 'my' ? myDigits(transit.lagnaPada) : transit.lagnaPada}</em>
+            {deviceCoords && lagnaTara
+              ? <>
+                  <b>{nameOf(transit.lagnaIdx, language)}</b>
+                  <em>{langValue(lagnaTara.name, lagnaTara.my)}</em>
+                  <em>{copy.pada} - {language === 'my' ? myDigits(transit.lagnaPada) : transit.lagnaPada}</em>
+                </>
+              : <>
+                  <b>{locationStatus === 'locating'
+                    ? (language === 'my' ? 'လက်ရှိတည်နေရာ ရှာဖွေနေပါသည်' : 'Finding current location')
+                    : (language === 'my' ? 'လက်ရှိတည်နေရာ လိုအပ်ပါသည်' : 'Current location required')}</b>
+                  <em>{language === 'my'
+                    ? 'လဂ်စီးနက္ခတ်ကို မွေးဖွားရာဒေသဖြင့် မတွက်ချက်ပါ။'
+                    : 'Transit Lagna is not calculated from your birth place.'}</em>
+                  {locationStatus === 'unavailable' && <button
+                    type="button"
+                    className="location-retry"
+                    onClick={() => setLocationRequest((request) => request + 1)}
+                  >{language === 'my' ? 'တည်နေရာ ပြန်တောင်းမည်' : 'Try location again'}</button>}
+                </>}
           </span>
           <span>
             <small>{language === 'my' ? 'ကောဇာ သောကြာနက္ခတ်' : 'Transit Venus'}</small>
@@ -612,7 +670,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
         <div className="venus-wealth-heading">
           <span aria-hidden="true">♀</span>
           <div>
-            <p className="eyebrow">{language === 'my' ? 'သောကြာ ဓနနက္ခတ် အထူးအလွှာ' : 'Venus Wealth Star Layer'}</p>
+            <p className="eyebrow">{language === 'my' ? 'သောကြာ ဓနနက္ခတ်' : 'Venus Wealth Star Layer'}</p>
             <h2>{language === 'my' ? `${venusWealthStarName}နက္ခတ်၏ ဓနအထောက်အပံ့` : `${venusWealthStarName} prosperity support`}</h2>
           </div>
         </div>
@@ -634,15 +692,15 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
         <div className="venus-wealth-status">
           {row.venusWealth.blocked
             ? (language === 'my'
-              ? 'Vedha ကြောင့် ဓနအပိုရမှတ် မပေးပါ။ ချမ်းသာကြွယ်ဝရေး ယတြာပြုနိုင်သော်လည်း အရေးကြီးသော လုပ်ငန်းသစ်များ မစတင်ပါနှင့်။'
+              ? 'ဝေဒကြောင့် ဓနအပိုရမှတ် မပေးပါ။ ချမ်းသာကြွယ်ဝရေး ယတြာပြုနိုင်သော်လည်း အရေးကြီးသော လုပ်ငန်းသစ်များ မစတင်ပါနှင့်။'
               : 'Blocked by Vedha: no wealth bonus. Prosperity remedies are suitable, but avoid major starts.')
             : row.venusWealth.remedyOnly
               ? (language === 'my'
-                ? 'မကောင်းသော Tara သို့မဟုတ် Vainashika အခြေအနေကြောင့် ယတြာနှင့် သန့်ရှင်းရေးအတွက်သာ အသုံးပြုပါ။'
+                ? 'မကောင်းသော တာရာ သို့မဟုတ် ဝိနာသက အခြေအနေကြောင့် ယတြာနှင့် သန့်ရှင်းရေးအတွက်သာ အသုံးပြုပါ။'
                 : 'A difficult Tara or Vainashika condition makes this remedy-only, not launch-friendly.')
               : row.venusWealth.caution
                 ? (language === 'my'
-                  ? 'ဓနအထောက်အပံ့ရှိသော်လည်း Vipat သို့မဟုတ် Pratyak သဘောကြောင့် သတိဖြင့် အသုံးပြုပါ။'
+                  ? 'ဓနအထောက်အပံ့ရှိသော်လည်း ဝိပတ္တိ သို့မဟုတ် ပြတ္တရ သဘောကြောင့် သတိဖြင့် အသုံးပြုပါ။'
                   : 'Prosperity support is present, but Vipat or Pratyak requires careful use.')
                 : row.venusWealth.transitVenusActive && row.venusWealth.moonActive && isFriday
                   ? (language === 'my'
@@ -686,7 +744,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
           </article>)}
         </div>
         <small className="venus-wealth-principle">{language === 'my'
-          ? 'ဤအလွှာသည် လောင်းကစား၊ စိတ်လိုက်မာန်ပါ သုံးစွဲမှု၊ မလုံခြုံသော ရင်းနှီးမြှုပ်နှံမှု သို့မဟုတ် ဥပဒေစစ်ဆေးမှုမရှိသော စာချုပ်ကြီးများအတွက် အလိုအလျောက် မီးစိမ်းမဟုတ်ပါ။'
+          ? 'ဤအလွှာသည် လောင်းကစားခြင်း၊ စိတ်လိုက်မာန်ပါ သုံးစွဲခြင်း၊ စိတ်မချရသော ရင်းနှီးမြှုပ်နှံမှု သို့မဟုတ် လက်တွေ့ဆန်စွာနှင့် ဥပဒေကြောင်းအရ မစိစစ်ရသေးသော စာချုပ်ကြီးများ ပြုလုပ်ရန်အတွက် အားပေးခြင်း မဟုတ်ပါ။'
           : 'This layer is not a green light for gambling, emotional spending, unsafe investment, or major contracts without practical and legal review.'}</small>
       </section>}
 
@@ -764,7 +822,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
           <p>{langValue(moonCopy.nature, moonCopy.natureMy)}</p>
           <p className="tara-feeling">{langValue(moonCopy.feeling, moonCopy.feelingMy)}</p>
         </div>
-        <div className={`today-tara ${lagnaFriction ? 'friction' : ''}`}>
+        {lagnaTara && lagnaCopy && <div className={`today-tara ${lagnaFriction ? 'friction' : ''}`}>
           <h3>{language === 'my'
             ? `${lagnaFriction ? 'သတိပြုရန်' : 'အထောက်အပံ့'} — လဂ်စီးနက္ခတ် ${lagnaName}`
             : `${lagnaFriction ? 'The catch' : 'Support'} — Transit Lagna in ${lagnaName}`}</h3>
@@ -773,7 +831,7 @@ function Today({ profile, language }: { profile: Profile; language: Language }) 
             : `The transit Lagna in ${lagnaName} activates your ${lagnaTara.name} Tara. ${lagnaCopy.use}`}</p>
           <p>{langValue(lagnaCopy.nature, lagnaCopy.natureMy)}</p>
           <p className="tara-feeling">{langValue(lagnaCopy.feeling, lagnaCopy.feelingMy)}</p>
-        </div>
+        </div>}
         <div className="today-action">
           <h3>{copy.action}</h3>
           {supportiveTaras.length > 0 && <div>

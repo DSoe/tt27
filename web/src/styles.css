@@ -101,6 +101,7 @@ main { max-width: 1180px; margin: auto; }
 .transit-line { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .transit-line span { padding: 16px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: 17px; display: grid; gap: 3px; }
 .transit-line small { opacity: .7; }.transit-line b { font-size: 1.08rem; }.transit-line em { opacity: .76; font-size: .82rem; font-style: normal; }
+.location-retry { width: fit-content; margin-top: 7px; padding: 6px 9px; color: white; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.24); border-radius: 5px; font: inherit; font-size: .75rem; font-weight: 700; }
 .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .hero-tags span.active { color: #ffe2a6; }.hero-tags span.warning { color: #ffe1de; }
 .hero-tags .venus-wealth-tag { border-color: rgba(255, 222, 156, .34); }

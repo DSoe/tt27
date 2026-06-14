@@ -77,6 +77,17 @@ describe('TT27 engine', () => {
     })
   })
 
+  it('caps a cautionary Tara below the Excellent band even with a full Venus bonus', () => {
+    // Pratyak Moon Tara (count 5) with a +3 Venus bonus would otherwise reach 9.
+    const row = scoreNakshatra(21, 17, 13, {
+      isFriday: true, transitVenusIdx: 21, transitContext: true,
+    })
+    expect(row.moonTara.name).toBe('Pratyak')
+    expect(row.venusWealth).toMatchObject({ caution: true, bonus: 3 })
+    expect(row.rawScore + row.venusWealth.bonus).toBe(9)
+    expect(row.score).toBe(8)
+  })
+
   it('preserves the current pada classification rules', () => {
     expect(padaClass(23, 3)).toEqual({ en: 'Wara Uttama Pada', my: 'ဝရဥတ္တမပါဒ' })
     expect(padaClass(23, 1)).toBeNull()

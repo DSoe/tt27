@@ -264,9 +264,12 @@ export function scoreNakshatra(
         ? options.transitVenusIdx
         : undefined
     : undefined
+  // Cautionary Tara (Vipat/Pratyak): a Venus bonus may improve the day, but it
+  // must never read as a clean green-light, so cap it just below the Excellent band.
+  const total = computed + venusBonus
   return {
     index, moonTara, lagnaTara, special, rawScore,
-    score: blocked ? Math.min(computed, 0) : computed + venusBonus,
+    score: blocked ? Math.min(computed, 0) : caution ? Math.min(total, 8) : total,
     vedha,
     venusWealth: {
       active, bonus: venusBonus, blocked, remedyOnly, caution,

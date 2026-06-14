@@ -3,7 +3,28 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 
 describe('TT27 onboarding', () => {
-  beforeEach(() => localStorage.clear())
+  beforeEach(() => {
+    localStorage.clear()
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: {
+        getCurrentPosition: vi.fn((success: PositionCallback) => success({
+          coords: {
+            latitude: 34.0522,
+            longitude: -118.2437,
+            accuracy: 10,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+            toJSON: () => ({}),
+          },
+          timestamp: Date.now(),
+          toJSON: () => ({}),
+        } as GeolocationPosition)),
+      },
+    })
+  })
   afterEach(() => {
     cleanup()
     vi.useRealTimers()
@@ -108,6 +129,64 @@ describe('TT27 onboarding', () => {
     expect(screen.queryByLabelText('Selected moment')).not.toBeInTheDocument()
   })
 
+  it('uses device location for Transit Lagna', () => {
+    localStorage.setItem('tt27.react.profile', JSON.stringify({
+      name: 'Soe',
+      date: '1990-03-12',
+      time: '08:24',
+      cityIndex: 0,
+      natal: {
+        sunIdx: 0,
+        venusIdx: 21,
+        venusPada: 1,
+        moonIdx: 24,
+        moonPada: 1,
+        lagnaIdx: 24,
+        lagnaPada: 2,
+      },
+    }))
+
+    render(<App />)
+
+    expect(navigator.geolocation.getCurrentPosition).toHaveBeenCalled()
+    expect(screen.queryByText('Current location required')).not.toBeInTheDocument()
+  })
+
+  it('does not fall back to the birth place when device location is unavailable', () => {
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: {
+        getCurrentPosition: vi.fn((_success: PositionCallback, error: PositionErrorCallback) => error({
+          code: 1,
+          message: 'Permission denied',
+          PERMISSION_DENIED: 1,
+          POSITION_UNAVAILABLE: 2,
+          TIMEOUT: 3,
+        })),
+      },
+    })
+    localStorage.setItem('tt27.react.profile', JSON.stringify({
+      name: 'Soe',
+      date: '1990-03-12',
+      time: '08:24',
+      cityIndex: 0,
+      natal: {
+        sunIdx: 0,
+        venusIdx: 21,
+        venusPada: 1,
+        moonIdx: 24,
+        moonPada: 1,
+        lagnaIdx: 24,
+        lagnaPada: 2,
+      },
+    }))
+
+    render(<App />)
+
+    expect(screen.getByText('Current location required')).toBeInTheDocument()
+    expect(screen.getByText('Transit Lagna is not calculated from your birth place.')).toBeInTheDocument()
+  })
+
   it('shows both Moon and Lagna Tara remedies in Best Days', () => {
     localStorage.setItem('tt27.react.profile', JSON.stringify({
       name: 'Soe',
@@ -210,12 +289,13 @@ describe('TT27 onboarding', () => {
 
     expect(screen.getByText(/ရရှိသော ရမှတ်များအရ ယခုအချိန်သည်/)).toBeInTheDocument()
     expect(screen.getByText(/ယခုအချိန်တွင် စန်းသည် အဿဝဏီ နက္ခတ်၌ ရောက်ရှိနေပါသည်/)).toBeInTheDocument()
-    expect(screen.queryByText('သောကြာ ဓနနက္ခတ် အထူးအလွှာ')).not.toBeInTheDocument()
+    expect(screen.queryByText('သောကြာ ဓနနက္ခတ်')).not.toBeInTheDocument()
     expect(screen.getByText('၄ လုံးမြောက်နေရာ၏ အဓိပ္ပာယ်')).toBeInTheDocument()
     expect(screen.getByText(/အဿဝဏီနက္ခတ် ကောင်းကျိုးရစေသော ဒါနယတြာ/)).toBeInTheDocument()
     expect(screen.getByText(/ဆေးလှူခြင်း၊ ယာနဒါန ပြုလုပ်ခြင်း/)).toBeInTheDocument()
     expect(screen.getByText(/အခွင့်အလမ်း — စန်းစီးနက္ခတ် အဿဝဏီ/)).toBeInTheDocument()
-    expect(screen.getByText(/ခေမတာရာ နှင့် သာဓကတာရာ၏ ကောင်းကျိုးအင်အားကို မြှင့်တင်ရန်/)).toBeInTheDocument()
+    expect(screen.getByText(/ခေမတာရာ၏ ကောင်းကျိုးအင်အားကို မြှင့်တင်ရန်/)).toBeInTheDocument()
+    expect(screen.getAllByText(/လဂ်စီးနက္ခတ်/).length).toBeGreaterThan(0)
   })
 
   it('localizes the Today Vedha source labels in Myanmar', () => {
